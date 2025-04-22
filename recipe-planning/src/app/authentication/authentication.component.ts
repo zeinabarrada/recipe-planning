@@ -35,9 +35,8 @@ export class AuthenticationComponent {
     private auth: AuthenticationService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private router: Router,
+    private router: Router
   ) {
-
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
