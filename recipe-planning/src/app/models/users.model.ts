@@ -35,6 +35,10 @@ export class User {
         return null;
     }
 
+    getPassword(): string {
+        return this.password;
+    }
+
     follow(user: User) {
         this.following.push(user);
         user.followers.push(this);
