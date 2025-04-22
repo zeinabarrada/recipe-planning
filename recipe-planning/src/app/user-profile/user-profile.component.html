@@ -1,0 +1,9 @@
+<div *ngIf="user">
+    <h2>Welcome, {{ user.username }}!</h2>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Password:</strong> {{ user.password }}</p>
+</div>
+<div *ngIf="!user">
+    <h2>Please login to see your profile!</h2>
+</div>

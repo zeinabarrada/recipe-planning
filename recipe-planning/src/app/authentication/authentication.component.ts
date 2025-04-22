@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -12,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
-import { AuthenticationService } from '../authentication.service';
+import { AuthenticationService } from './authentication.service';
 
 @Component({
   selector: 'app-authentication',
@@ -33,8 +34,10 @@ export class AuthenticationComponent {
   constructor(
     private auth: AuthenticationService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router,
   ) {
+
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
@@ -46,27 +49,34 @@ export class AuthenticationComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
+
   email: string = '';
   username: string = '';
   password: string = '';
+
   register: boolean = false;
   login: boolean = false;
   isAuthenticated: boolean = false;
   registerForm: FormGroup;
   loginForm: FormGroup;
+
   handleRegister() {
     if (this.registerForm.valid) {
       this.auth.register(this.email, this.username, this.password);
       console.log(this.email, this.username, this.password);
       this.isAuthenticated = true;
+      this.router.navigate(['/profile']);
     }
   }
+
   handleLogin() {
     if (this.loginForm.valid) {
       this.auth.login(this.username, this.password);
       this.isAuthenticated = true;
+      this.router.navigate(['/profile']);
     }
   }
+
   handleLogout() {
     this.auth.logout();
     this.email = '';
