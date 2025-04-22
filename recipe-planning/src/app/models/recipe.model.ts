@@ -1,12 +1,12 @@
 export class Recipe {
   constructor(
     public id: string,
-    public name: string,
+    public recipe_name: string,
     public imagePath: string,
-    public ingredients: [],
-    public instructions: [],
+    public ingredients: string[],
+    public instructions: string[],
     public type: string,
     public author: string,
-    public nutrition: string
+    public nutrition_facts: string
   ) {}
 }

@@ -4,6 +4,9 @@ import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { User } from '../models/users.model';
 import { FollowButtonComponent } from '../follow-button/follow-button.component';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { Firestore } from '@angular/fire/firestore';
 
 @Component({
   imports: [CommonModule, FollowButtonComponent],
@@ -11,26 +14,59 @@ import { FollowButtonComponent } from '../follow-button/follow-button.component'
   templateUrl: './user-profile.component.html',
 })
 export class UserProfileComponent implements OnInit {
-  user: User | null = null;
+  currentUser: User | null = null;
+  targetUser: User | null = null;
   isFollowing: boolean = false;
 
-  constructor(private authService: AuthenticationService) { }
+  constructor(
+    private authService: AuthenticationService,
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private firestore: Firestore
+  ) { }
 
   async ngOnInit() {
-    this.user = this.authService.getCurrentUser();
-    console.log(this.user);
+    try {
+      this.authService.getUser().subscribe(async (user) => {
+        this.currentUser = user;
+        if (this.currentUser) {
+          await this.userService.loadFollowing(this.currentUser);
+        }
+        console.log("Current user:", this.currentUser);
+        this.updateFollowingState();
+      });
+
+      const route = this.route.snapshot.paramMap.get('id');
+      if (route) {
+        this.targetUser = await this.userService.getUserById(route);
+        if (this.targetUser) {
+          await this.userService.loadFollowing(this.targetUser);
+        }
+        this.updateFollowingState();
+      }
+    } catch (error) {
+      console.error('Error initializing component:', error);
+    }
   }
 
-  onFollow() {
-    if (this.user) {
-      this.user.follow(this.user);
+  private updateFollowingState() {
+    if (this.currentUser && this.targetUser) {
+      this.isFollowing = this.currentUser.getFollowing().includes(this.targetUser.id);
+    }
+  }
+
+  async onFollow() {
+    if (this.currentUser && this.targetUser) {
+      await this.userService.followUser(this.currentUser, this.targetUser);
+      
       this.isFollowing = true;
     }
   }
 
-  onUnfollow() {
-    if (this.user) {
-      this.user.unfollow(this.user);
+  async onUnfollow() {
+    if (this.currentUser && this.targetUser) {
+      await this.userService.unfollowUser(this.currentUser, this.targetUser);
+
       this.isFollowing = false;
     }
   }

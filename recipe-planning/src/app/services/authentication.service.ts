@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/users.model';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { UserService } from '../services/user.service';
@@ -17,16 +17,6 @@ export class AuthenticationService {
     private userService: UserService
   ) {
     this.initializeUsers();
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      this.currentUser.next(this.userService.createUser(
-        userData.email,
-        userData.username,
-        userData.password,
-        userData.id
-      ));
-    }
   }
 
   async initializeUsers() {
@@ -34,7 +24,8 @@ export class AuthenticationService {
     const usersSnapshot = await getDocs(usersCollection);
     this.users = usersSnapshot.docs.map(doc => {
       const data = doc.data();
-      return this.userService.createUser(
+      return new User(
+        this.firestore,
         data['email'],
         data['username'],
         data['password'],
@@ -45,9 +36,9 @@ export class AuthenticationService {
   }
 
   async register(email: string, username: string, password: string) {
-    const user = this.userService.createUser(email, username, password);
+    const user = new User(this.firestore, email, username, password);
     await this.userService.saveUser(user);
-
+    
     this.users.push(user);
     this.isAuth.next(true);
     this.currentUser.next(user);
@@ -78,21 +69,6 @@ export class AuthenticationService {
 
   getCurrentUser(): User | null {
     return this.currentUser.value;
-  }
-
-  getUser(): Observable<User | null> {
-    return this.currentUser.asObservable();
-  }
-
-  updateCurrentUser(user: User) {
-    this.currentUser.next(user);
-    localStorage.setItem('currentUser', JSON.stringify({
-      email: user.email,
-      username: user.username,
-      id: user.id,
-      following: user.getFollowing(),
-      followers: user.getFollowers()
-    }));
   }
 }
 
