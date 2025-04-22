@@ -1,12 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, getDocs, getDoc, addDoc, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  deleteDoc,
+} from '@angular/fire/firestore';
 import { User } from '../models/users.model';
+import { Recipe } from '../models/recipe.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-    constructor(private firestore: Firestore) { }
+  constructor(private firestore: Firestore) {}
 
     async saveUser(user: User) {
         const usersRef = collection(this.firestore, 'users');
@@ -91,4 +100,14 @@ export class UserService {
     createUser(email: string, username: string, password: string, id: string = '', following: string[] = [], followers: string[] = []): User {
         return new User(email, username, password, id, following, followers);
     }
+    async saveRecipe(user: User, recipe: Recipe) {
+        const recipesRef = collection(
+          this.firestore,
+          'users',
+          user.id,
+          'savedRecipes'
+        );
+        await addDoc(recipesRef, { recipeId: recipe.id });
+        user.savedRecipes.push(recipe);
+      }
 } 

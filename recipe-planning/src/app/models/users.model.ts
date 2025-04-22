@@ -1,42 +1,53 @@
 // src/app/models/user.model.ts
-import { addDoc, collection, doc, Firestore, deleteDoc, getDocs, QuerySnapshot, QueryDocumentSnapshot } from "@angular/fire/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  Firestore,
+  deleteDoc,
+  getDocs,
+  QuerySnapshot,
+  QueryDocumentSnapshot,
+} from '@angular/fire/firestore';
+import { Recipe } from './recipe.model';
 
 export class User {
+  constructor(
+    public firestore: Firestore,
+    public email: string,
+    public username: string,
+    private password: string,
+    public id: string = '',
+    public following: string[] = [],
+    public followers: string[] = [],
+    public savedRecipes: Recipe[] = []
+  ) {}
 
-    constructor(
-        public email: string,
-        public username: string,
-        private password: string,
-        public id: string = '',
-        public following: string[] = [],
-        public followers: string[] = []
-    ) { }
+  getPassword(): string {
+    return this.password;
+  }
 
-    getPassword(): string {
-        return this.password;
+  getId(): string {
+    return this.id;
+  }
+
+  getUser(): User {
+    return this;
+  }
+
+  getUserByEmail(email: string): User | null {
+    if (this.email === email) {
+      return this;
     }
+    return null;
+  }
 
-    getId(): string {
-        return this.id;
+  getUserByUsername(username: string): User | null {
+    if (this.username === username) {
+      return this;
     }
-
-    getUser(): User {
-        return this;
-    }
-
-    getUserByEmail(email: string): User | null {
-        if (this.email === email) {
-            return this;
-        }
-        return null;
-    }
-
-    getUserByUsername(username: string): User | null {
-        if (this.username === username) {
-            return this;
-        }
-        return null;
-    }
+    return null;
+  }
 
     follow(userId: string) {
         if (!this.following.includes(userId)) {
@@ -78,4 +89,5 @@ export class User {
         );
         return user;
     }
+
 }
