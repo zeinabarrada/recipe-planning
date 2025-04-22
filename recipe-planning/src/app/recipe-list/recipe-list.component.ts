@@ -6,7 +6,8 @@ import { CommonModule } from '@angular/common';
 import { NgFor } from '@angular/common';
 import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { AuthenticationService } from '../services/authentication.service';
+
 @Component({
   selector: 'app-recipe-list',
   imports: [CommonModule, NgFor],
