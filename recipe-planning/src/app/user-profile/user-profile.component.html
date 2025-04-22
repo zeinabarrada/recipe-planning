@@ -1,9 +1,21 @@
 <div *ngIf="user">
     <h2>Welcome, {{ user.username }}!</h2>
     <p><strong>Username:</strong> {{ user.username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Password:</strong> {{ user.password }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>    
+    <p><strong>Followers:</strong> {{ user.getFollowers().length }}</p>
+    <p><strong>Following:</strong> {{ user.getFollowing().length }}</p>
+
+    <div class="follow-button-container">
+        <app-follow-button 
+            [user]="user" 
+            [isFollowing]="isFollowing"
+            (follow)="onFollow()"
+            (unfollow)="onUnfollow()">
+        </app-follow-button>
+    </div>
+    
 </div>
+
 <div *ngIf="!user">
     <h2>Please login to see your profile!</h2>
 </div>
