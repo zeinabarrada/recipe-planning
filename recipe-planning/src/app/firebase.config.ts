@@ -1,18 +1,19 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-export const firebaseConfig = {
-    // Your Firebase config object will go here
-    // You'll need to get this from your Firebase console
-    apiKey: "AIzaSyC0paxXGMHO-gsy7phpXKka9QgKTusAyV8",
-    authDomain: "recipe-planning-bde4f.firebaseapp.com",
-    projectId: "recipe-planning-bde4f",
-    storageBucket: "recipe-planning-bde4f.firebasestorage.app",
-    messagingSenderId: "612165115126",
-    appId: "1:612165115126:web:8870d805f3e2fced0fa0d7"
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyB3bIsN3VGy9SB8-PxayRp1rF9GaZVP5P0",
+  authDomain: "recipe-planning-5da49.firebaseapp.com",
+  projectId: "recipe-planning-5da49",
+  storageBucket: "recipe-planning-5da49.firebasestorage.app",
+  messagingSenderId: "1089005350580",
+  appId: "1:1089005350580:web:0d43cf3ae601f23f85f1e1"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app); 
