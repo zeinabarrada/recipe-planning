@@ -8,7 +8,7 @@ import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 })
 export class AuthenticationService {
   private user: User | null = null;
-  private users: { email: string; username: string; password: string }[] = [];
+  private users: User[] = [];
   isAuth = new BehaviorSubject<boolean>(false);
 
   constructor(private firestore: Firestore) {
@@ -20,36 +20,39 @@ export class AuthenticationService {
     const usersSnapshot = await getDocs(usersCollection);
     this.users = usersSnapshot.docs.map(doc => {
       const data = doc.data();
-      return {
-        email: data['email'],
-        username: data['username'],
-        password: data['password']
-      };
+      return new User(
+        this.firestore,
+        data['email'],
+        data['username'],
+        data['password'],
+        doc.id
+      );
     });
+    console.log('Initialized users:', this.users);
   }
 
   async register(email: string, username: string, password: string) {
     const user = new User(this.firestore, email, username, password);
     await user.save();
-    
-    this.users.push({ email, username, password });
+    this.users.push(user);
     this.isAuth.next(true);
     this.user = user;
     localStorage.setItem('currentUser', JSON.stringify({ email, username, password, id: user.id }));
-    return this.getUserData();
   }
 
   async login(username: string, password: string) {
     const user = this.users.find(
-      (user) => user.username === username && user.password === password
+      (user) => user.username === username && user.getPassword() === password
     );
     if (user) {
       this.isAuth.next(true);
-      this.user = new User(this.firestore, user.email, user.username, user.password);
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      return this.getUserData();
+      this.user = user;
+      localStorage.setItem('currentUser', JSON.stringify({
+        email: user.email,
+        username: user.username,
+        id: user.id
+      }));
     }
-    return null;
   }
 
   logout() {
@@ -62,3 +65,4 @@ export class AuthenticationService {
     return this.user;
   }
 }
+
