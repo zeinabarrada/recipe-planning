@@ -26,28 +26,35 @@ export class UserProfileComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    // Get initial value
-    this.currentUser = this.authService.getCurrentUser();
-    console.log("Initial current user:", this.currentUser);
+    try {
+      this.currentUser = this.authService.getCurrentUser();
+      console.log("Current user:", this.currentUser);
 
-    if (this.currentUser == null) {
-      // Also check localStorage for current user
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-      console.log("Retrieved user from localStorage:", this.currentUser);
-    }
+      if (!this.currentUser) {
+        const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        if (userData.email) {
+          this.currentUser = new User(
+            this.firestore,
+            userData.email,
+            userData.username,
+            userData.password,
+            userData.id
+          );
+          console.log("Created user from localStorage:", this.currentUser.username);
+        }
+      }
 
-    // Subscribe to changes
-    this.authService.getCurrentUserObservable().subscribe(user => {
-      this.currentUser = user;
-      this.updateFollowingState();
-    });
+      const route = this.route.snapshot.paramMap.get('id');
+      if (route) {
+        this.targetUser = await this.userService.getUserById(route);
+      }
 
-    const route = this.route.snapshot.paramMap.get('id');
-    console.log('Route:', route);
-    if (route) {
-      this.targetUser = await this.userService.getUserById(route);
-      console.log("User from route:", this.targetUser);
-      this.updateFollowingState();
+      // Update following state after both users are loaded
+      if (this.currentUser && this.targetUser) {
+        this.updateFollowingState();
+      }
+    } catch (error) {
+      console.error('Error initializing component:', error);
     }
   }
 

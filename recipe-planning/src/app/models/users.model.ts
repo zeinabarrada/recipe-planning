@@ -63,6 +63,7 @@ export class User {
     return this.following;
   }
 
+<<<<<<< HEAD
   getFollowers(): User[] {
     return this.followers;
   }
@@ -77,4 +78,36 @@ export class User {
     this.id = docRef.id;
     return this;
   }
+=======
+    follow(targetUser: User) {
+        if (!this.following.includes(targetUser)) {
+            this.following.push(targetUser);
+            targetUser.followers.push(this);
+        }
+    }
+
+    unfollow(targetUser: User) {
+        this.following = this.following.filter(u => u !== targetUser);
+        targetUser.followers = targetUser.followers.filter(u => u !== this);
+    }
+
+    getFollowing(): User[] {
+        return this.following;
+    }
+
+    getFollowers(): User[] {
+        return this.followers;
+    }
+
+    async save() {
+        const usersRef = collection(this.firestore, 'users');
+        const docRef = await addDoc(usersRef, {
+            email: this.email,
+            username: this.username,
+            password: this.password
+        });
+        this.id = docRef.id;
+        return this;
+    }
+>>>>>>> d3a7c0e33d86dd3c2625abe9b14a3234ab135480
 }
