@@ -17,6 +17,18 @@ export class AuthenticationService {
     private userService: UserService
   ) {
     this.initializeUsers();
+    // Initialize currentUser from localStorage
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      this.currentUser.next(new User(
+        this.firestore,
+        userData.email,
+        userData.username,
+        userData.password,
+        userData.id
+      ));
+    }
   }
 
   async initializeUsers() {
@@ -69,10 +81,6 @@ export class AuthenticationService {
 
   getCurrentUser(): User | null {
     return this.currentUser.value;
-  }
-
-  getCurrentUserObservable() {
-    return this.currentUser.asObservable();
   }
 }
 

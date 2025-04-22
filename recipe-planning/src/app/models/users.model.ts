@@ -39,14 +39,16 @@ export class User {
         return null;
     }
 
-    follow(user: User) {
-        this.following.push(user);
-        user.followers.push(this);
+    follow(targetUser: User) {
+        if (!this.following.includes(targetUser)) {
+            this.following.push(targetUser);
+            targetUser.followers.push(this);
+        }
     }
 
-    unfollow(user: User) {
-        this.following = this.following.filter(u => u !== user);
-        user.followers = user.followers.filter(u => u !== this);
+    unfollow(targetUser: User) {
+        this.following = this.following.filter(u => u !== targetUser);
+        targetUser.followers = targetUser.followers.filter(u => u !== this);
     }
 
     getFollowing(): User[] {

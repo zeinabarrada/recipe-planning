@@ -10,7 +10,7 @@ import { NgIf, CommonModule } from '@angular/common';
   styleUrl: './follow-button.component.css'
 })
 export class FollowButtonComponent implements OnInit {
-  @Input() user!: User;
+  @Input() targetUser!: User;
   @Input() isFollowing: boolean = false;
   @Output() follow = new EventEmitter<void>();
   @Output() unfollow = new EventEmitter<void>();
@@ -21,30 +21,32 @@ export class FollowButtonComponent implements OnInit {
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
-    console.log(this.currentUser);
+    console.log('current user', this.currentUser);
 
     if (this.currentUser) {
-      this.checkFollow(this.user);
+      this.checkFollow(this.targetUser);
     }
   }
 
   onFollow() {
-    if (this.currentUser) {
-      this.currentUser.follow(this.user);
+    if (this.currentUser && this.targetUser) {
+      this.currentUser.follow(this.targetUser);
       this.isFollowing = true;
       this.follow.emit();
+      console.log('following', this.currentUser.getFollowing());
     }
   }
 
   onUnfollow() {
-    if (this.currentUser) {
-      this.currentUser.unfollow(this.user);
+    if (this.currentUser && this.targetUser) {
+      this.currentUser.unfollow(this.targetUser);
       this.isFollowing = false;
       this.unfollow.emit();
+      console.log('following', this.currentUser.getFollowing());
     }
   }
 
-  checkFollow(user: User) {
-    this.isFollowing = user.getFollowing().includes(this.user);
+  checkFollow(targetUser: User) {
+    this.isFollowing = this.currentUser?.getFollowing().includes(targetUser) || false;
   }
 }

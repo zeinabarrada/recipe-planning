@@ -1,4 +1,4 @@
-<div *ngIf="currentUser">
+<div *ngIf="currentUser && !targetUser">
     <h2>Welcome, {{ currentUser.username }}!</h2>
     <p><strong>Username:</strong> {{ currentUser.username }}</p>
     <p><strong>Email:</strong> {{ currentUser.email }}</p>    
@@ -6,7 +6,7 @@
     <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>    
 </div>
 
-<div *ngIf="targetUser && currentUser">
+<div *ngIf="currentUser && targetUser">
     <h2>{{ targetUser.username }}'s profile!</h2>
     <p><strong>Username:</strong> {{ targetUser.username }}</p>
     <p><strong>Email:</strong> {{ targetUser.email }}</p>    
@@ -15,7 +15,7 @@
 
     <div class="follow-button-container">
         <app-follow-button 
-            [user]="targetUser" 
+            [targetUser]="targetUser" 
             [isFollowing]="isFollowing"
             (follow)="onFollow()"
             (unfollow)="onUnfollow()">
