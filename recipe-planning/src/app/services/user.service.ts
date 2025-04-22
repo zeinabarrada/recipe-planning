@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, getDocs, addDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDocs, getDoc, addDoc, deleteDoc } from '@angular/fire/firestore';
 import { User } from '../models/users.model';
 
 @Injectable({
@@ -48,5 +48,13 @@ export class UserService {
             const data = doc.data();
             return new User(this.firestore, data['email'], data['username'], data['password'], data['id']);
         });
+    }
+
+    async getUserById(id: string): Promise<User> {
+        const userRef = doc(collection(this.firestore, 'users'), id);
+        const snapshot = await getDoc(userRef);
+        const data = snapshot.data();
+        if (!data) throw new Error('User not found');
+        return new User(this.firestore, data['email'], data['username'], data['password'], data['id']);
     }
 } 

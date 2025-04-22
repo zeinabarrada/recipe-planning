@@ -1,13 +1,21 @@
-<div *ngIf="user">
-    <h2>Welcome, {{ user.username }}!</h2>
-    <p><strong>Username:</strong> {{ user.username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>    
-    <p><strong>Followers:</strong> {{ user.getFollowers().length }}</p>
-    <p><strong>Following:</strong> {{ user.getFollowing().length }}</p>
+<div *ngIf="currentUser">
+    <h2>Welcome, {{ currentUser.username }}!</h2>
+    <p><strong>Username:</strong> {{ currentUser.username }}</p>
+    <p><strong>Email:</strong> {{ currentUser.email }}</p>    
+    <p><strong>Followers:</strong> {{ currentUser.getFollowers().length }}</p>
+    <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>    
+</div>
+
+<div *ngIf="targetUser && currentUser">
+    <h2>{{ targetUser.username }}'s profile!</h2>
+    <p><strong>Username:</strong> {{ targetUser.username }}</p>
+    <p><strong>Email:</strong> {{ targetUser.email }}</p>    
+    <p><strong>Followers:</strong> {{ targetUser.getFollowers().length }}</p>
+    <p><strong>Following:</strong> {{ targetUser.getFollowing().length }}</p>
 
     <div class="follow-button-container">
         <app-follow-button 
-            [user]="user" 
+            [user]="targetUser" 
             [isFollowing]="isFollowing"
             (follow)="onFollow()"
             (unfollow)="onUnfollow()">
@@ -16,6 +24,6 @@
     
 </div>
 
-<div *ngIf="!user">
+<div *ngIf="!currentUser">
     <h2>Please login to see your profile!</h2>
 </div>

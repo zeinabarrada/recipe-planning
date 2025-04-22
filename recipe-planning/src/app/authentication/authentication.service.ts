@@ -38,7 +38,7 @@ export class AuthenticationService {
   async register(email: string, username: string, password: string) {
     const user = new User(this.firestore, email, username, password);
     await this.userService.saveUser(user);
-    
+
     this.users.push(user);
     this.isAuth.next(true);
     this.currentUser.next(user);
@@ -69,6 +69,10 @@ export class AuthenticationService {
 
   getCurrentUser(): User | null {
     return this.currentUser.value;
+  }
+
+  getCurrentUserObservable() {
+    return this.currentUser.asObservable();
   }
 }
 
