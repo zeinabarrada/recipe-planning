@@ -58,6 +58,7 @@ export class UserProfileComponent implements OnInit {
   async onFollow() {
     if (this.currentUser && this.targetUser) {
       await this.userService.followUser(this.currentUser, this.targetUser);
+      
       this.isFollowing = true;
     }
   }
@@ -65,6 +66,7 @@ export class UserProfileComponent implements OnInit {
   async onUnfollow() {
     if (this.currentUser && this.targetUser) {
       await this.userService.unfollowUser(this.currentUser, this.targetUser);
+
       this.isFollowing = false;
     }
   }
