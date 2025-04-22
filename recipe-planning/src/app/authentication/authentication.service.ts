@@ -2,16 +2,20 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/users.model';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { UserService } from '../services/user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private user: User | null = null;
+  private currentUser = new BehaviorSubject<User | null>(null);
   private users: User[] = [];
   isAuth = new BehaviorSubject<boolean>(false);
 
-  constructor(private firestore: Firestore) {
+  constructor(
+    private firestore: Firestore,
+    private userService: UserService
+  ) {
     this.initializeUsers();
   }
 
@@ -33,10 +37,11 @@ export class AuthenticationService {
 
   async register(email: string, username: string, password: string) {
     const user = new User(this.firestore, email, username, password);
-    await user.save();
+    await this.userService.saveUser(user);
+    
     this.users.push(user);
     this.isAuth.next(true);
-    this.user = user;
+    this.currentUser.next(user);
     localStorage.setItem('currentUser', JSON.stringify({ email, username, password, id: user.id }));
   }
 
@@ -44,9 +49,10 @@ export class AuthenticationService {
     const user = this.users.find(
       (user) => user.username === username && user.getPassword() === password
     );
+
     if (user) {
       this.isAuth.next(true);
-      this.user = user;
+      this.currentUser.next(user);
       localStorage.setItem('currentUser', JSON.stringify({
         email: user.email,
         username: user.username,
@@ -57,12 +63,12 @@ export class AuthenticationService {
 
   logout() {
     this.isAuth.next(false);
-    this.user = null;
+    this.currentUser.next(null);
     localStorage.removeItem('currentUser');
   }
 
-  getUserData(): User | null {
-    return this.user;
+  getCurrentUser(): User | null {
+    return this.currentUser.value;
   }
 }
 

@@ -20,10 +20,10 @@ export class FollowButtonComponent implements OnInit {
   constructor(private authService: AuthenticationService) { }
 
   ngOnInit() {
-    this.currentUser = this.authService.getUserData();
+    this.currentUser = this.authService.getCurrentUser();
     console.log(this.currentUser);
-  
-    if (this.currentUser) {      
+
+    if (this.currentUser) {
       this.checkFollow(this.user);
     }
   }
