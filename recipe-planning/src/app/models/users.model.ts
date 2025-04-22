@@ -4,13 +4,12 @@ import { addDoc, collection, doc, Firestore, deleteDoc, getDocs, QuerySnapshot, 
 export class User {
 
     constructor(
-        public firestore: Firestore,
         public email: string,
         public username: string,
         private password: string,
         public id: string = '',
-        public following: User[] = [],
-        public followers: User[] = [],
+        public following: string[] = [],
+        public followers: string[] = []
     ) { }
 
     getPassword(): string {
@@ -39,34 +38,44 @@ export class User {
         return null;
     }
 
-    follow(targetUser: User) {
-        if (!this.following.includes(targetUser)) {
-            this.following.push(targetUser);
-            targetUser.followers.push(this);
+    follow(userId: string) {
+        if (!this.following.includes(userId)) {
+            this.following.push(userId);
         }
     }
 
-    unfollow(targetUser: User) {
-        this.following = this.following.filter(u => u !== targetUser);
-        targetUser.followers = targetUser.followers.filter(u => u !== this);
+    unfollow(userId: string) {
+        this.following = this.following.filter(id => id !== userId);
     }
 
-    getFollowing(): User[] {
+    getFollowing(): string[] {
         return this.following;
     }
 
-    getFollowers(): User[] {
+    getFollowers(): string[] {
         return this.followers;
     }
 
-    async save() {
-        const usersRef = collection(this.firestore, 'users');
-        const docRef = await addDoc(usersRef, {
+    toJSON(): any {
+        return {
             email: this.email,
             username: this.username,
-            password: this.password
-        });
-        this.id = docRef.id;
-        return this;
+            password: this.password,
+            id: this.id,
+            following: this.following,
+            followers: this.followers
+        };
+    }
+
+    static fromJSON(data: any): User {
+        const user = new User(
+            data.email,
+            data.username,
+            data.password,
+            data.id,
+            data.following || [],
+            data.followers || []
+        );
+        return user;
     }
 }

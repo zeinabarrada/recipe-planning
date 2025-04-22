@@ -27,30 +27,21 @@ export class UserProfileComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      this.currentUser = this.authService.getCurrentUser();
-      console.log("Current user:", this.currentUser);
-
-      if (!this.currentUser) {
-        const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        if (userData.email) {
-          this.currentUser = new User(
-            this.firestore,
-            userData.email,
-            userData.username,
-            userData.password,
-            userData.id
-          );
-          console.log("Created user from localStorage:", this.currentUser.username);
+      this.authService.getUser().subscribe(async (user) => {
+        this.currentUser = user;
+        if (this.currentUser) {
+          await this.userService.loadFollowing(this.currentUser);
         }
-      }
+        console.log("Current user:", this.currentUser);
+        this.updateFollowingState();
+      });
 
       const route = this.route.snapshot.paramMap.get('id');
       if (route) {
         this.targetUser = await this.userService.getUserById(route);
-      }
-
-      // Update following state after both users are loaded
-      if (this.currentUser && this.targetUser) {
+        if (this.targetUser) {
+          await this.userService.loadFollowing(this.targetUser);
+        }
         this.updateFollowingState();
       }
     } catch (error) {
@@ -60,20 +51,20 @@ export class UserProfileComponent implements OnInit {
 
   private updateFollowingState() {
     if (this.currentUser && this.targetUser) {
-      this.isFollowing = this.currentUser.getFollowing().includes(this.targetUser);
+      this.isFollowing = this.currentUser.getFollowing().includes(this.targetUser.id);
     }
   }
 
-  onFollow() {
+  async onFollow() {
     if (this.currentUser && this.targetUser) {
-      this.currentUser.follow(this.targetUser);
+      await this.userService.followUser(this.currentUser, this.targetUser);
       this.isFollowing = true;
     }
   }
 
-  onUnfollow() {
+  async onUnfollow() {
     if (this.currentUser && this.targetUser) {
-      this.currentUser.unfollow(this.targetUser);
+      await this.userService.unfollowUser(this.currentUser, this.targetUser);
       this.isFollowing = false;
     }
   }
