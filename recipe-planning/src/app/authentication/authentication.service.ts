@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/users.model';
@@ -103,3 +104,5 @@ export class AuthenticationService {
     );
   }
 }
+=======
+>>>>>>> 237d319f2b82889c76d301127371e168599e3bcb

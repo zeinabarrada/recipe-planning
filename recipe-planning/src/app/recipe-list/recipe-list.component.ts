@@ -7,7 +7,6 @@ import { RouterModule } from '@angular/router';
 import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../authentication/authentication.service';
-
 @Component({
   selector: 'app-recipe-list',
   standalone: true,

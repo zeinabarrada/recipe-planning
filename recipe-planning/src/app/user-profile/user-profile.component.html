@@ -1,55 +1,27 @@
-<<<<<<< HEAD
-<div *ngIf="currentUser">
-  <h2>Welcome, {{ currentUser.username }}!</h2>
-  <p><strong>Username:</strong> {{ currentUser.username }}</p>
-  <p><strong>Email:</strong> {{ currentUser.email }}</p>
-  <p><strong>Followers:</strong> {{ currentUser.getFollowers().length }}</p>
-  <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>
-</div>
-
 <div *ngIf="targetUser && currentUser">
   <h2>{{ targetUser.username }}'s profile!</h2>
   <p><strong>Username:</strong> {{ targetUser.username }}</p>
   <p><strong>Email:</strong> {{ targetUser.email }}</p>
   <p><strong>Followers:</strong> {{ targetUser.getFollowers().length }}</p>
   <p><strong>Following:</strong> {{ targetUser.getFollowing().length }}</p>
-
+  <p><strong>Saved Recipes:</strong> {{ targetUser.savedRecipes }}</p>
+  
   <div class="follow-button-container">
     <app-follow-button
-      [user]="targetUser"
+      [targetUser]="targetUser"
       [isFollowing]="isFollowing"
       (follow)="onFollow()"
-      (unfollow)="onUnfollow()"
-    >
-    </app-follow-button>
-  </div>
-  <p><strong>Saved Recipes:</strong> {{ currentUser.savedRecipes }}</p>
-=======
+      (unfollow)="onUnfollow()"></app-follow-button>
+  </div>  
+</div>
+
 <div *ngIf="currentUser && !targetUser">
     <h2>Welcome, {{ currentUser.username }}!</h2>
     <p><strong>Username:</strong> {{ currentUser.username }}</p>
     <p><strong>Email:</strong> {{ currentUser.email }}</p>    
     <p><strong>Followers:</strong> {{ currentUser.getFollowers().length }}</p>
-    <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>    
-</div>
-
-<div *ngIf="currentUser && targetUser">
-    <h2>{{ targetUser.username }}'s profile!</h2>
-    <p><strong>Username:</strong> {{ targetUser.username }}</p>
-    <p><strong>Email:</strong> {{ targetUser.email }}</p>    
-    <p><strong>Followers:</strong> {{ targetUser.getFollowers().length }}</p>
-    <p><strong>Following:</strong> {{ targetUser.getFollowing().length }}</p>
-
-    <div class="follow-button-container">
-        <app-follow-button 
-            [targetUser]="targetUser" 
-            [isFollowing]="isFollowing"
-            (follow)="onFollow()"
-            (unfollow)="onUnfollow()">
-        </app-follow-button>
-    </div>
-    
->>>>>>> d3a7c0e33d86dd3c2625abe9b14a3234ab135480
+    <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>
+    <p><strong>Saved Recipes:</strong> {{ currentUser.savedRecipes }}</p>
 </div>
 
 <div *ngIf="!currentUser">
