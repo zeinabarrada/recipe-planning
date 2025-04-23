@@ -4,10 +4,18 @@ import { Recipe } from '../models/recipe.model';
 import { AuthenticationService } from '../services/authentication.service';
 import { UserService } from '../services/user.service';
 import { RecipeService } from '../services/recipe.service';
-import { forkJoin } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+
+type MealType = 'breakfast' | 'lunch' | 'dinner';
+type DayMeals = {
+  [key in MealType]?: Recipe;
+};
 
 @Component({
   selector: 'app-meal-plan',
+  standalone: true,
+  imports: [CommonModule, MatButtonModule],
   templateUrl: './meal-plan.component.html',
   styleUrls: ['./meal-plan.component.css']
 })
@@ -15,9 +23,10 @@ export class MealPlanComponent implements OnInit {
   currentUser: User | null = null;
   followingRecipes: Recipe[] = [];
   otherRecipes: Recipe[] = [];
-  mealPlan: { [key: string]: { breakfast?: Recipe, lunch?: Recipe, dinner?: Recipe } } = {};
-  daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  mealTypes = ['breakfast', 'lunch', 'dinner'];
+  mealPlan: { [key: string]: DayMeals } = {};
+  daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+  mealTypes = ['breakfast', 'lunch', 'dinner'] as const;
+  selectedRecipe: Recipe | null = null;
 
   constructor(
     private authService: AuthenticationService,
@@ -44,22 +53,21 @@ export class MealPlanComponent implements OnInit {
   async loadRecipes() {
     if (!this.currentUser) return;
 
-    // Get recipes from following users
-    const followingIds = this.currentUser.getFollowing();
-    const followingRecipesPromises = followingIds.map(async (userId) => {
-      const recipe = await this.recipeService.getRecipeById(userId).toPromise();
-      return recipe;
-    });
-
-    // Get recipes from other users
-    const otherRecipes = await this.recipeService.getRecipes().toPromise();
-
     try {
-      const followingRecipesResults = await Promise.all(followingRecipesPromises);
-      this.followingRecipes = followingRecipesResults.filter(recipe => recipe !== null) as Recipe[];
+      // Get all recipes
+      const allRecipes = await this.recipeService.getRecipes().toPromise();
+      if (!allRecipes) return;
 
-      // Filter out recipes from following users
-      this.otherRecipes = (otherRecipes || []).filter(recipe =>
+      // Get following users
+      const followingIds = this.currentUser.getFollowing();
+
+      // Filter recipes by following users
+      this.followingRecipes = allRecipes.filter(recipe =>
+        followingIds.includes(recipe.author)
+      );
+
+      // Filter recipes from other users
+      this.otherRecipes = allRecipes.filter(recipe =>
         !followingIds.includes(recipe.author)
       );
     } catch (error) {
@@ -67,13 +75,17 @@ export class MealPlanComponent implements OnInit {
     }
   }
 
-  addRecipeToMealPlan(day: string, mealType: 'breakfast' | 'lunch' | 'dinner', recipe: Recipe) {
+  selectRecipe(recipe: Recipe) {
+    this.selectedRecipe = recipe;
+  }
+
+  addRecipeToMealPlan(day: string, mealType: MealType, recipe: Recipe) {
     if (this.mealPlan[day]) {
       this.mealPlan[day][mealType] = recipe;
     }
   }
 
-  removeRecipeFromMealPlan(day: string, mealType: 'breakfast' | 'lunch' | 'dinner') {
+  removeRecipeFromMealPlan(day: string, mealType: MealType) {
     if (this.mealPlan[day]) {
       delete this.mealPlan[day][mealType];
     }
