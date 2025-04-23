@@ -9,12 +9,17 @@ import { NavbarComponent } from './navbar/navbar.component';
   imports: [CommonModule, RouterModule, RouterOutlet, NavbarComponent],
   template: `
     <app-navbar></app-navbar>
-    <div class="container">
+    <main class="container">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   `,
   styles: [
     `
+      :host {
+        display: block;
+        min-height: 100vh;
+      }
+
       .container {
         max-width: 1200px;
         margin: 0 auto;
