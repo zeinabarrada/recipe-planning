@@ -26,7 +26,7 @@ export class UserProfileComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private recipeService: RecipeService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.authService.getUser().subscribe(async (user) => {
@@ -79,6 +79,11 @@ export class UserProfileComponent implements OnInit {
     ) {
       await this.userService.followUser(this.currentUser, this.targetUser);
       this.isFollowing = true;
+
+      // Refresh both users' data
+      this.currentUser = await this.userService.getUserByIdInstance(this.currentUser.id);
+      this.targetUser = await this.userService.getUserByIdInstance(this.targetUser.id);
+      this.authService.updateCurrentUser(this.currentUser);
     } else {
       console.error('(onFollowFunction) Cannot follow: Invalid user IDs', {
         currentUserId: this.currentUser?.id,
@@ -96,6 +101,11 @@ export class UserProfileComponent implements OnInit {
     ) {
       await this.userService.unfollowUser(this.currentUser, this.targetUser);
       this.isFollowing = false;
+
+      // Refresh both users' data
+      this.currentUser = await this.userService.getUserByIdInstance(this.currentUser.id);
+      this.targetUser = await this.userService.getUserByIdInstance(this.targetUser.id);
+      this.authService.updateCurrentUser(this.currentUser);
     } else {
       console.error('Cannot unfollow: Invalid user IDs', {
         currentUserId: this.currentUser?.id,
