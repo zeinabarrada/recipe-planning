@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 })
 export class AddRecipeComponent {
   currentUser: User | null = null;
-  newRecipe: Recipe = new Recipe('', '', [], [], '', '', '', 0, '');
+  newRecipe: Recipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '');
   ingredientsInput: string = '';
 
   constructor(
@@ -58,7 +58,7 @@ if (storedUser) {
     try {
       await this.recipeService.addRecipe(this.newRecipe);
       alert('Recipe submitted successfully!');
-      this.newRecipe = new Recipe('', '', [], [], '', '', '', 0, '');
+      this.newRecipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '');
       this.ingredientsInput = '';
       this.router.navigate(['/recipes']); // redirect to recipe list
     } catch (error) {
