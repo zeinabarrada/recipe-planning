@@ -22,7 +22,9 @@ export class AuthenticationService {
           userData.email,
           userData.username,
           userData.password,
-          userData.id
+          userData.id,
+          userData.following,
+          userData.followers
         )
       );
     }
@@ -37,7 +39,9 @@ export class AuthenticationService {
         data['email'],
         data['username'],
         data['password'],
-        doc.id
+        doc.id,
+        data['following'],
+        data['followers']
       );
     });
     console.log('Initialized users:', this.users);

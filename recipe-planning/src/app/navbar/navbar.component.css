@@ -1,0 +1,80 @@
+.navbar {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.navbar-brand a {
+  color: #333;
+  text-decoration: none;
+}
+
+.navbar-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  margin-left: 2rem;
+}
+
+.navbar-start {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-end {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-item {
+  color: #333;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.navbar-item:hover {
+  background-color: #e9ecef;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.button.is-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.button.is-primary:hover {
+  background-color: #0056b3;
+}
+
+.button.is-light {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #dee2e6;
+}
+
+.button.is-light:hover {
+  background-color: #e9ecef;
+}

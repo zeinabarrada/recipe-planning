@@ -26,7 +26,7 @@ export class UserProfileComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private recipeService: RecipeService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.authService.getUser().subscribe(async (user) => {
@@ -79,6 +79,11 @@ export class UserProfileComponent implements OnInit {
     ) {
       await this.userService.followUser(this.currentUser, this.targetUser);
       this.isFollowing = true;
+
+      // Refresh both users' data
+      this.currentUser = await this.userService.getUserByIdInstance(this.currentUser.id);
+      this.targetUser = await this.userService.getUserByIdInstance(this.targetUser.id);
+      this.authService.updateCurrentUser(this.currentUser);
     } else {
       console.error('(onFollowFunction) Cannot follow: Invalid user IDs', {
         currentUserId: this.currentUser?.id,
@@ -96,6 +101,11 @@ export class UserProfileComponent implements OnInit {
     ) {
       await this.userService.unfollowUser(this.currentUser, this.targetUser);
       this.isFollowing = false;
+
+      // Refresh both users' data
+      this.currentUser = await this.userService.getUserByIdInstance(this.currentUser.id);
+      this.targetUser = await this.userService.getUserByIdInstance(this.targetUser.id);
+      this.authService.updateCurrentUser(this.currentUser);
     } else {
       console.error('Cannot unfollow: Invalid user IDs', {
         currentUserId: this.currentUser?.id,
@@ -104,26 +114,38 @@ export class UserProfileComponent implements OnInit {
     }
   }
   loadSavedRecipes(userId: string): void {
-    if (!userId) return;
+    if (!userId) {
+      console.error('Invalid user ID provided to loadSavedRecipes');
+      return;
+    }
 
-    this.userService.getSavedRecipes(userId).subscribe((savedRecipeIds) => {
-      if (savedRecipeIds.length === 0) {
+    this.userService.getSavedRecipes(userId).subscribe({
+      next: (savedRecipeIds) => {
+        console.log('Saved recipe IDs:', savedRecipeIds);
+        if (savedRecipeIds.length === 0) {
+          this.savedRecipes = [];
+          return;
+        }
+
+        const recipeObservables = savedRecipeIds.map((id) =>
+          this.recipeService.getRecipeById(id)
+        );
+
+        forkJoin(recipeObservables).subscribe({
+          next: (recipes) => {
+            console.log('Loaded recipes:', recipes);
+            this.savedRecipes = recipes;
+          },
+          error: (error) => {
+            console.error('Error loading saved recipes:', error);
+            this.savedRecipes = [];
+          },
+        });
+      },
+      error: (error) => {
+        console.error('Error fetching saved recipe IDs:', error);
         this.savedRecipes = [];
-        return;
-      }
-
-      const recipeObservables = savedRecipeIds.map((id) =>
-        this.recipeService.getRecipeById(id)
-      );
-
-      forkJoin(recipeObservables).subscribe({
-        next: (recipes) => {
-          this.savedRecipes = recipes;
-        },
-        error: (error) => {
-          console.error('Error loading saved recipes:', error);
-        },
-      });
+      },
     });
   }
 }

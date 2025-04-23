@@ -47,9 +47,8 @@ export class RecipeService {
           throw new Error(`No recipe found with ID: ${recipeId}`);
         }
         return new Recipe(
+          recipeId,
           data['recipe_name'],
-          data['author'],
-          data['nutrition_facts'],
           data['ingredients'],
           data['instructions'],
           data['type'],

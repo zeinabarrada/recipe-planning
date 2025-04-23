@@ -4,15 +4,28 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 
 export const routes: Routes = [
-  { path: '', component: AuthenticationComponent },
-  { path: 'profile', component: UserProfileComponent },
-  { path: 'profile/:id', component: UserProfileComponent },
+  {
+    path: '',
+    component: AuthenticationComponent,
+    title: 'Login/Signup - Recipe Planner',
+  },
+  {
+    path: 'profile',
+    component: UserProfileComponent,
+    title: 'My Profile - Recipe Planner',
+  },
+  {
+    path: 'profile/:id',
+    component: UserProfileComponent,
+    title: 'User Profile - Recipe Planner',
+  },
   {
     path: 'recipes',
-    loadComponent: () =>
-      import('./recipe-list/recipe-list.component').then(
-        (m) => m.RecipeListComponent
-      ),
+    component: RecipeListComponent,
+    title: 'Recipes - Recipe Planner',
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: '**',
+    redirectTo: '',
+  },
 ];
