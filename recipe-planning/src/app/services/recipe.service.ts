@@ -5,9 +5,11 @@ import {
   collection,
   collectionData,
   getDocs,
+  getDoc,
+  doc,
 } from '@angular/fire/firestore';
 import { Recipe } from '../models/recipe.model';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -17,24 +19,46 @@ export class RecipeService {
 
   getRecipes(): Observable<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
-    const recipes = collectionData(recipesCollection);
-    return recipes as Observable<Recipe[]>;
+    const recipes = collectionData(recipesCollection, { idField: 'id' }); // Include the document ID as 'id'
+    return recipes as Observable<Recipe[]>; // This will return recipes with their 'id' field
   }
-  
+        
   addRecipe(recipe: Recipe) {
-    const recipesCollection = collection(this.firestore, 'recipes');
-    return addDoc(recipesCollection, {
+    const recipeCollection = collection(this.firestore, 'recipes');
+    addDoc(recipeCollection, {
+      recipe_name: recipe.recipe_name,
       author: recipe.author,
-      imagePath: recipe.imagePath,
       nutrition_facts: recipe.nutrition_facts,
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
-      name:recipe.recipe_name,
-      type:recipe.type,
-    });
+      type: recipe.type,
+      time: recipe.time,
+      cuisine: recipe.cuisine,
+      //image_url: recipe.image_url,
+    });}
+
+
+  getRecipeById(recipeId: string): Observable<Recipe> {
+    const recipeRef = doc(this.firestore, 'recipes', recipeId);
+    return from(
+      getDoc(recipeRef).then((snapshot) => {
+        const data = snapshot.data();
+        if (!data) {
+          throw new Error(`No recipe found with ID: ${recipeId}`);
+        }
+        return new Recipe(
+          data['recipe_name'],
+          data['author'],
+          data['nutrition_facts'],
+          data['ingredients'],
+          data['instructions'],
+          data['type'],
+          data['time'],
+          data['cuisine'],
+          data['diet'],
+
+        );
+      })
+    );
   }
-
-
-  
-
 }

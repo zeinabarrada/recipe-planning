@@ -1,8 +1,14 @@
-<div *ngFor="let recipe of recipesObservable | async">
-  <h2>{{ recipe.recipe_name }}</h2>
-  <p>{{ recipe.author }}</p>
-  <p>{{ recipe.ingredients }}</p>
-  <p>{{ recipe.instructions }}</p>
-  <p>{{ recipe.nutrition_facts }}</p>
-  <button (click)="saveRecipe(recipe)">Save Recipe</button>
+<!-- >>>>>> HELLO_MARKER <<<<<< -->
+<div>
+  <h1>Recipe List Component Loaded</h1>
+  <p>Current User: {{ currentUser?.username || "No user logged in" }}</p>
+
+  <div *ngFor="let recipe of recipesObservable | async">
+    <h2>{{ recipe.recipe_name }}</h2>
+    <p>{{ recipe.author }}</p>
+    <p>{{ recipe.ingredients }}</p>
+    <p>{{ recipe.instructions }}</p>
+    <p>{{ recipe.nutrition_facts }}</p>
+    <button (click)="saveRecipe(recipe)">Save Recipe</button>
+  </div>
 </div>

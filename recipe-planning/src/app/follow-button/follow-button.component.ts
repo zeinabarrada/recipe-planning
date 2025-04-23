@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
 import { User } from '../models/users.model';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { AuthenticationService } from '../services/authentication.service';
 import { NgIf, CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
 @Component({

@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
-import { AuthenticationService } from './authentication.service';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-authentication',
@@ -35,9 +35,8 @@ export class AuthenticationComponent {
     private auth: AuthenticationService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private router: Router,
+    private router: Router
   ) {
-
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],

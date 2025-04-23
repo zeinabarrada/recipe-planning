@@ -20,7 +20,7 @@ export class User {
     public id: string = '',
     public following: string[] = [],
     public followers: string[] = [],
-    public savedRecipes: Recipe[] = []
+    public savedRecipes: string[] = []
   ) {}
 
   getPassword(): string {
@@ -49,45 +49,44 @@ export class User {
     return null;
   }
 
-    follow(userId: string) {
-        if (!this.following.includes(userId)) {
-            this.following.push(userId);
-        }
+  follow(userId: string) {
+    if (!this.following.includes(userId)) {
+      this.following.push(userId);
     }
+  }
 
-    unfollow(userId: string) {
-        this.following = this.following.filter(id => id !== userId);
-    }
+  unfollow(userId: string) {
+    this.following = this.following.filter((id) => id !== userId);
+  }
 
-    getFollowing(): string[] {
-        return this.following;
-    }
+  getFollowing(): string[] {
+    return this.following;
+  }
 
-    getFollowers(): string[] {
-        return this.followers;
-    }
+  getFollowers(): string[] {
+    return this.followers;
+  }
 
-    toJSON(): any {
-        return {
-            email: this.email,
-            username: this.username,
-            password: this.password,
-            id: this.id,
-            following: this.following,
-            followers: this.followers
-        };
-    }
+  toJSON(): any {
+    return {
+      email: this.email,
+      username: this.username,
+      password: this.password,
+      id: this.id,
+      following: this.following,
+      followers: this.followers,
+    };
+  }
 
-    static fromJSON(data: any): User {
-        const user = new User(
-            data.email,
-            data.username,
-            data.password,
-            data.id,
-            data.following || [],
-            data.followers || []
-        );
-        return user;
-    }
-
+  static fromJSON(data: any): User {
+    const user = new User(
+      data.email,
+      data.username,
+      data.password,
+      data.id,
+      data.following || [],
+      data.followers || []
+    );
+    return user;
+  }
 }
