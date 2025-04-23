@@ -245,35 +245,41 @@ export class UserService {
         );
     }
 
-    async saveRecipe(user: User, recipe: Recipe) {
-        if (!recipe.id) {
-            console.error('Invalid recipe ID, cannot save to Firestore.');
-            return; // exit early if the ID is undefined
-        }
-        const recipesRef = collection(
-            this.firestore,
-            'users',
-            user.id,
-            'savedRecipes'
-        );
-        const docRef = await addDoc(recipesRef, { recipeId: recipe.id });
-        console.log('Recipe saved with ID:', docRef.id);
-        if (!user.savedRecipes.includes(docRef.id)) {
-            user.savedRecipes.push(docRef.id);
-            console.log(`Recipe ID "${docRef.id}" added to user's savedRecipeIds.`);
-        }
+  async saveRecipe(user: User, recipe: Recipe) {
+    if (!recipe.id) {
+      console.error('Invalid recipe ID, cannot save to Firestore.');
+      return; // exit early if the ID is undefined
     }
-    getSavedRecipes(userId: string): Observable<string[]> {
-        const savedRecipesRef = collection(
-            this.firestore,
-            'users',
-            userId,
-            'savedRecipes'
-        );
-        return from(
-            getDocs(savedRecipesRef).then((snapshot) =>
-                snapshot.docs.map((doc) => doc.data()['recipeId'])
-            )
-        );
+    const recipesRef = collection(
+      this.firestore,
+      'users',
+      user.id,
+      'savedRecipes'
+    );
+    const docRef = await addDoc(recipesRef, { recipeId: recipe.id });
+    console.log('Recipe saved with ID:', docRef.id);
+    if (!user.savedRecipes.includes(docRef.id)) {
+      user.savedRecipes.push(docRef.id);
+      console.log(`Recipe ID "${docRef.id}" added to user's savedRecipeIds.`);
     }
+  }
+  getSavedRecipes(userId: string): Observable<string[]> {
+    if (!userId) {
+      console.error('Invalid user ID provided to getSavedRecipes');
+      return from(Promise.resolve([]));
+    }
+
+    const savedRecipesRef = collection(
+      this.firestore,
+      'users',
+      userId,
+      'savedRecipes'
+    );
+
+    return from(
+      getDocs(savedRecipesRef).then((snapshot) =>
+        snapshot.docs.map((doc) => doc.data()['recipeId'])
+      )
+    );
+  }
 }
