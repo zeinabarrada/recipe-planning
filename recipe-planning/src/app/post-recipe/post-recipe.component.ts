@@ -28,14 +28,22 @@ export class AddRecipeComponent {
   }
 
   async loadCurrentUser() {
-    const userId = localStorage.getItem('userId');
-    if (userId) {
-      try {
-        this.currentUser = await this.userService.getUserByIdInstance(userId);
-      } catch (error) {
-        console.error('Error loading user:', error);
-      }
-    }
+    const storedUser = localStorage.getItem('currentUser');
+if (storedUser) {
+  const userData = JSON.parse(storedUser);
+  this.currentUser = this.userService.createUser(
+    userData.email,
+    userData.username,
+    userData.password ?? '', // fallback if password isn't stored
+    userData.id,
+    userData.following ?? [],
+    userData.followers ?? []
+  );
+}
+
+    
+    
+    
   }
 
   async submitRecipe() {
@@ -44,20 +52,28 @@ export class AddRecipeComponent {
       alert('Please log in to add a recipe.');
       return;
     }
-  
+
     this.newRecipe.author = this.currentUser.username;
-  
+
     try {
-      console.log('Saving recipe:', this.newRecipe);
-      await this.recipeService.saveRecipe(this.newRecipe);
+      await this.recipeService.addRecipe(this.newRecipe);
       alert('Recipe submitted successfully!');
       this.newRecipe = new Recipe('', '', [], [], '', '', '', 0, '');
       this.ingredientsInput = '';
-      // Navigate to recipes page after success (optional)
-      // this.router.navigate(['/recipes']);
+      this.router.navigate(['/recipes']); // redirect to recipe list
     } catch (error) {
       console.error('Error submitting recipe:', error);
       alert('Failed to submit recipe.');
     }
+  }
+
+  handleIngredientsInput(input: string): void {
+    if (!input) {
+      this.newRecipe.ingredients = [];
+      return;
+    }
+    this.newRecipe.ingredients = input.split(',')
+      .map(item => item.trim())
+      .filter(item => item !== '');
   }
 }
