@@ -17,18 +17,19 @@ import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-authentication',
+  standalone: true,
   imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    MatSnackBarModule,
     MatButtonModule,
     MatInputModule,
     MatCardModule,
     MatFormFieldModule,
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule,
+    CommonModule
   ],
   templateUrl: './authentication.component.html',
-  styleUrl: './authentication.component.css',
-  // Fix for Angular Material animations
+  styleUrls: ['./authentication.component.css']
 })
 export class AuthenticationComponent {
   constructor(

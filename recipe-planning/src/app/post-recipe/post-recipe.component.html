@@ -1,1 +1,22 @@
-<p>post-recipe works!</p>
+<div class="recipe-form">
+    <h2>Add a New Recipe</h2>
+    <form (ngSubmit)="submitRecipe()">
+      <label>Recipe Name:</label>
+      <input [(ngModel)]="newRecipe.recipe_name" name="recipe_name" required />
+  
+      <label>Nutrition Facts:</label>
+      <textarea [(ngModel)]="newRecipe.nutrition_facts" name="nutrition_facts"></textarea>
+  
+      <label>Ingredients (comma-separated):</label>
+      <input [(ngModel)]="newRecipe.ingredients" name="ingredients" (change)="newRecipe.ingredients = newRecipe.ingredients.split(',')" />
+  
+      <label>Instructions:</label>
+      <textarea [(ngModel)]="newRecipe.instructions" name="instructions"></textarea>
+  
+      <label>Type:</label>
+      <input [(ngModel)]="newRecipe.type" name="type" />
+  
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  

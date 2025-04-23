@@ -3,11 +3,15 @@ import { RecipeService } from '../services/recipe.service';
 import { UserService } from '../services/user.service';
 import { Recipe } from '../models/recipe.model';
 import { User } from '../models/users.model';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-add-recipe',
-  templateUrl: './add-recipe.component.html',
-  styleUrls: ['./add-recipe.component.css']
+  selector: 'post-recipe',
+  templateUrl: './post-recipe.component.html',
+  styleUrls: ['./post-recipe.component.css'],
+  standalone: true,
+  imports: [FormsModule, CommonModule]
 })
 export class AddRecipeComponent {
   currentUser: User | null = null; // should be set based on your auth flow

@@ -52,10 +52,10 @@ export class RecipeService {
           data['ingredients'],
           data['instructions'],
           data['type'],
+          data['author'],
+          data['nutrition_facts'],
           data['time'],
-          data['cuisine'],
-          data['diet'],
-
+          data['cuisine']
         );
       })
     );
