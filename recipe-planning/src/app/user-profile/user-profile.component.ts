@@ -21,6 +21,12 @@ export class UserProfileComponent implements OnInit {
   isFollowing: boolean = false;
   savedRecipes: Recipe[] = [];
 
+  followersList: User[] = [];
+  followingList: User[] = [];
+
+  followingIds: string[] = [];
+  followersIds: string[] = [];
+
   constructor(
     private authService: AuthenticationService,
     private userService: UserService,
@@ -31,42 +37,15 @@ export class UserProfileComponent implements OnInit {
   async ngOnInit() {
     this.authService.getUser().subscribe(async (user) => {
       this.currentUser = user;
-      if (this.currentUser) {
-        this.userService.loadFollowing(this.currentUser).subscribe({
-          next: () => {
-            console.log(
-              'Current user following:',
-              this.currentUser?.getFollowing()
-            );
-            this.updateFollowingState();
-            this.loadSavedRecipes(this.currentUser!.id);
-          },
-          error: (error) => {
-            console.error('Error loading following:', error);
-          },
-        });
-      }
+      await this.loadSavedRecipes(this.currentUser!.id);
+      await this.loadFollowersList();
+      await this.loadFollowingList();
     });
 
     const targetUserId = this.route.snapshot.paramMap.get('id');
     if (targetUserId) {
-      this.targetUser = await this.userService.getUserByIdInstance(
-        targetUserId
-      );
-      console.log('Target user:', this.targetUser);
-      this.updateFollowingState();
-    }
-  }
-
-  private updateFollowingState() {
-    if (
-      this.currentUser &&
-      this.targetUser &&
-      this.currentUser.id &&
-      this.targetUser.id
-    ) {
-      const following = this.currentUser.getFollowing();
-      this.isFollowing = following.includes(this.targetUser.id);
+      this.targetUser = await this.userService.getUserByIdInstance(targetUserId);
+      this.isFollowing = this.followingIds.includes(this.targetUser.id);
     }
   }
 
@@ -85,7 +64,7 @@ export class UserProfileComponent implements OnInit {
       this.targetUser = await this.userService.getUserByIdInstance(this.targetUser.id);
       this.authService.updateCurrentUser(this.currentUser);
     } else {
-      console.error('(onFollowFunction) Cannot follow: Invalid user IDs', {
+      console.error('(component) Cannot follow: Invalid user IDs', {
         currentUserId: this.currentUser?.id,
         targetUserId: this.targetUser?.id,
       });
@@ -107,12 +86,13 @@ export class UserProfileComponent implements OnInit {
       this.targetUser = await this.userService.getUserByIdInstance(this.targetUser.id);
       this.authService.updateCurrentUser(this.currentUser);
     } else {
-      console.error('Cannot unfollow: Invalid user IDs', {
+      console.error('(component) Cannot unfollow: Invalid user IDs', {
         currentUserId: this.currentUser?.id,
         targetUserId: this.targetUser?.id,
       });
     }
   }
+
   loadSavedRecipes(userId: string): void {
     if (!userId) {
       console.error('Invalid user ID provided to loadSavedRecipes');
@@ -147,5 +127,59 @@ export class UserProfileComponent implements OnInit {
         this.savedRecipes = [];
       },
     });
+  }
+
+  async loadFollowersList() {
+    if (!this.currentUser) return;
+    this.followersList = [];
+    this.followersIds = this.currentUser.getFollowers();
+    for (const id of this.followersIds) {
+      try {
+        const user = await this.userService.getUserByIdInstance(id);
+        this.followersList.push(user);
+      } catch (error) {
+        console.error('Error loading follower:', error);
+      }
+    }
+    console.log('Followers list:', this.followersList);
+  }
+
+  async loadFollowingList() {
+    if (!this.currentUser) return;
+    this.followingList = [];
+    this.followingIds = this.currentUser.getFollowing();
+    for (const id of this.followingIds) {
+      try {
+        const user = await this.userService.getUserByIdInstance(id);
+        this.followingList.push(user);
+      } catch (error) {
+        console.error('Error loading following user:', error);
+      }
+    }
+    console.log('Following list:', this.followingList);
+  }
+
+  async removeFollower(followerId: string) {
+    if (!this.currentUser) return;
+
+    const follower = await this.userService.getUserByIdInstance(followerId);
+    await this.userService.unfollowUser(follower, this.currentUser);
+
+    // Refresh the lists
+    await this.loadFollowersList();
+    this.currentUser = await this.userService.getUserByIdInstance(this.currentUser.id);
+    this.authService.updateCurrentUser(this.currentUser);
+  }
+
+  async unfollowUser(userId: string) {
+    if (!this.currentUser) return;
+
+    const userToUnfollow = await this.userService.getUserByIdInstance(userId);
+    await this.userService.unfollowUser(this.currentUser, userToUnfollow);
+
+    // Refresh the lists
+    await this.loadFollowingList();
+    this.currentUser = await this.userService.getUserByIdInstance(this.currentUser.id);
+    this.authService.updateCurrentUser(this.currentUser);
   }
 }
