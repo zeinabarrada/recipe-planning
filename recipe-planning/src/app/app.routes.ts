@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthenticationComponent } from './authentication/authentication.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
+import { MealPlanComponent } from './meal-plan/meal-plan.component';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,11 @@ export const routes: Routes = [
       import('./recipe-detail/recipe-detail.component').then(
         (m) => m.RecipeDetailComponent
       ),
+  },
+  {
+    path: 'meal',
+    component: MealPlanComponent,
+    title: 'Meal Plan - Recipe Planner',
   },
   {
     path: '**',
