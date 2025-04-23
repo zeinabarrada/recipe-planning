@@ -1,10 +1,8 @@
 
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RecipeService } from '../../services/recipe.service';
-import { Recipe } from '../../models/recipe.model';
-import { AuthService } from '../../services/auth.service';
-import { ImageUploadService } from '../../services/image-upload.service';
+import { RecipeService } from '../services/recipe.service';
+
 
 @Component({
   selector: 'app-recipe-form',
@@ -18,8 +16,7 @@ export class RecipeFormComponent {
   constructor(
     private fb: FormBuilder,
     private recipeService: RecipeService,
-    private authService: AuthService,
-    private imageUpload: ImageUploadService
+
   ) {
     this.recipeForm = this.fb.group({
       recipe_name: ['', Validators.required],
@@ -39,9 +36,6 @@ export class RecipeFormComponent {
     this.ingredients.push(this.createIngredient());
   }
 
-  removeIngredient(index: number) {
-    this.ingredients.removeAt(index);
-  }
 
   // Similar methods for instructions
   // ...
