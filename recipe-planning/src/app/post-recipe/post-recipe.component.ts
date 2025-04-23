@@ -1,76 +1,49 @@
-
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RecipeService } from '../services/recipe.service';
-
+import { UserService } from '../services/user.service';
+import { Recipe } from '../models/recipe.model';
+import { User } from '../models/users.model';
 
 @Component({
-  selector: 'app-recipe-form',
-  templateUrl: './recipe-form.component.html',
-  styleUrls: ['./recipe-form.component.css']
+  selector: 'app-add-recipe',
+  templateUrl: './add-recipe.component.html',
+  styleUrls: ['./add-recipe.component.css']
 })
-export class RecipeFormComponent {
-  recipeForm: FormGroup;
-  selectedFile: File | null = null;
+export class AddRecipeComponent {
+  currentUser: User | null = null; // should be set based on your auth flow
+  newRecipe: Recipe = new Recipe('', '', [], [], '', '', '', 0, '');
 
   constructor(
-    private fb: FormBuilder,
     private recipeService: RecipeService,
-
+    private userService: UserService
   ) {
-    this.recipeForm = this.fb.group({
-      recipe_name: ['', Validators.required],
-      ingredients: this.fb.array([this.createIngredient()], Validators.required),
-      instructions: this.fb.array([this.createInstruction()], Validators.required),
-      nutrition_facts: ['', Validators.required],
-      image_path: ['']
-    });
+    // Ideally, set currentUser via your auth system or user state management
+    this.loadCurrentUser(); 
   }
 
-  // Form array methods
-  createIngredient(): FormGroup {
-    return this.fb.group({ item: ['', Validators.required] });
+  async loadCurrentUser() {
+    const userId = localStorage.getItem('userId'); // or wherever you're storing auth state
+    if (userId) {
+      try {
+        this.currentUser = await this.userService.getUserByIdInstance(userId);
+      } catch (error) {
+        console.error('Error loading user:', error);
+      }
+    }
   }
 
-  addIngredient() {
-    this.ingredients.push(this.createIngredient());
-  }
-
-
-  // Similar methods for instructions
-  // ...
-
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
-  }
-
-  async onSubmit() {
-    if (this.recipeForm.invalid) return;
-
-    const user = await this.authService.getCurrentUser();
-    if (!user) return;
-
-    let imageUrl = '';
-    if (this.selectedFile) {
-      imageUrl = await this.imageUpload.uploadImage(this.selectedFile);
+  async submitRecipe() {
+    if (!this.currentUser) {
+      console.error('User not logged in');
+      return;
     }
 
-    const newRecipe: Recipe = {
-      ...this.recipeForm.value,
-      author: user.uid,
-      image_path: imageUrl,
-      ingredients: this.recipeForm.value.ingredients.map((i: any) => i.item),
-      instructions: this.recipeForm.value.instructions.map((i: any) => i.step)
-    };
+    this.newRecipe.author = this.currentUser.username;
 
-    this.recipeService.createRecipe(newRecipe);
-  }
+    // Add the recipe to the general recipes collection
+    await this.recipeService.addRecipe(this.newRecipe);
 
-  get ingredients() {
-    return this.recipeForm.get('ingredients') as FormArray;
-  }
-
-  get instructions() {
-    return this.recipeForm.get('instructions') as FormArray;
+    console.log('Recipe submitted successfully');
+    this.newRecipe = new Recipe('', '', [], [], '', '', '', 0, ''); // reset form
   }
 }

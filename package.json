@@ -3,5 +3,8 @@
     "@angular/fire": "^19.1.0",
     "@angular/forms": "^19.2.7",
     "@angular/router": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^5.1.7"
   }
 }
