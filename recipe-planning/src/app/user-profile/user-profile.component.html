@@ -20,8 +20,33 @@
   <h2>Welcome, {{ currentUser.username }}!</h2>
   <p><strong>Username:</strong> {{ currentUser.username }}</p>
   <p><strong>Email:</strong> {{ currentUser.email }}</p>
-  <p><strong>Followers:</strong> {{ currentUser.getFollowers().length }}</p>
-  <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>
+  
+  <div class="followers-section">
+    <h3>Followers ({{ currentUser.getFollowers().length }})</h3>
+    <div class="list-container">
+      <div *ngFor="let follower of followersList" class="user-item">
+        <span>{{ follower.username }}</span>
+        <button mat-raised-button color="warn" (click)="removeFollower(follower.id)">
+          Remove Follower
+        </button>
+      </div>
+      <p *ngIf="followersList.length === 0">No followers yet.</p>
+    </div>
+  </div>
+  
+  <div class="following-section">
+    <h3>Following ({{ currentUser.getFollowing().length }})</h3>
+    <div class="list-container">
+      <div *ngFor="let following of followingList" class="user-item">
+        <span>{{ following.username }}</span>
+        <button mat-raised-button color="warn" (click)="unfollowUser(following.id)">
+          Unfollow
+        </button>
+      </div>
+      <p *ngIf="followingList.length === 0">Not following anyone yet.</p>
+    </div>
+  </div>
+
   <p><strong>Saved Recipes:</strong></p>
   <div *ngIf="savedRecipes.length > 0">
     <div *ngFor="let recipe of savedRecipes" class="recipe-card">
