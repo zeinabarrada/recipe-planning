@@ -1,15 +1,5 @@
 // src/app/models/user.model.ts
-import {
-  addDoc,
-  collection,
-  doc,
-  Firestore,
-  deleteDoc,
-  getDocs,
-  QuerySnapshot,
-  QueryDocumentSnapshot,
-} from '@angular/fire/firestore';
-import { Recipe } from './recipe.model';
+import { Firestore } from '@angular/fire/firestore';
 
 export class User {
   constructor(
@@ -21,7 +11,7 @@ export class User {
     public following: string[] = [],
     public followers: string[] = [],
     public savedRecipes: string[] = []
-  ) {}
+  ) { }
 
   getPassword(): string {
     return this.password;

@@ -1,7 +1,9 @@
-<div *ngIf="isFollowing">
-    <button mat-raised-button color="warn" (click)="onUnfollow()">Unfollow</button>
-</div>
-<div *ngIf="!isFollowing">
-    <button mat-raised-button color="primary" (click)="onFollow()">Follow</button>
+<div class="follow-button-container">
+    <div *ngIf="isFollowing">
+        <button mat-raised-button color="warn" class="warn" (click)="onUnfollow()">Unfollow</button>
+    </div>
+    <div *ngIf="!isFollowing">
+        <button mat-raised-button color="primary" class="primary" (click)="onFollow()">Follow</button>
+    </div>
 </div>
 
