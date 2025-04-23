@@ -25,6 +25,13 @@ export const routes: Routes = [
     title: 'Recipes - Recipe Planner',
   },
   {
+    path: 'recipe/:id',
+    loadComponent: () =>
+      import('./recipe-detail/recipe-detail.component').then(
+        (m) => m.RecipeDetailComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

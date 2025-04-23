@@ -2,13 +2,89 @@
 <div>
   <h1>Recipe List Component Loaded</h1>
   <p>Current User: {{ currentUser?.username || "No user logged in" }}</p>
+  <div class="filter-group">
+    <h4>Type:</h4>
+    <button (click)="selectFilter('type', '')">All</button>
+    <button (click)="selectFilter('type', 'breakfast')">Breakfast</button>
+    <button (click)="selectFilter('type', 'lunch')">Lunch</button>
+    <button (click)="selectFilter('type', 'dinner')">Dinner</button>
+    <button (click)="selectFilter('type', 'snack')">Snack</button>
+  </div>
+  <!-- CUISINE FILTER -->
+  <div class="filter-group">
+    <h4>Cuisine:</h4>
+    <button (click)="selectFilter('cuisine', '')">All</button>
+    <button (click)="selectFilter('cuisine', 'italian')">Italian</button>
+    <button (click)="selectFilter('cuisine', 'mexican')">Mexican</button>
+    <button (click)="selectFilter('cuisine', 'indian')">Indian</button>
+  </div>
+
+  <!-- COOKING TIME FILTER -->
+  <div class="filter-group">
+    <h4>Max Cooking Time:</h4>
+    <button (click)="selectFilter('cookingTime', 0)">Any</button>
+    <button (click)="selectFilter('cookingTime', 30)">≤ 30 min</button>
+    <button (click)="selectFilter('cookingTime', 60)">≤ 60 min</button>
+  </div>
+
+  <!-- INGREDIENT FILTER -->
+  <div class="filter-group">
+    <h4>Ingredient:</h4>
+    <button (click)="selectFilter('ingredient', '')">Any</button>
+    <button (click)="selectFilter('ingredient', 'egg')">Egg</button>
+    <button (click)="selectFilter('ingredient', 'chicken')">Chicken</button>
+    <button (click)="selectFilter('ingredient', 'rice')">Rice</button>
+  </div>
+
+  <!-- CLEAR FILTERS -->
+  <div>
+    <button (click)="clearFilters()">Clear All Filters</button>
+  </div>
+  <div *ngFor="let recipe of filteredRecipes">
+    <h3>{{ recipe.recipe_name }}</h3>
+    <p>By {{ recipe.author }}</p>
+  </div>
+  <!-- Search Input -->
+  <input
+    type="text"
+    placeholder="Search recipes..."
+    [(ngModel)]="searchTerm"
+    (input)="onSearch(searchTerm)"
+    (focus)="isFocused = true"
+    (blur)="onBlur()"
+    class="search-box"
+  />
+
+  <!-- Search Results (only show if focused or typing) -->
+  <div *ngIf="(isFocused || searchTerm) && filteredRecipes.length > 0">
+    <div *ngFor="let recipe of filteredRecipes" class="search-result">
+      <a
+        [routerLink]="['/recipe', recipe.id]"
+        (click)="clearSearch()"
+        class="search-link"
+      >
+        <h3>{{ recipe.recipe_name }}</h3>
+        <p>By {{ recipe.author }}</p>
+      </a>
+    </div>
+  </div>
+  <!-- No Results Message -->
+  <div
+    *ngIf="(isFocused || searchTerm) && filteredRecipes.length === 0"
+    class="no-results"
+  >
+    <p>No recipes found matching "{{ searchTerm }}"</p>
+  </div>
 
   <div *ngFor="let recipe of recipesObservable | async">
     <h2>{{ recipe.recipe_name }}</h2>
+    <img [src]="recipe.imagePath" alt="Recipe Image" />
     <p>{{ recipe.author }}</p>
     <p>{{ recipe.ingredients }}</p>
     <p>{{ recipe.instructions }}</p>
     <p>{{ recipe.nutrition_facts }}</p>
+    <p>{{ recipe.cuisine }}</p>
+    <p>{{ recipe.cooking_time }}</p>
     <button (click)="saveRecipe(recipe)">Save Recipe</button>
   </div>
 </div>
