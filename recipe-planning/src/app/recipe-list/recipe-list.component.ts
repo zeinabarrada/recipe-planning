@@ -6,15 +6,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { AuthenticationService } from '../services/authentication.service';
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  template: `
-    <h1>INLINE TEST</h1>
-    <p>Only static content here.</p>
-  `,
+  templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.css',
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
@@ -27,15 +24,12 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private authService: AuthenticationService
   ) {
-    console.log('RecipeListComponent constructor called');
     this.recipesObservable = this.recipeService.getRecipes();
   }
 
   ngOnInit() {
-    console.log('RecipeListComponent ngOnInit called');
     this.userSubscription = this.authService.getUser().subscribe({
       next: (user) => {
-        console.log('User subscription next called with:', user);
         this.currentUser = user;
         console.log('Current user set to:', this.currentUser);
       },
@@ -50,7 +44,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('RecipeListComponent ngOnDestroy called');
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
       console.log('User subscription unsubscribed');
@@ -58,6 +51,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   }
 
   saveRecipe(recipe: Recipe) {
+    console.log('Saving recipe with ID:', recipe.id);
     if (!this.currentUser) {
       console.error('No user is logged in.');
       return;

@@ -20,8 +20,8 @@ export class User {
     public id: string = '',
     public following: string[] = [],
     public followers: string[] = [],
-    public savedRecipes: Recipe[] = []
-  ) { }
+    public savedRecipes: string[] = []
+  ) {}
 
   getPassword(): string {
     return this.password;
@@ -56,7 +56,7 @@ export class User {
   }
 
   unfollow(userId: string) {
-    this.following = this.following.filter(id => id !== userId);
+    this.following = this.following.filter((id) => id !== userId);
   }
 
   getFollowing(): string[] {
@@ -74,7 +74,7 @@ export class User {
       password: this.password,
       id: this.id,
       following: this.following,
-      followers: this.followers
+      followers: this.followers,
     };
   }
 
@@ -89,5 +89,4 @@ export class User {
     );
     return user;
   }
-
 }

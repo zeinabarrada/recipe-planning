@@ -5,23 +5,30 @@
   <p><strong>Followers:</strong> {{ targetUser.getFollowers().length }}</p>
   <p><strong>Following:</strong> {{ targetUser.getFollowing().length }}</p>
   <p><strong>Saved Recipes:</strong> {{ targetUser.savedRecipes }}</p>
-  
+
   <div class="follow-button-container">
     <app-follow-button
       [targetUser]="targetUser"
       [isFollowing]="isFollowing"
       (follow)="onFollow()"
-      (unfollow)="onUnfollow()"></app-follow-button>
-  </div>  
+      (unfollow)="onUnfollow()"
+    ></app-follow-button>
+  </div>
 </div>
 
 <div *ngIf="currentUser && !targetUser">
-    <h2>Welcome, {{ currentUser.username }}!</h2>
-    <p><strong>Username:</strong> {{ currentUser.username }}</p>
-    <p><strong>Email:</strong> {{ currentUser.email }}</p>    
-    <p><strong>Followers:</strong> {{ currentUser.getFollowers().length }}</p>
-    <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>
-    <p><strong>Saved Recipes:</strong> {{ currentUser.savedRecipes }}</p>
+  <h2>Welcome, {{ currentUser.username }}!</h2>
+  <p><strong>Username:</strong> {{ currentUser.username }}</p>
+  <p><strong>Email:</strong> {{ currentUser.email }}</p>
+  <p><strong>Followers:</strong> {{ currentUser.getFollowers().length }}</p>
+  <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>
+  <p><strong>Saved Recipes:</strong></p>
+  <ul>
+    <li *ngFor="let recipe of currentUser.savedRecipes">
+      {{ recipe }}
+      <!-- You can display other properties of the recipe here -->
+    </li>
+  </ul>
 </div>
 
 <div *ngIf="!currentUser">
