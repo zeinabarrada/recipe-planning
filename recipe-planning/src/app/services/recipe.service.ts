@@ -7,9 +7,11 @@ import {
   getDocs,
   getDoc,
   doc,
+  setDoc
 } from '@angular/fire/firestore';
 import { Recipe } from '../models/recipe.model';
 import { BehaviorSubject, from, Observable } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable({
   providedIn: 'root',
 })
@@ -22,7 +24,7 @@ export class RecipeService {
     const recipes = collectionData(recipesCollection, { idField: 'id' }); // Include the document ID as 'id'
     return recipes as Observable<Recipe[]>; // This will return recipes with their 'id' field
   }
-        
+
   addRecipe(recipe: Recipe) {
     const recipeCollection = collection(this.firestore, 'recipes');
     addDoc(recipeCollection, {
@@ -35,8 +37,21 @@ export class RecipeService {
       time: recipe.time,
       cuisine: recipe.cuisine,
       //image_url: recipe.image_url,
-    });}
-
+    });
+  }
+  
+    async saveRecipe(recipe: Recipe) {
+      const recipeId = uuidv4(); // generate unique ID like you're doing for users
+      const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
+      await setDoc(recipeRef, {
+        recipe_name: recipe.recipe_name,
+        nutrition_facts: recipe.nutrition_facts,
+        ingredients: recipe.ingredients,
+        instructions: recipe.instructions,
+        type: recipe.type,
+        author: recipe.author,
+      });
+      console.log('Recipe saved with ID:', recipeId);}
 
   getRecipeById(recipeId: string): Observable<Recipe> {
     const recipeRef = doc(this.firestore, 'recipes', recipeId);

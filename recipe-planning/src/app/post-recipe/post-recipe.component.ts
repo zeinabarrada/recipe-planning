@@ -5,6 +5,7 @@ import { Recipe } from '../models/recipe.model';
 import { User } from '../models/users.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'post-recipe',
@@ -14,19 +15,20 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, CommonModule]
 })
 export class AddRecipeComponent {
-  currentUser: User | null = null; // should be set based on your auth flow
+  currentUser: User | null = null;
   newRecipe: Recipe = new Recipe('', '', [], [], '', '', '', 0, '');
+  ingredientsInput: string = '';
 
   constructor(
     private recipeService: RecipeService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
-    // Ideally, set currentUser via your auth system or user state management
-    this.loadCurrentUser(); 
+    this.loadCurrentUser();
   }
 
   async loadCurrentUser() {
-    const userId = localStorage.getItem('userId'); // or wherever you're storing auth state
+    const userId = localStorage.getItem('userId');
     if (userId) {
       try {
         this.currentUser = await this.userService.getUserByIdInstance(userId);
@@ -39,15 +41,23 @@ export class AddRecipeComponent {
   async submitRecipe() {
     if (!this.currentUser) {
       console.error('User not logged in');
+      alert('Please log in to add a recipe.');
       return;
     }
-
+  
     this.newRecipe.author = this.currentUser.username;
-
-    // Add the recipe to the general recipes collection
-    await this.recipeService.addRecipe(this.newRecipe);
-
-    console.log('Recipe submitted successfully');
-    this.newRecipe = new Recipe('', '', [], [], '', '', '', 0, ''); // reset form
+  
+    try {
+      console.log('Saving recipe:', this.newRecipe);
+      await this.recipeService.saveRecipe(this.newRecipe);
+      alert('Recipe submitted successfully!');
+      this.newRecipe = new Recipe('', '', [], [], '', '', '', 0, '');
+      this.ingredientsInput = '';
+      // Navigate to recipes page after success (optional)
+      // this.router.navigate(['/recipes']);
+    } catch (error) {
+      console.error('Error submitting recipe:', error);
+      alert('Failed to submit recipe.');
+    }
   }
 }
