@@ -104,26 +104,38 @@ export class UserProfileComponent implements OnInit {
     }
   }
   loadSavedRecipes(userId: string): void {
-    if (!userId) return;
+    if (!userId) {
+      console.error('Invalid user ID provided to loadSavedRecipes');
+      return;
+    }
 
-    this.userService.getSavedRecipes(userId).subscribe((savedRecipeIds) => {
-      if (savedRecipeIds.length === 0) {
+    this.userService.getSavedRecipes(userId).subscribe({
+      next: (savedRecipeIds) => {
+        console.log('Saved recipe IDs:', savedRecipeIds);
+        if (savedRecipeIds.length === 0) {
+          this.savedRecipes = [];
+          return;
+        }
+
+        const recipeObservables = savedRecipeIds.map((id) =>
+          this.recipeService.getRecipeById(id)
+        );
+
+        forkJoin(recipeObservables).subscribe({
+          next: (recipes) => {
+            console.log('Loaded recipes:', recipes);
+            this.savedRecipes = recipes;
+          },
+          error: (error) => {
+            console.error('Error loading saved recipes:', error);
+            this.savedRecipes = [];
+          },
+        });
+      },
+      error: (error) => {
+        console.error('Error fetching saved recipe IDs:', error);
         this.savedRecipes = [];
-        return;
-      }
-
-      const recipeObservables = savedRecipeIds.map((id) =>
-        this.recipeService.getRecipeById(id)
-      );
-
-      forkJoin(recipeObservables).subscribe({
-        next: (recipes) => {
-          this.savedRecipes = recipes;
-        },
-        error: (error) => {
-          console.error('Error loading saved recipes:', error);
-        },
-      });
+      },
     });
   }
 }

@@ -23,12 +23,25 @@
   <p><strong>Followers:</strong> {{ currentUser.getFollowers().length }}</p>
   <p><strong>Following:</strong> {{ currentUser.getFollowing().length }}</p>
   <p><strong>Saved Recipes:</strong></p>
-  <ul>
-    <li *ngFor="let recipe of currentUser.savedRecipes">
-      {{ recipe }}
-      <!-- You can display other properties of the recipe here -->
-    </li>
-  </ul>
+  <div *ngIf="savedRecipes.length > 0">
+    <div *ngFor="let recipe of savedRecipes" class="recipe-card">
+      <h3>{{ recipe.recipe_name }}</h3>
+      <p><strong>Author:</strong> {{ recipe.author }}</p>
+      <p><strong>Type:</strong> {{ recipe.type }}</p>
+      <p><strong>Ingredients:</strong></p>
+      <ul>
+        <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li>
+      </ul>
+      <p><strong>Instructions:</strong></p>
+      <ol>
+        <li *ngFor="let instruction of recipe.instructions">
+          {{ instruction }}
+        </li>
+      </ol>
+      <p><strong>Nutrition Facts:</strong> {{ recipe.nutrition_facts }}</p>
+    </div>
+  </div>
+  <p *ngIf="savedRecipes.length === 0">No saved recipes yet.</p>
 </div>
 
 <div *ngIf="!currentUser">

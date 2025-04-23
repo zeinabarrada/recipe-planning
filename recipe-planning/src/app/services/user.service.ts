@@ -258,12 +258,18 @@ export class UserService {
     }
   }
   getSavedRecipes(userId: string): Observable<string[]> {
+    if (!userId) {
+      console.error('Invalid user ID provided to getSavedRecipes');
+      return from(Promise.resolve([]));
+    }
+
     const savedRecipesRef = collection(
       this.firestore,
       'users',
       userId,
       'savedRecipes'
     );
+
     return from(
       getDocs(savedRecipesRef).then((snapshot) =>
         snapshot.docs.map((doc) => doc.data()['recipeId'])
