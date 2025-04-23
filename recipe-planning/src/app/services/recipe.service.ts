@@ -36,7 +36,7 @@ export class RecipeService {
       type: recipe.type,
       time: recipe.time,
       cuisine: recipe.cuisine,
-      //image_url: recipe.image_url,
+      imagePath: recipe.imagePath,
     });
   }
   

@@ -19,6 +19,16 @@
 
       <label>author:</label>
       <input [(ngModel)]="newRecipe.author" name="author" />
+
+      <label>Image URL:</label>
+      <input [(ngModel)]="newRecipe.imagePath" name="imagePath" />
+      
+      <!-- 👇 Preview the image -->
+      <div *ngIf="newRecipe.imagePath">
+        <p>Image Preview:</p>
+        <img [src]="newRecipe.imagePath" alt="Recipe Image" width="250" style="border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+      </div>
+      
       
   
       <button type="submit">Submit</button>
