@@ -78,4 +78,18 @@ export class RecipeService {
       })
     );
   }
+  async addReview(recipeId: string, review: { userId: string; userName: string; rating: number; review: string }) {
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    await addDoc(reviewsCollection, {
+      ...review,
+      createdAt: new Date()
+    });
+  }
+  
+  // Get all reviews for a specific recipe
+  getReviews(recipeId: string): Observable<any[]> {
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    return collectionData(reviewsCollection, { idField: 'id' }) as Observable<any[]>;
+  }
+
 }

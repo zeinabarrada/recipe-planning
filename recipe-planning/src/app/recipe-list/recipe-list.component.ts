@@ -8,6 +8,7 @@ import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { FormsModule, NgModel } from '@angular/forms';
+import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-recipe-list',
@@ -24,10 +25,16 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   filteredRecipes: Recipe[] = [];
   searchTerm: string = '';
   isFocused: boolean = false;
+  selectedRecipeId: string | null = null;
+  newRating: number = 5;
+  newReview: string = '';
+  reviewsMap: { [key: string]: Observable<any[]> } = {}; // recipeId -> reviews array
+
   constructor(
     private recipeService: RecipeService,
     private userService: UserService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private firestore: Firestore
   ) {
     this.recipesObservable = this.recipeService.getRecipes();
   }
@@ -113,5 +120,33 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       noImageDiv.textContent = 'Image not available';
       container.appendChild(noImageDiv);
     }
+  }
+
+  submitReview(recipeId: string) {
+    if (!this.currentUser) {
+      console.error('You must be logged in to leave a review.');
+      return;
+    }
+
+    const reviewData = {
+      rating: this.newRating,
+      review: this.newReview,
+      userId: this.currentUser.id,
+      userName: this.currentUser.username,
+      timestamp: new Date(),
+    };
+
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    addDoc(reviewsCollection, reviewData).then(() => {
+      console.log('Review submitted!');
+      this.selectedRecipeId = null;
+      this.newRating = 5;
+      this.newReview = '';
+    });
+  }
+
+  loadReviewsForRecipe(recipeId: string) {
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    this.reviewsMap[recipeId] = collectionData(reviewsCollection, { idField: 'id' });
   }
 }
