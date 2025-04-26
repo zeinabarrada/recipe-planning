@@ -66,4 +66,70 @@
 
 .save-button:hover {
   background-color: #45a049;
+}
+
+/* Rating Component Styles */
+app-recipe-rating {
+  display: block;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+/* Search Styles */
+.search-box {
+  width: 100%;
+  padding: 10px;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.search-result {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.search-link:hover {
+  background-color: #f5f5f5;
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+/* Filter Styles */
+.filter-group {
+  margin: 20px 0;
+}
+
+.filter-group h4 {
+  margin-bottom: 10px;
+}
+
+.filter-group button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.filter-group button:hover {
+  background-color: #f5f5f5;
+}
+
+.filter-group button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
 }  
