@@ -1,6 +1,6 @@
 import { Firestore } from '@angular/fire/firestore';
 
-export class User {
+export class Meal {
     constructor(
         public firestore: Firestore,
         public id: string = '',
