@@ -15,6 +15,26 @@ export class AuthenticationService {
   constructor(private firestore: Firestore, private userService: UserService) {
     // get users from database
     this.initializeUsers();
+
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        const user = this.userService.createUser(
+          userData.email,
+          userData.username,
+          userData.password,
+          userData.id,
+          userData.following || [],
+          userData.followers || []
+        );
+        this.currentUser.next(user);
+        this.isAuth.next(true);
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('currentUser');
+      }
+    }
   }
 
   async initializeUsers() {
@@ -43,7 +63,14 @@ export class AuthenticationService {
     this.currentUser.next(user);
     localStorage.setItem(
       'currentUser',
-      JSON.stringify({ email, username, password, id: user.id })
+      JSON.stringify({
+        email: user.email,
+        username: user.username,
+        password: user.getPassword(),
+        id: user.id,
+        following: user.getFollowing(),
+        followers: user.getFollowers()
+      })
     );
   }
 
