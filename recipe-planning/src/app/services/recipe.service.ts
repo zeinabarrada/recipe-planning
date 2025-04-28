@@ -38,6 +38,7 @@ export class RecipeService {
           data['instructions'],
           data['type'],
           data['author'],
+          data['author_id'],
           data['nutrition_facts'],
           data['cuisine'],
           data['cooking_time']
