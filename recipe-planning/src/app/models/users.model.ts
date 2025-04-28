@@ -49,6 +49,16 @@ export class User {
     this.following = this.following.filter((id) => id !== userId);
   }
 
+  addFollower(userId: string) {
+    if (!this.followers.includes(userId)) {
+      this.followers.push(userId);
+    }
+  }
+
+  removeFollower(userId: string) {
+    this.followers = this.followers.filter((id) => id !== userId);
+  }
+
   getFollowing(): string[] {
     return this.following;
   }
@@ -70,6 +80,7 @@ export class User {
 
   static fromJSON(data: any): User {
     const user = new User(
+      data.firestore,
       data.email,
       data.username,
       data.password,

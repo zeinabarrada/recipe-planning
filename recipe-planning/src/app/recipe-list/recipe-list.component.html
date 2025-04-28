@@ -75,16 +75,28 @@
   >
     <p>No recipes found matching "{{ searchTerm }}"</p>
   </div>
-
-  <div *ngFor="let recipe of recipesObservable | async">
+  <div *ngFor="let recipe of recipesObservable | async" class="recipe-card">
     <h2>{{ recipe.recipe_name }}</h2>
-    <img [src]="recipe.imagePath" alt="Recipe Image" />
-    <p>{{ recipe.author }}</p>
-    <p>{{ recipe.ingredients }}</p>
-    <p>{{ recipe.instructions }}</p>
-    <p>{{ recipe.nutrition_facts }}</p>
-    <p>{{ recipe.cuisine }}</p>
-    <p>{{ recipe.cooking_time }}</p>
-    <button (click)="saveRecipe(recipe)">Save Recipe</button>
+    <div class="recipe-image-container">
+      <img 
+        *ngIf="recipe.imagePath && recipe.imagePath.trim() !== ''" 
+        [src]="recipe.imagePath" 
+        [alt]="recipe.recipe_name"
+        (error)="handleImageError($event)"
+        class="recipe-image"
+      />
+      <div *ngIf="!recipe.imagePath || recipe.imagePath.trim() === ''" class="no-image">
+        No image available
+      </div>
+    </div>
+    <div class="recipe-details">
+      <p><strong>Author:</strong> {{ recipe.author }}</p>
+      <p><strong>Ingredients:</strong> {{ recipe.ingredients.join(', ') }}</p>
+      <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+      <p><strong>Nutrition:</strong> {{ recipe.nutrition_facts }}</p>
+      <p><strong>Cuisine:</strong> {{ recipe.cuisine }}</p>
+      <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} mins</p>
+      <button (click)="saveRecipe(recipe)" class="save-button">Save Recipe</button>
+    </div>
   </div>
-</div>
+  </div>

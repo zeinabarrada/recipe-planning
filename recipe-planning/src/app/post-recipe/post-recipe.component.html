@@ -1,0 +1,37 @@
+<div class="recipe-form">
+    <h2>Add a New Recipe</h2>
+    <form (ngSubmit)="submitRecipe()">
+      <label>Recipe Name:</label>
+      <input [(ngModel)]="newRecipe.recipe_name" name="recipe_name" required />
+  
+      <label>Nutrition Facts:</label>
+      <textarea [(ngModel)]="newRecipe.nutrition_facts" name="nutrition_facts"></textarea>
+  
+      <label>Ingredients (comma-separated):</label>
+      <input [(ngModel)]="ingredientsInput" name="ingredients" (change)="handleIngredientsInput(ingredientsInput)" />
+  
+      <label>Instructions:</label>
+      <textarea [(ngModel)]="newRecipe.instructions" name="instructions"></textarea>
+  
+      <label>Type:</label>
+      <input [(ngModel)]="newRecipe.type" name="type" />
+      
+
+      <label>author:</label>
+      <input [(ngModel)]="newRecipe.author" name="author" />
+
+      <label>Image URL:</label>
+      <input [(ngModel)]="newRecipe.imagePath" name="imagePath" />
+      
+      <!-- 👇 Preview the image -->
+      <div *ngIf="newRecipe.imagePath">
+        <p>Image Preview:</p>
+        <img [src]="newRecipe.imagePath" alt="Recipe Image" width="250" style="border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+      </div>
+      
+      
+  
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  

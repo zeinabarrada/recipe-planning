@@ -5,9 +5,10 @@ import { NgIf, CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
 @Component({
   selector: 'app-follow-button',
+  standalone: true,
   imports: [NgIf, CommonModule],
   templateUrl: './follow-button.component.html',
-  styleUrl: './follow-button.component.css'
+  styleUrls: ['./follow-button.component.css']
 })
 export class FollowButtonComponent implements OnInit {
   @Input() targetUser!: User;
