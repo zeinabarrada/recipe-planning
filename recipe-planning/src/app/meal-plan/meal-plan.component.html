@@ -1,48 +1,26 @@
 <div class="meal-plan-container" *ngIf="currentUser">
   <h2>Weekly Meal Plan</h2>
   
-  <div class="recipe-selection">
-    <div class="recipe-category">
-      <h3>Recipes from Following</h3>
-      <div class="recipe-grid">
-        <div *ngFor="let recipe of followingRecipes" class="recipe-card">
-          <h4>{{ recipe.recipe_name }}</h4>
-          <p>{{ recipe.type }}</p>
-          <button mat-raised-button color="primary" (click)="selectRecipe(recipe)">
-            Add to Plan
-          </button>
-        </div>
-      </div>
+  <div class="meal-plan-grid">
+    <div class="grid-header">
+      <div class="header-cell">Day</div>
+      <div class="header-cell">Breakfast</div>
+      <div class="header-cell">Lunch</div>
+      <div class="header-cell">Dinner</div>
     </div>
 
-    <div class="recipe-category">
-      <h3>Other Recipes</h3>
-      <div class="recipe-grid">
-        <div *ngFor="let recipe of otherRecipes" class="recipe-card">
-          <h4>{{ recipe.recipe_name }}</h4>
-          <p>{{ recipe.type }}</p>
-          <button mat-raised-button color="primary" (click)="selectRecipe(recipe)">
-            Add to Plan
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="weekly-plan">
-    <div *ngFor="let day of daysOfWeek" class="day-plan">
-      <h3>{{ day }}</h3>
-      <div class="meals">
-        <div class="meal-slot" *ngFor="let mealType of mealTypes">
-          <h4>{{ mealType | titlecase }}</h4>
-          <div *ngIf="mealPlan[day][mealType]" class="selected-recipe">
-            <p>{{ mealPlan[day][mealType]?.recipe_name }}</p>
-            <button mat-raised-button color="warn" (click)="removeRecipeFromMealPlan(day, mealType)">
-              Remove
-            </button>
+    <div *ngFor="let day of daysOfWeek" class="grid-row">
+      <div class="day-cell">{{ day }}</div>
+      
+      <div class="meal-cell" *ngFor="let mealType of mealTypes">
+        <div class="meal-content" (click)="selectRecipe(day, mealType)">
+          <div *ngIf="getRecipeForMeal(day, mealType) as recipe" class="selected-recipe">
+            <h3>{{ recipe.recipe_name }}</h3>
+            <p>{{ recipe.type }}</p>
+            <button mat-button (click)="removeRecipeFromMealPlan(day, mealType)">Remove</button>
           </div>
-          <div *ngIf="!mealPlan[day][mealType]" class="empty-slot">
-            <p>No recipe selected</p>
+          <div *ngIf="!getRecipeForMeal(day, mealType)" class="empty-meal">
+            <p>Click to add recipe</p>
           </div>
         </div>
       </div>
@@ -50,9 +28,7 @@
   </div>
 
   <div class="actions">
-    <button mat-raised-button color="primary" (click)="saveMealPlan()">
-      Save Meal Plan
-    </button>
+    <button mat-button (click)="saveMealPlan()">Save Meal Plan</button>
   </div>
 </div>
 

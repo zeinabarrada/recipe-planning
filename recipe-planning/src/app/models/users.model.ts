@@ -10,7 +10,8 @@ export class User {
     public id: string = '',
     public following: string[] = [],
     public followers: string[] = [],
-    public savedRecipes: string[] = []
+    public savedRecipes: string[] = [],
+    public mealPlans: string[] = []
   ) { }
 
   getPassword(): string {
