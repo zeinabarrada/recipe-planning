@@ -10,8 +10,9 @@ import { Recipe } from '../models/recipe.model';
 import { forkJoin } from 'rxjs';
 
 @Component({
-  imports: [CommonModule, FollowButtonComponent],
   selector: 'app-user-profile',
+  standalone: true,
+  imports: [CommonModule, FollowButtonComponent],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
 })

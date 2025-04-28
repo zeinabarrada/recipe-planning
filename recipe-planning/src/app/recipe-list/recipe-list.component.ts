@@ -99,6 +99,18 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
   }
   clearFilters() {
-    this.filteredRecipes = this.allRecipes;
+    this.filteredRecipes = [...this.allRecipes];
+  }
+
+  handleImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+    const container = img.parentElement;
+    if (container) {
+      const noImageDiv = document.createElement('div');
+      noImageDiv.className = 'no-image';
+      noImageDiv.textContent = 'Image not available';
+      container.appendChild(noImageDiv);
+    }
   }
 }
