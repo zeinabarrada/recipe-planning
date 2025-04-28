@@ -5,25 +5,21 @@
 
   <div class="navbar-menu">
     <div class="navbar-start">
-      <a routerLink="/recipe-list" class="navbar-item">Recipes</a>
-      <a *ngIf="currentUser" routerLink="/meal-plan" class="navbar-item">Meal Plan</a>
-      <a *ngIf="currentUser" routerLink="/user-profile/{{currentUser.id}}" class="navbar-item">Profile</a>
+      <a routerLink="/recipes" class="navbar-item">Recipes</a>
+      <a *ngIf="currentUser" routerLink="/meal" class="navbar-item">Meal Plan</a>
+      <a *ngIf="currentUser" routerLink="/profile" class="navbar-item">My Profile</a>
     </div>
 
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <ng-container *ngIf="currentUser; else authButtons">
-            <button class="button is-light" (click)="onLogout()">Logout</button>
-          </ng-container>
-          <ng-template #authButtons>
-            <a routerLink="/register" class="button is-primary">
-              <strong>Sign up</strong>
-            </a>
-            <a routerLink="/login" class="button is-light">
-              Log in
-            </a>
-          </ng-template>
+          <a *ngIf="!currentUser" routerLink="/" class="button is-primary">
+            <strong>Sign up</strong>
+          </a>
+          <a *ngIf="!currentUser" routerLink="/" class="button is-light">
+            Log in
+          </a>
+          <button *ngIf="currentUser" class="button is-light" (click)="onLogout()">Logout</button>
         </div>
       </div>
     </div>
