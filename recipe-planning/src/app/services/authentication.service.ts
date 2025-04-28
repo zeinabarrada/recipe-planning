@@ -13,21 +13,8 @@ export class AuthenticationService {
   isAuth = new BehaviorSubject<boolean>(false);
 
   constructor(private firestore: Firestore, private userService: UserService) {
+    // get users from database
     this.initializeUsers();
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      this.currentUser.next(
-        this.userService.createUser(
-          userData.email,
-          userData.username,
-          userData.password,
-          userData.id,
-          userData.following,
-          userData.followers
-        )
-      );
-    }
   }
 
   async initializeUsers() {
@@ -60,12 +47,11 @@ export class AuthenticationService {
     );
   }
 
-  async login(email: string, password: string): Promise<User | null> {
+  async login(username: string, password: string): Promise<User | null> {
     const user = this.users.find(
-      (u) => u.email === email && u.getPassword() === password
-    );
+      (u) => u.username === username && u.getPassword() === password);
+
     if (user) {
-      // Load fresh user data from Firestore
       const freshUser = await this.userService.getUserByIdInstance(user.id);
       this.currentUser.next(freshUser);
       this.isAuth.next(true);
@@ -81,6 +67,7 @@ export class AuthenticationService {
       );
       return freshUser;
     }
+    console.log("Log in user not found");
     return null;
   }
 

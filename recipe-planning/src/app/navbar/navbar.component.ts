@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../models/users.model';
 
@@ -14,11 +14,19 @@ import { User } from '../models/users.model';
 export class NavbarComponent implements OnInit {
   currentUser: User | null = null;
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.authService.getUser().subscribe((user) => {
       this.currentUser = user;
     });
+  }
+
+  onLogout() {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }
