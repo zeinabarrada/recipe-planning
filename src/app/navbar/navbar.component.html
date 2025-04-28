@@ -1,0 +1,57 @@
+<nav class="navbar">
+  <div class="navbar-menu">
+    <div class="navbar-brand">
+      <a routerLink="/" class="navbar-brand-link">Recipe Planner</a>
+      <button
+        class="mobile-menu-toggle"
+        (click)="toggleMenu()"
+        aria-label="Toggle menu"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="navbar-content" [class.active]="isMenuOpen">
+      <div class="navbar-start">
+        <a routerLink="/recipes" class="navbar-item">Recipes</a>
+        <a *ngIf="currentUser" routerLink="/meal" class="navbar-item"
+          >Meal Plan</a
+        >
+        <a *ngIf="currentUser" routerLink="/profile" class="navbar-item"
+          >My Profile</a
+        >
+      </div>
+
+      <div class="navbar-end">
+        <div class="buttons">
+          <a *ngIf="!currentUser" routerLink="/" class="button is-primary">
+            <strong>Sign up</strong>
+          </a>
+          <a *ngIf="!currentUser" routerLink="/" class="button is-light">
+            Log in
+          </a>
+          <button
+            *ngIf="currentUser"
+            class="button is-light"
+            (click)="onLogout()"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
