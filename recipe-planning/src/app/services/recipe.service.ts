@@ -14,7 +14,7 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 })
 export class RecipeService {
   public recipes = new BehaviorSubject<Recipe[]>([]);
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore) { }
 
   getRecipes(): Observable<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
@@ -37,6 +37,7 @@ export class RecipeService {
           data['ingredients'],
           data['instructions'],
           data['type'],
+          data['authorId'],
           data['author'],
           data['nutrition_facts'],
           data['cuisine'],

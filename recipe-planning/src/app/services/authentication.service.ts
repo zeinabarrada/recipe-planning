@@ -40,8 +40,8 @@ export class AuthenticationService {
         data['username'],
         data['password'],
         doc.id,
-        data['following'],
-        data['followers']
+        data['following'] || [],
+        data['followers'] || []
       );
     });
     console.log('Initialized users:', this.users);
@@ -60,23 +60,28 @@ export class AuthenticationService {
     );
   }
 
-  async login(username: string, password: string) {
+  async login(email: string, password: string): Promise<User | null> {
     const user = this.users.find(
-      (user) => user.username === username && user.getPassword() === password
+      (u) => u.email === email && u.getPassword() === password
     );
-
     if (user) {
+      // Load fresh user data from Firestore
+      const freshUser = await this.userService.getUserByIdInstance(user.id);
+      this.currentUser.next(freshUser);
       this.isAuth.next(true);
-      this.currentUser.next(user);
       localStorage.setItem(
         'currentUser',
         JSON.stringify({
-          email: user.email,
-          username: user.username,
-          id: user.id,
+          email: freshUser.email,
+          username: freshUser.username,
+          id: freshUser.id,
+          following: freshUser.getFollowing(),
+          followers: freshUser.getFollowers(),
         })
       );
+      return freshUser;
     }
+    return null;
   }
 
   logout() {
