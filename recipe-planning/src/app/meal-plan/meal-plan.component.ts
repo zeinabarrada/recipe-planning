@@ -10,11 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RecipeSelectionDialogComponent } from '../recipe-selection-dialog/recipe-selection-dialog.component';
 
-type MealType = 'breakfast' | 'lunch' | 'dinner';
-type DayMeals = {
-  [key in MealType]?: Recipe;
-};
-
 @Component({
   selector: 'app-meal-plan',
   standalone: true,
@@ -25,11 +20,9 @@ type DayMeals = {
 export class MealPlanComponent implements OnInit {
   currentUser: User | null = null;
   recipes: Recipe[] = [];
-  mealPlan: { [key: string]: DayMeals } = {};
-  daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
-  mealTypes = ['breakfast', 'lunch', 'dinner'] as const;
-  selectedDay: string | null = null;
-  selectedMealType: MealType | null = null;
+  mealPlan: (Recipe | null)[][] = Array(7).fill(null).map(() => Array(3).fill(null));
+  daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
 
   constructor(
     private authService: AuthenticationService,
@@ -45,15 +38,6 @@ export class MealPlanComponent implements OnInit {
       if (this.currentUser) {
         await this.loadRecipes();
         await this.loadMealPlan();
-        this.initializeMealPlan();
-      }
-    });
-  }
-
-  private initializeMealPlan() {
-    this.daysOfWeek.forEach(day => {
-      if (!this.mealPlan[day]) {
-        this.mealPlan[day] = {};
       }
     });
   }
@@ -82,10 +66,7 @@ export class MealPlanComponent implements OnInit {
     }
   }
 
-  async selectRecipe(day: string, mealType: MealType) {
-    this.selectedDay = day;
-    this.selectedMealType = mealType;
-
+  selectRecipe(dayIndex: number, mealIndex: number) {
     const dialogRef = this.dialog.open(RecipeSelectionDialogComponent, {
       width: '80%',
       data: { recipes: this.recipes }
@@ -93,21 +74,13 @@ export class MealPlanComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((selectedRecipe: Recipe) => {
       if (selectedRecipe) {
-        this.addRecipeToMealPlan(day, mealType, selectedRecipe);
+        this.mealPlan[dayIndex][mealIndex] = selectedRecipe;
       }
     });
   }
 
-  addRecipeToMealPlan(day: string, mealType: MealType, recipe: Recipe) {
-    if (this.mealPlan[day]) {
-      this.mealPlan[day][mealType] = recipe;
-    }
-  }
-
-  removeRecipeFromMealPlan(day: string, mealType: MealType) {
-    if (this.mealPlan[day]) {
-      delete this.mealPlan[day][mealType];
-    }
+  removeRecipeFromMealPlan(dayIndex: number, mealIndex: number) {
+    this.mealPlan[dayIndex][mealIndex] = null;
   }
 
   async saveMealPlan() {
@@ -121,7 +94,7 @@ export class MealPlanComponent implements OnInit {
     }
   }
 
-  getRecipeForMeal(day: string, mealType: MealType): Recipe | undefined {
-    return this.mealPlan[day]?.[mealType];
+  getRecipeForMeal(dayIndex: number, mealIndex: number): Recipe | null {
+    return this.mealPlan[dayIndex][mealIndex];
   }
 }

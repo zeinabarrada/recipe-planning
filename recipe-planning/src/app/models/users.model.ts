@@ -11,7 +11,8 @@ export class User {
     public following: string[] = [],
     public followers: string[] = [],
     public savedRecipes: string[] = [],
-    public mealPlans: string[] = []
+    public mealPlans: string[] = [],
+    public mealPlanId: string = ''
   ) { }
 
   getPassword(): string {
@@ -87,7 +88,10 @@ export class User {
       data.password,
       data.id,
       data.following || [],
-      data.followers || []
+      data.followers || [],
+      data.savedRecipes || [],
+      data.mealPlans || [],
+      data.mealPlanId || ''
     );
     return user;
   }

@@ -1,10 +1,6 @@
 import { Firestore } from '@angular/fire/firestore';
+import { Recipe } from './recipe.model';
 
-export class Meal {
-    constructor(
-        public firestore: Firestore,
-        public id: string = '',
-        public userID: string,
-        public mealPlans: string[] = []
-    ) { }
+export class MealPlan {
+    public mealPlan: (Recipe | null)[][] = Array(7).fill(null).map(() => Array(3).fill(null));
 }

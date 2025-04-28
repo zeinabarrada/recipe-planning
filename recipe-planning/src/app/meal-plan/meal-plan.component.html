@@ -4,22 +4,20 @@
   <div class="meal-plan-grid">
     <div class="grid-header">
       <div class="header-cell">Day</div>
-      <div class="header-cell">Breakfast</div>
-      <div class="header-cell">Lunch</div>
-      <div class="header-cell">Dinner</div>
+      <div class="header-cell" *ngFor="let mealType of mealTypes">{{ mealType }}</div>
     </div>
 
-    <div *ngFor="let day of daysOfWeek" class="grid-row">
+    <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="grid-row">
       <div class="day-cell">{{ day }}</div>
       
-      <div class="meal-cell" *ngFor="let mealType of mealTypes">
-        <div class="meal-content" (click)="selectRecipe(day, mealType)">
-          <div *ngIf="getRecipeForMeal(day, mealType) as recipe" class="selected-recipe">
+      <div class="meal-cell" *ngFor="let mealType of mealTypes; let mealIndex = index">
+        <div class="meal-content" (click)="selectRecipe(dayIndex, mealIndex)">
+          <div *ngIf="getRecipeForMeal(dayIndex, mealIndex) as recipe" class="selected-recipe">
             <h3>{{ recipe.recipe_name }}</h3>
             <p>{{ recipe.type }}</p>
-            <button mat-button (click)="removeRecipeFromMealPlan(day, mealType)">Remove</button>
+            <button mat-button (click)="removeRecipeFromMealPlan(dayIndex, mealIndex)">Remove</button>
           </div>
-          <div *ngIf="!getRecipeForMeal(day, mealType)" class="empty-meal">
+          <div *ngIf="!getRecipeForMeal(dayIndex, mealIndex)" class="empty-meal">
             <p>Click to add recipe</p>
           </div>
         </div>
@@ -31,7 +29,7 @@
     <button mat-button (click)="saveMealPlan()">Save Meal Plan</button>
   </div>
 </div>
-
 <div *ngIf="!currentUser">
   <p>Please log in to view and create meal plans.</p>
 </div>
+
