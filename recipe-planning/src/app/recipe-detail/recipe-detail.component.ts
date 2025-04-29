@@ -31,5 +31,6 @@ export class RecipeDetailComponent {
     this.recipeService.getRecipeById(this.recipeId).subscribe((recipe) => {
       this.recipe = recipe;
     });
+    
   }
 }

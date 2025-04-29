@@ -8,6 +8,7 @@ import {
   getDoc,
   doc,
   setDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
 import { Recipe } from '../models/recipe.model';
 import { BehaviorSubject, from, Observable } from 'rxjs';
@@ -78,5 +79,62 @@ export class RecipeService {
         );
       })
     );
+  }
+  async addReview(recipeId: string, review: { userId: string; userName: string; rating: number; review: string }) {
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    await addDoc(reviewsCollection, {
+      ...review,
+      createdAt: new Date()
+    });
+  }
+  
+  // Get all reviews for a specific recipe
+  getReviews(recipeId: string): Observable<any[]> {
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    return collectionData(reviewsCollection, { idField: 'id' }) as Observable<any[]>;
+  }
+
+  async addRating(recipeId: string, userId: string, rating: number) {
+    const recipeRef = doc(this.firestore, 'recipes', recipeId);
+    const recipeDoc = await getDoc(recipeRef);
+    
+    if (!recipeDoc.exists()) {
+      throw new Error('Recipe not found');
+    }
+
+    const recipeData = recipeDoc.data();
+    const ratings = recipeData['ratings'] || [];
+    
+    // Remove existing rating if user has already rated
+    const existingRatingIndex = ratings.findIndex((r: { userId: string; rating: number }) => r.userId === userId);
+    if (existingRatingIndex !== -1) {
+      ratings[existingRatingIndex] = { userId, rating };
+    } else {
+      ratings.push({ userId, rating });
+    }
+
+    // Calculate new average rating
+    const averageRating = ratings.reduce((acc: number, curr: { userId: string; rating: number }) => acc + curr.rating, 0) / ratings.length;
+
+    // Update the recipe with new ratings and average
+    await updateDoc(recipeRef, {
+      ratings,
+      rate: averageRating
+    });
+  }
+
+  async getUserRating(recipeId: string, userId: string): Promise<number> {
+    const recipeRef = doc(this.firestore, 'recipes', recipeId);
+    const recipeDoc = await getDoc(recipeRef);
+    
+    if (!recipeDoc.exists()) {
+      return 0;
+    }
+
+    const recipeData = recipeDoc.data();
+    const ratings = recipeData['ratings'] || [];
+    const userRating = ratings.find((r: { userId: string; rating: number }) => r.userId === userId);
+    
+    return userRating ? userRating.rating : 0;
   }
 }

@@ -66,4 +66,99 @@
 
 .save-button:hover {
   background-color: #45a049;
+}
+
+/* Rating Component Styles */
+app-recipe-rating {
+  display: block;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+/* Search Styles */
+.search-box {
+  width: 100%;
+  padding: 10px;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.search-result {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.search-link:hover {
+  background-color: #f5f5f5;
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+/* Filter Styles */
+.filter-group {
+  margin: 20px 0;
+}
+
+.filter-group h4 {
+  margin-bottom: 10px;
+}
+
+.filter-group button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.filter-group button:hover {
+  background-color: #f5f5f5;
+}
+
+.filter-group button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.rating-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stars {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.stars span {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #ddd;
+  transition: color 0.2s;
+}
+
+.stars span.filled {
+  color: #ffd700;
+}
+
+.stars span.hover {
+  color: #ffd700;
+  opacity: 0.7;
 }  

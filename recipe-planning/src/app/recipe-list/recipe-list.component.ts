@@ -8,6 +8,8 @@ import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { FormsModule, NgModel } from '@angular/forms';
+import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
+
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
@@ -23,10 +25,20 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   filteredRecipes: Recipe[] = [];
   searchTerm: string = '';
   isFocused: boolean = false;
+  selectedRecipeId: string | null = null;
+  newRating: number = 5;
+  newReview: string = '';
+  reviewsMap: { [key: string]: Observable<any[]> } = {}; // recipeId -> reviews array
+  userRatings: { [key: string]: number } = {};
+  hoverRating: number = 0;
+  showReviews: { [key: string]: boolean } = {};
+  showAddReview: { [key: string]: boolean } = {};
+
   constructor(
     private recipeService: RecipeService,
     private userService: UserService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private firestore: Firestore
   ) {
     this.recipesObservable = this.recipeService.getRecipes();
   }
@@ -36,6 +48,9 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       next: (user) => {
         this.currentUser = user;
         console.log('Current user set to:', this.currentUser);
+        if (user) {
+          this.loadUserRatings();
+        }
       },
       error: (error) => {
         console.error('Error in user subscription:', error);
@@ -111,6 +126,69 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       noImageDiv.className = 'no-image';
       noImageDiv.textContent = 'Image not available';
       container.appendChild(noImageDiv);
+    }
+  }
+
+  submitReview(recipeId: string) {
+    if (!this.currentUser) {
+      console.error('You must be logged in to leave a review.');
+      return;
+    }
+
+    const reviewData = {
+      rating: this.newRating,
+      review: this.newReview,
+      userId: this.currentUser.id,
+      userName: this.currentUser.username,
+      timestamp: new Date(),
+    };
+
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    addDoc(reviewsCollection, reviewData).then(() => {
+      console.log('Review submitted!');
+      this.selectedRecipeId = null;
+      this.newRating = 5;
+      this.newReview = '';
+    });
+  }
+
+  loadReviewsForRecipe(recipeId: string) {
+    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    this.reviewsMap[recipeId] = collectionData(reviewsCollection, { idField: 'id' });
+  }
+
+  async loadUserRatings() {
+    if (!this.currentUser) return;
+    
+    this.allRecipes.forEach(async (recipe) => {
+      const rating = await this.recipeService.getUserRating(recipe.id, this.currentUser!.id);
+      this.userRatings[recipe.id] = rating;
+    });
+  }
+
+  async onRatingChange(recipeId: string, rating: number) {
+    if (!this.currentUser) return;
+    
+    try {
+      await this.recipeService.addRating(recipeId, this.currentUser.id, rating);
+      this.userRatings[recipeId] = rating;
+    } catch (error) {
+      console.error('Error adding rating:', error);
+    }
+  }
+
+  toggleReviews(recipeId: string) {
+    this.showReviews[recipeId] = !this.showReviews[recipeId];
+    if (this.showReviews[recipeId]) {
+      this.loadReviewsForRecipe(recipeId);
+    }
+  }
+
+  toggleAddReview(recipeId: string) {
+    this.showAddReview[recipeId] = !this.showAddReview[recipeId];
+    if (!this.showAddReview[recipeId]) {
+      this.newRating = 5;
+      this.newReview = '';
     }
   }
 }
