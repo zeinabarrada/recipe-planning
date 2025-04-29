@@ -177,4 +177,55 @@ app-recipe-rating {
 
 .post-recipe-button .button:hover {
   background-color: #45a049;
+}
+
+.shopping-list-controls {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.selection-hint {
+  color: #666;
+  font-style: italic;
+}
+
+.generate-list-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generate-list-button:hover {
+  background-color: #45a049;
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.recipe-actions {
+  display: flex;
+  align-items: center;
+}
+
+.select-recipe {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.select-recipe input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
 }  
