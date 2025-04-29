@@ -98,9 +98,11 @@
 
     <!-- REVIEWS SECTION -->
     <div class="reviews-section">
-      <button (click)="loadReviewsForRecipe(recipe.id)">View Reviews</button>
+      <button (click)="toggleReviews(recipe.id)">
+        {{ showReviews[recipe.id] ? 'Hide Reviews' : 'View Reviews' }}
+      </button>
 
-      <div *ngIf="reviewsMap[recipe.id] | async as reviews">
+      <div *ngIf="showReviews[recipe.id] && (reviewsMap[recipe.id] | async) as reviews">
         <h3>Reviews:</h3>
         <div *ngIf="reviews.length > 0; else noReviews">
           <div *ngFor="let review of reviews" class="review-item">
@@ -116,9 +118,11 @@
 
     <!-- ADD A REVIEW FORM -->
     <div class="add-review">
-      <button (click)="selectedRecipeId = recipe.id">Add Review</button>
+      <button (click)="toggleAddReview(recipe.id)">
+        {{ showAddReview[recipe.id] ? 'Cancel' : 'Add Review' }}
+      </button>
 
-      <div *ngIf="selectedRecipeId === recipe.id">
+      <div *ngIf="showAddReview[recipe.id]">
         <form (ngSubmit)="submitReview(recipe.id)">
           <label for="rating">Rating (1-5):</label>
           <input
@@ -141,7 +145,7 @@
 
           <div class="review-buttons">
             <button type="submit">Submit Review</button>
-            <button type="button" (click)="selectedRecipeId = null">Cancel</button>
+            <button type="button" (click)="toggleAddReview(recipe.id)">Cancel</button>
           </div>
         </form>
       </div>

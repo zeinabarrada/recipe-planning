@@ -29,6 +29,10 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   newRating: number = 5;
   newReview: string = '';
   reviewsMap: { [key: string]: Observable<any[]> } = {}; // recipeId -> reviews array
+  userRatings: { [key: string]: number } = {};
+  hoverRating: number = 0;
+  showReviews: { [key: string]: boolean } = {};
+  showAddReview: { [key: string]: boolean } = {};
 
   constructor(
     private recipeService: RecipeService,
@@ -44,6 +48,9 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       next: (user) => {
         this.currentUser = user;
         console.log('Current user set to:', this.currentUser);
+        if (user) {
+          this.loadUserRatings();
+        }
       },
       error: (error) => {
         console.error('Error in user subscription:', error);
@@ -148,5 +155,40 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   loadReviewsForRecipe(recipeId: string) {
     const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
     this.reviewsMap[recipeId] = collectionData(reviewsCollection, { idField: 'id' });
+  }
+
+  async loadUserRatings() {
+    if (!this.currentUser) return;
+    
+    this.allRecipes.forEach(async (recipe) => {
+      const rating = await this.recipeService.getUserRating(recipe.id, this.currentUser!.id);
+      this.userRatings[recipe.id] = rating;
+    });
+  }
+
+  async onRatingChange(recipeId: string, rating: number) {
+    if (!this.currentUser) return;
+    
+    try {
+      await this.recipeService.addRating(recipeId, this.currentUser.id, rating);
+      this.userRatings[recipeId] = rating;
+    } catch (error) {
+      console.error('Error adding rating:', error);
+    }
+  }
+
+  toggleReviews(recipeId: string) {
+    this.showReviews[recipeId] = !this.showReviews[recipeId];
+    if (this.showReviews[recipeId]) {
+      this.loadReviewsForRecipe(recipeId);
+    }
+  }
+
+  toggleAddReview(recipeId: string) {
+    this.showAddReview[recipeId] = !this.showAddReview[recipeId];
+    if (!this.showAddReview[recipeId]) {
+      this.newRating = 5;
+      this.newReview = '';
+    }
   }
 }
