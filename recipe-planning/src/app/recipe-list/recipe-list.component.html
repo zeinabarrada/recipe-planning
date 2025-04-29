@@ -89,100 +89,30 @@
   </div>
 
   <!-- RECIPES LIST -->
-  <div *ngFor="let recipe of recipesObservable | async" class="recipe-card">
-    <div class="recipe-header">
-      <h2>{{ recipe.recipe_name }}</h2>
-      <div class="recipe-actions" *ngIf="currentUser">
-        <label class="select-recipe">
-          <input 
-            type="checkbox"
-            [checked]="selectedRecipes.has(recipe.id)"
-            (change)="toggleRecipeSelection(recipe.id)"
-          >
-          Add to Shopping List
-        </label>
-      </div>
+  <div class="recipe-list-container">
+    <div class="recipe-grid">
+      <mat-card *ngFor="let recipe of recipes" class="recipe-card">
+        <mat-card-header>
+          <mat-card-title>{{recipe.recipe_name}}</mat-card-title>
+          <mat-card-subtitle>By {{recipe.author}}</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image [src]="recipe.image_url" alt="{{recipe.recipe_name}}" (error)="handleImageError($event)">
+        <mat-card-content>
+          <p>{{recipe.description}}</p>
+          <p>Cooking Time: {{recipe.cooking_time}} minutes</p>
+          <p>Difficulty: {{recipe.difficulty}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button (click)="navigateToRecipe(recipe.id)">
+            <mat-icon>visibility</mat-icon>
+            View Recipe
+          </button>
+          <button mat-button (click)="toggleRecipeSelection(recipe)">
+            <mat-icon>{{isRecipeSelected(recipe) ? 'check_circle' : 'radio_button_unchecked'}}</mat-icon>
+            {{isRecipeSelected(recipe) ? 'Selected' : 'Select'}}
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
-
-    <div class="recipe-image-container">
-      <img 
-        *ngIf="recipe.imagePath && recipe.imagePath.trim() !== ''" 
-        [src]="recipe.imagePath" 
-        [alt]="recipe.recipe_name"
-        (error)="handleImageError($event)"
-        class="recipe-image"
-      />
-      <div *ngIf="!recipe.imagePath || recipe.imagePath.trim() === ''" class="no-image">
-        No image available
-      </div>
-    </div>
-
-    <div class="recipe-details">
-      <p><strong>Author:</strong> {{ recipe.author }}</p>
-      <p><strong>Ingredients:</strong> {{ recipe.ingredients.join(', ') }}</p>
-      <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
-      <p><strong>Nutrition:</strong> {{ recipe.nutrition_facts }}</p>
-      <p><strong>Cuisine:</strong> {{ recipe.cuisine }}</p>
-      <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} mins</p>
-      
-      <button (click)="saveRecipe(recipe)" class="save-button">Save Recipe</button>
-    </div>
-
-    <!-- REVIEWS SECTION -->
-    <div class="reviews-section">
-      <button (click)="toggleReviews(recipe.id)">
-        {{ showReviews[recipe.id] ? 'Hide Reviews' : 'View Reviews' }}
-      </button>
-
-      <div *ngIf="showReviews[recipe.id] && (reviewsMap[recipe.id] | async) as reviews">
-        <h3>Reviews:</h3>
-        <div *ngIf="reviews.length > 0; else noReviews">
-          <div *ngFor="let review of reviews" class="review-item">
-            <p>⭐ {{ review.rating }} / 5 by {{ review.userName }}</p>
-            <p>{{ review.review }}</p>
-          </div>
-        </div>
-        <ng-template #noReviews>
-          <p>No reviews yet. Be the first!</p>
-        </ng-template>
-      </div>
-    </div>
-
-    <!-- ADD A REVIEW FORM -->
-    <div class="add-review">
-      <button (click)="toggleAddReview(recipe.id)">
-        {{ showAddReview[recipe.id] ? 'Cancel' : 'Add Review' }}
-      </button>
-
-      <div *ngIf="showAddReview[recipe.id]">
-        <form (ngSubmit)="submitReview(recipe.id)">
-          <label for="rating">Rating (1-5):</label>
-          <input
-            type="number"
-            id="rating"
-            name="rating"
-            [(ngModel)]="newRating"
-            min="1"
-            max="5"
-            required
-          />
-
-          <label for="review">Your Review:</label>
-          <textarea
-            id="review"
-            name="review"
-            [(ngModel)]="newReview"
-            required
-          ></textarea>
-
-          <div class="review-buttons">
-            <button type="submit">Submit Review</button>
-            <button type="button" (click)="toggleAddReview(recipe.id)">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <hr />
   </div>
 </div>
