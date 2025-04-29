@@ -3,14 +3,19 @@ import { RecipeService } from '../services/recipe.service';
 import { Recipe } from '../models/recipe.model';
 import { Observable, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { FormsModule, NgModel } from '@angular/forms';
-import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
+
+import {
+  Firestore,
+  collection,
+  addDoc,
+  collectionData,
+} from '@angular/fire/firestore';
 import { ShoppingListService } from '../services/shopping-list.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-list',
@@ -35,9 +40,9 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   hoverRating: number = 0;
   showReviews: { [key: string]: boolean } = {};
   showAddReview: { [key: string]: boolean } = {};
-  selectedRecipes: Set<string> = new Set();
-  showShoppingListButton: boolean = false;
-
+  showFilters: boolean = false;
+  selectedRecipes = new Set<string>();
+  showShoppingListButton = false;
   constructor(
     private recipeService: RecipeService,
     private userService: UserService,
@@ -149,7 +154,10 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       timestamp: new Date(),
     };
 
-    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+    const reviewsCollection = collection(
+      this.firestore,
+      `recipes/${recipeId}/reviews`
+    );
     addDoc(reviewsCollection, reviewData).then(() => {
       console.log('Review submitted!');
       this.selectedRecipeId = null;
@@ -159,22 +167,30 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   }
 
   loadReviewsForRecipe(recipeId: string) {
-    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
-    this.reviewsMap[recipeId] = collectionData(reviewsCollection, { idField: 'id' });
+    const reviewsCollection = collection(
+      this.firestore,
+      `recipes/${recipeId}/reviews`
+    );
+    this.reviewsMap[recipeId] = collectionData(reviewsCollection, {
+      idField: 'id',
+    });
   }
 
   async loadUserRatings() {
     if (!this.currentUser) return;
-    
+
     this.allRecipes.forEach(async (recipe) => {
-      const rating = await this.recipeService.getUserRating(recipe.id, this.currentUser!.id);
+      const rating = await this.recipeService.getUserRating(
+        recipe.id,
+        this.currentUser!.id
+      );
       this.userRatings[recipe.id] = rating;
     });
   }
 
   async onRatingChange(recipeId: string, rating: number) {
     if (!this.currentUser) return;
-    
+
     try {
       await this.recipeService.addRating(recipeId, this.currentUser.id, rating);
       this.userRatings[recipeId] = rating;
@@ -197,7 +213,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       this.newReview = '';
     }
   }
-
   toggleRecipeSelection(recipeId: string) {
     if (this.selectedRecipes.has(recipeId)) {
       this.selectedRecipes.delete(recipeId);
@@ -218,7 +233,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const selectedRecipesList = this.allRecipes.filter(recipe => 
+    const selectedRecipesList = this.allRecipes.filter((recipe) =>
       this.selectedRecipes.has(recipe.id)
     );
 
