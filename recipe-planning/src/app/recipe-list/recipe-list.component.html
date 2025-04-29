@@ -1,163 +1,194 @@
-<div>
-  <h1>Recipe List Component Loaded</h1>
-  <p>Current User: {{ currentUser?.username || "No user logged in" }}</p>
-
-  <!-- Post Recipe Button -->
-  <div class="post-recipe-button" *ngIf="currentUser">
-    <a routerLink="/add-recipe" class="button is-primary">
-      <strong>Post a New Recipe</strong>
-    </a>
-  </div>
-
-  <!-- FILTERS -->
-  <div class="filter-group">
-    <h4>Type:</h4>
-    <button (click)="selectFilter('type', '')">All</button>
-    <button (click)="selectFilter('type', 'breakfast')">Breakfast</button>
-    <button (click)="selectFilter('type', 'lunch')">Lunch</button>
-    <button (click)="selectFilter('type', 'dinner')">Dinner</button>
-    <button (click)="selectFilter('type', 'snack')">Snack</button>
-  </div>
-
-  <div class="filter-group">
-    <h4>Cuisine:</h4>
-    <button (click)="selectFilter('cuisine', '')">All</button>
-    <button (click)="selectFilter('cuisine', 'italian')">Italian</button>
-    <button (click)="selectFilter('cuisine', 'mexican')">Mexican</button>
-    <button (click)="selectFilter('cuisine', 'indian')">Indian</button>
-  </div>
-
-  <div class="filter-group">
-    <h4>Max Cooking Time:</h4>
-    <button (click)="selectFilter('cookingTime', 0)">Any</button>
-    <button (click)="selectFilter('cookingTime', 30)">≤ 30 min</button>
-    <button (click)="selectFilter('cookingTime', 60)">≤ 60 min</button>
-  </div>
-
-  <div class="filter-group">
-    <h4>Ingredient:</h4>
-    <button (click)="selectFilter('ingredient', '')">Any</button>
-    <button (click)="selectFilter('ingredient', 'egg')">Egg</button>
-    <button (click)="selectFilter('ingredient', 'chicken')">Chicken</button>
-    <button (click)="selectFilter('ingredient', 'rice')">Rice</button>
-  </div>
-
-  <div>
-    <button (click)="clearFilters()">Clear All Filters</button>
-  </div>
-
+<div class="container">
   <!-- SEARCH BAR -->
-  <input
-    type="text"
-    placeholder="Search recipes..."
-    [(ngModel)]="searchTerm"
-    (input)="onSearch(searchTerm)"
-    (focus)="isFocused = true"
-    (blur)="onBlur()"
-    class="search-box"
-  />
 
-  <!-- Search Results -->
-  <div *ngIf="(isFocused || searchTerm) && filteredRecipes.length > 0">
-    <div *ngFor="let recipe of filteredRecipes" class="search-result">
-      <a
-        [routerLink]="['/recipe', recipe.id]"
-        (click)="clearSearch()"
-        class="search-link"
+  <!-- Updated Search and Actions Container -->
+  <div class="search-actions-container">
+    <div class="search-box-container">
+      <input
+        type="text"
+        placeholder="Search recipes..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch(searchTerm)"
+        (focus)="isFocused = true"
+        (blur)="onBlur()"
+        class="search-box"
+      />
+
+      <!-- Search Results Dropdown -->
+      <div
+        *ngIf="(isFocused || searchTerm) && filteredRecipes.length > 0"
+        class="search-result"
       >
-        <h3>{{ recipe.recipe_name }}</h3>
-        <p>By {{ recipe.author }}</p>
-      </a>
+        <div *ngFor="let recipe of filteredRecipes">
+          <a
+            [routerLink]="['/recipe', recipe.id]"
+            (click)="clearSearch()"
+            class="search-link"
+          >
+            <h3>{{ recipe.recipe_name }}</h3>
+            <p>By {{ recipe.author }}</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-container">
+      <div class="post-recipe-button" *ngIf="currentUser">
+        <a routerLink="/add-recipe" class="button is-primary">
+          <strong>Post New Recipe</strong>
+        </a>
+      </div>
+
+      <div class="filter-toggle">
+        <button (click)="showFilters = !showFilters">
+          {{ showFilters ? "Hide Filters" : "Filters" }}
+        </button>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="(isFocused || searchTerm) && filteredRecipes.length === 0" class="no-results">
+  <div
+    *ngIf="(isFocused || searchTerm) && filteredRecipes.length === 0"
+    class="no-results"
+  >
     <p>No recipes found matching "{{ searchTerm }}"</p>
   </div>
 
+  <!-- FILTERS SECTION -->
+  <div *ngIf="showFilters" class="filters-container">
+    <div class="filter-group">
+      <h4>Type:</h4>
+      <button (click)="selectFilter('type', '')">All</button>
+      <button (click)="selectFilter('type', 'breakfast')">Breakfast</button>
+      <button (click)="selectFilter('type', 'lunch')">Lunch</button>
+      <button (click)="selectFilter('type', 'dinner')">Dinner</button>
+      <button (click)="selectFilter('type', 'snack')">Snack</button>
+    </div>
+
+    <div class="filter-group">
+      <h4>Cuisine:</h4>
+      <button (click)="selectFilter('cuisine', '')">All</button>
+      <button (click)="selectFilter('cuisine', 'italian')">Italian</button>
+      <button (click)="selectFilter('cuisine', 'mexican')">Mexican</button>
+      <button (click)="selectFilter('cuisine', 'indian')">Indian</button>
+    </div>
+
+    <div class="filter-group">
+      <h4>Max Cooking Time:</h4>
+      <button (click)="selectFilter('cookingTime', 0)">Any</button>
+      <button (click)="selectFilter('cookingTime', 30)">≤ 30 min</button>
+      <button (click)="selectFilter('cookingTime', 60)">≤ 60 min</button>
+    </div>
+
+    <div class="filter-group">
+      <h4>Ingredient:</h4>
+      <button (click)="selectFilter('ingredient', '')">Any</button>
+      <button (click)="selectFilter('ingredient', 'egg')">Egg</button>
+      <button (click)="selectFilter('ingredient', 'chicken')">Chicken</button>
+      <button (click)="selectFilter('ingredient', 'rice')">Rice</button>
+    </div>
+
+    <div>
+      <button (click)="clearFilters()">Clear All Filters</button>
+    </div>
+  </div>
+
   <!-- RECIPES LIST -->
-  <div *ngFor="let recipe of recipesObservable | async" class="recipe-card">
-    <h2>{{ recipe.recipe_name }}</h2>
+  <div class="recipe-list">
+    <div *ngFor="let recipe of recipesObservable | async" class="recipe-card">
+      <h2>{{ recipe.recipe_name }}</h2>
 
-    <div class="recipe-image-container">
-      <img 
-        *ngIf="recipe.imagePath && recipe.imagePath.trim() !== ''" 
-        [src]="recipe.imagePath" 
-        [alt]="recipe.recipe_name"
-        (error)="handleImageError($event)"
-        class="recipe-image"
-      />
-      <div *ngIf="!recipe.imagePath || recipe.imagePath.trim() === ''" class="no-image">
-        No image available
-      </div>
-    </div>
-
-    <div class="recipe-details">
-      <p><strong>Author:</strong> {{ recipe.author }}</p>
-      <p><strong>Ingredients:</strong> {{ recipe.ingredients.join(', ') }}</p>
-      <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
-      <p><strong>Nutrition:</strong> {{ recipe.nutrition_facts }}</p>
-      <p><strong>Cuisine:</strong> {{ recipe.cuisine }}</p>
-      <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} mins</p>
-      
-      <button (click)="saveRecipe(recipe)" class="save-button">Save Recipe</button>
-    </div>
-
-    <!-- REVIEWS SECTION -->
-    <div class="reviews-section">
-      <button (click)="toggleReviews(recipe.id)">
-        {{ showReviews[recipe.id] ? 'Hide Reviews' : 'View Reviews' }}
-      </button>
-
-      <div *ngIf="showReviews[recipe.id] && (reviewsMap[recipe.id] | async) as reviews">
-        <h3>Reviews:</h3>
-        <div *ngIf="reviews.length > 0; else noReviews">
-          <div *ngFor="let review of reviews" class="review-item">
-            <p>⭐ {{ review.rating }} / 5 by {{ review.userName }}</p>
-            <p>{{ review.review }}</p>
-          </div>
+      <div class="recipe-image-container">
+        <img
+          *ngIf="recipe.imagePath && recipe.imagePath.trim() !== ''"
+          [src]="recipe.imagePath"
+          [alt]="recipe.recipe_name"
+          (error)="handleImageError($event)"
+          class="recipe-image"
+        />
+        <div
+          *ngIf="!recipe.imagePath || recipe.imagePath.trim() === ''"
+          class="no-image"
+        >
+          No image available
         </div>
-        <ng-template #noReviews>
-          <p>No reviews yet. Be the first!</p>
-        </ng-template>
       </div>
-    </div>
 
-    <!-- ADD A REVIEW FORM -->
-    <div class="add-review">
-      <button (click)="toggleAddReview(recipe.id)">
-        {{ showAddReview[recipe.id] ? 'Cancel' : 'Add Review' }}
-      </button>
+      <div class="recipe-details">
+        <p><strong>Author:</strong> {{ recipe.author }}</p>
+        <p><strong>Ingredients:</strong> {{ recipe.ingredients.join(", ") }}</p>
+        <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+        <p><strong>Nutrition:</strong> {{ recipe.nutrition_facts }}</p>
+        <p><strong>Cuisine:</strong> {{ recipe.cuisine }}</p>
+        <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} mins</p>
 
-      <div *ngIf="showAddReview[recipe.id]">
-        <form (ngSubmit)="submitReview(recipe.id)">
-          <label for="rating">Rating (1-5):</label>
-          <input
-            type="number"
-            id="rating"
-            name="rating"
-            [(ngModel)]="newRating"
-            min="1"
-            max="5"
-            required
-          />
+        <button (click)="saveRecipe(recipe)" class="save-button">
+          Save Recipe
+        </button>
+      </div>
 
-          <label for="review">Your Review:</label>
-          <textarea
-            id="review"
-            name="review"
-            [(ngModel)]="newReview"
-            required
-          ></textarea>
+      <!-- REVIEWS SECTION -->
+      <div class="reviews-section">
+        <button (click)="toggleReviews(recipe.id)">
+          {{ showReviews[recipe.id] ? "Hide Reviews" : "View Reviews" }}
+        </button>
 
-          <div class="review-buttons">
-            <button type="submit">Submit Review</button>
-            <button type="button" (click)="toggleAddReview(recipe.id)">Cancel</button>
+        <div
+          *ngIf="
+            showReviews[recipe.id] && (reviewsMap[recipe.id] | async) as reviews
+          "
+        >
+          <h3>Reviews:</h3>
+          <div *ngIf="reviews.length > 0; else noReviews">
+            <div *ngFor="let review of reviews" class="review-item">
+              <p>⭐ {{ review.rating }} / 5 by {{ review.userName }}</p>
+              <p>{{ review.review }}</p>
+            </div>
           </div>
-        </form>
+          <ng-template #noReviews>
+            <p>No reviews yet. Be the first!</p>
+          </ng-template>
+        </div>
       </div>
-    </div>
 
-    <hr />
+      <!-- ADD A REVIEW FORM -->
+      <div class="add-review">
+        <button (click)="toggleAddReview(recipe.id)">
+          {{ showAddReview[recipe.id] ? "Cancel" : "Add Review" }}
+        </button>
+
+        <div *ngIf="showAddReview[recipe.id]">
+          <form (ngSubmit)="submitReview(recipe.id)">
+            <label for="rating">Rating (1-5):</label>
+            <input
+              type="number"
+              id="rating"
+              name="rating"
+              [(ngModel)]="newRating"
+              min="1"
+              max="5"
+              required
+            />
+
+            <label for="review">Your Review:</label>
+            <textarea
+              id="review"
+              name="review"
+              [(ngModel)]="newReview"
+              required
+            ></textarea>
+
+            <div class="review-buttons">
+              <button type="submit">Submit Review</button>
+              <button type="button" (click)="toggleAddReview(recipe.id)">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <hr />
+    </div>
   </div>
 </div>

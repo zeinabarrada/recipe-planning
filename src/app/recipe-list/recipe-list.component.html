@@ -1,0 +1,123 @@
+<div class="recipe-list-container">
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-container">
+      <div class="search-wrapper">
+        <input
+          type="text"
+          placeholder="Search recipes by name, ingredients, or author..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch(searchTerm)"
+          (focus)="isFocused = true"
+          (blur)="onBlur()"
+          class="search-input"
+        />
+        <div class="search-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+      </div>
+
+      <div class="add-recipe-button" *ngIf="currentUser">
+        <a routerLink="/add-recipe" class="add-recipe-link">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Add Recipe</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Search Results Dropdown -->
+    <div
+      *ngIf="(isFocused || searchTerm) && filteredRecipes.length > 0"
+      class="search-results"
+    >
+      <div *ngFor="let recipe of filteredRecipes" class="search-result-item">
+        <a
+          [routerLink]="['/recipe', recipe.id]"
+          (click)="clearSearch()"
+          class="search-link"
+        >
+          <h3>{{ recipe.recipe_name }}</h3>
+          <p class="search-meta">
+            By {{ recipe.author }} • {{ recipe.cuisine }}
+          </p>
+        </a>
+      </div>
+    </div>
+    <div
+      *ngIf="(isFocused || searchTerm) && filteredRecipes.length === 0"
+      class="no-results"
+    >
+      <p>No recipes found matching "{{ searchTerm }}"</p>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-container">
+      <div class="filter-group">
+        <h4>Type</h4>
+        <div class="filter-buttons">
+          <button
+            (click)="selectFilter('type', '')"
+            [class.active]="!selectedFilters.type"
+          >
+            All
+          </button>
+          <button
+            (click)="selectFilter('type', 'breakfast')"
+            [class.active]="selectedFilters.type === 'breakfast'"
+          >
+            Breakfast
+          </button>
+          <button
+            (click)="selectFilter('type', 'lunch')"
+            [class.active]="selectedFilters.type === 'lunch'"
+          >
+            Lunch
+          </button>
+          <button
+            (click)="selectFilter('type', 'dinner')"
+            [class.active]="selectedFilters.type === 'dinner'"
+          >
+            Dinner
+          </button>
+          <button
+            (click)="selectFilter('type', 'snack')"
+            [class.active]="selectedFilters.type === 'snack'"
+          >
+            Snack
+          </button>
+        </div>
+      </div>
+
+      <!-- Rest of the filters and recipe list remain the same -->
+      // ... existing code ...
+    </div>
+  </div>
+</div>
