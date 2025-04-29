@@ -2,6 +2,13 @@
   <h1>Recipe List Component Loaded</h1>
   <p>Current User: {{ currentUser?.username || "No user logged in" }}</p>
 
+  <!-- Post Recipe Button -->
+  <div class="post-recipe-button" *ngIf="currentUser">
+    <a routerLink="/add-recipe" class="button is-primary">
+      <strong>Post a New Recipe</strong>
+    </a>
+  </div>
+
   <!-- FILTERS -->
   <div class="filter-group">
     <h4>Type:</h4>
