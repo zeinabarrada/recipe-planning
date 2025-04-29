@@ -27,7 +27,7 @@
 
   <div class="actions">
     <button mat-button (click)="saveMealPlan()">Save Meal Plan</button>
-    <button mat-button (click)="generateShoppingList()">Generate Shopping List</button>
+    <button mat-button (click)="generateShoppingList()" *ngIf="showShoppingListButton">Generate Shopping List</button>
   </div>
 </div>
 <div *ngIf="!currentUser">
