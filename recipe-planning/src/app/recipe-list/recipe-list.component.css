@@ -373,19 +373,3 @@
   color: #ffd700;
   opacity: 0.7;
 }
-
-.post-recipe-button {
-  margin: 1rem 0 2rem;
-  text-align: center;
-}
-
-.post-recipe-button .button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.post-recipe-button .button:hover {
-  background-color: #45a049;
-}

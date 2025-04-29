@@ -3,17 +3,19 @@ import { RecipeService } from '../services/recipe.service';
 import { Recipe } from '../models/recipe.model';
 import { Observable, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { FormsModule, NgModel } from '@angular/forms';
+
 import {
   Firestore,
   collection,
   addDoc,
   collectionData,
 } from '@angular/fire/firestore';
+import { ShoppingListService } from '../services/shopping-list.service';
 
 @Component({
   selector: 'app-recipe-list',
@@ -38,7 +40,9 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   hoverRating: number = 0;
   showReviews: { [key: string]: boolean } = {};
   showAddReview: { [key: string]: boolean } = {};
-
+  showFilters: boolean = false;
+  selectedRecipes = new Set<string>();
+  showShoppingListButton = false;
   constructor(
     private recipeService: RecipeService,
     private userService: UserService,
@@ -209,7 +213,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       this.newReview = '';
     }
   }
-
   toggleRecipeSelection(recipeId: string) {
     if (this.selectedRecipes.has(recipeId)) {
       this.selectedRecipes.delete(recipeId);
