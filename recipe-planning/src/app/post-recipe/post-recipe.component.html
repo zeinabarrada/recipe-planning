@@ -1,7 +1,7 @@
 <div class="post-recipe-container">
   <h2>Post a New Recipe</h2>
 
-  <form (ngSubmit)="submitRecipe()" class="recipe-form">
+  <form #recipeForm="ngForm" (ngSubmit)="submitRecipe()" class="recipe-form">
     <div class="form-group">
       <label for="recipeName">Recipe Name *</label>
       <input
@@ -9,9 +9,13 @@
         id="recipeName"
         name="recipeName"
         [(ngModel)]="newRecipe.recipe_name"
+        #recipeName="ngModel"
         required
         placeholder="Enter recipe name"
       >
+      <div class="error-message" *ngIf="recipeName.invalid && (recipeName.dirty || recipeName.touched)">
+        Recipe name is required
+      </div>
     </div>
 
     <div class="form-group">
@@ -21,9 +25,13 @@
         name="ingredients"
         [(ngModel)]="ingredientsInput"
         (ngModelChange)="handleIngredientsInput($event)"
+        #ingredients="ngModel"
         required
         placeholder="e.g., 2 eggs, 1 cup flour, 1/2 cup sugar"
       ></textarea>
+      <div class="error-message" *ngIf="ingredients.invalid && (ingredients.dirty || ingredients.touched)">
+        At least one ingredient is required
+      </div>
     </div>
 
     <div class="form-row">
@@ -34,10 +42,15 @@
           id="cookingTime"
           name="cookingTime"
           [(ngModel)]="newRecipe.cooking_time"
+          #cookingTime="ngModel"
           required
           min="1"
           placeholder="Enter cooking time in minutes"
         >
+        <div class="error-message" *ngIf="cookingTime.invalid && (cookingTime.dirty || cookingTime.touched)">
+          <div *ngIf="cookingTime.errors?.['required']">Cooking time is required</div>
+          <div *ngIf="cookingTime.errors?.['min']">Cooking time must be at least 1 minute</div>
+        </div>
       </div>
 
       <div class="form-group">
@@ -46,6 +59,7 @@
           id="cuisine"
           name="cuisine"
           [(ngModel)]="newRecipe.cuisine"
+          #cuisine="ngModel"
           required
         >
           <option value="">Select cuisine type</option>
@@ -53,6 +67,9 @@
             {{type}}
           </option>
         </select>
+        <div class="error-message" *ngIf="cuisine.invalid && (cuisine.dirty || cuisine.touched)">
+          Please select a cuisine type
+        </div>
       </div>
     </div>
 
@@ -62,9 +79,13 @@
         id="instructions"
         name="instructions"
         [(ngModel)]="newRecipe.instructions"
+        #instructions="ngModel"
         required
         placeholder="Enter step-by-step instructions"
       ></textarea>
+      <div class="error-message" *ngIf="instructions.invalid && (instructions.dirty || instructions.touched)">
+        Instructions are required
+      </div>
     </div>
 
     <div class="form-group">
@@ -74,8 +95,13 @@
         id="imagePath"
         name="imagePath"
         [(ngModel)]="newRecipe.imagePath"
-        placeholder="Enter image URL (optional)"
+        #imagePath="ngModel"
+        required
+        placeholder="Enter image URL"
       >
+      <div class="error-message" *ngIf="imagePath.invalid && (imagePath.dirty || imagePath.touched)">
+        Image URL is required
+      </div>
     </div>
 
     <div class="form-group">
@@ -84,13 +110,18 @@
         id="nutritionFacts"
         name="nutritionFacts"
         [(ngModel)]="newRecipe.nutrition_facts"
-        placeholder="Enter nutrition information (optional)"
+        #nutritionFacts="ngModel"
+        required
+        placeholder="Enter nutrition information"
       ></textarea>
+      <div class="error-message" *ngIf="nutritionFacts.invalid && (nutritionFacts.dirty || nutritionFacts.touched)">
+        Nutrition facts are required
+      </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="submit-btn">Post Recipe</button>
-      <button type="button" class="cancel-btn" (click)="router.navigate(['/recipes'])">Cancel</button>
+      <button type="submit" class="submit-btn" [disabled]="recipeForm.invalid">Post Recipe</button>
+      <button type="button" class="cancel-btn" (click)="navigateToRecipes()">Cancel</button>
     </div>
   </form>
 </div>

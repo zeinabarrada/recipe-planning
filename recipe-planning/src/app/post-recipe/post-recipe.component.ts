@@ -6,6 +6,7 @@ import { User } from '../models/users.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'post-recipe',
@@ -16,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export class AddRecipeComponent {
   currentUser: User | null = null;
-  newRecipe: Recipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '');
+  newRecipe: Recipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', []);
   ingredientsInput: string = '';
   cuisineTypes = [
     'Italian',
@@ -35,9 +36,25 @@ export class AddRecipeComponent {
   constructor(
     private recipeService: RecipeService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private authService: AuthenticationService
   ) {
     this.loadCurrentUser();
+    this.newRecipe = {
+      id: '',
+      recipe_name: '',
+      imagePath: '',
+      ingredients: [],
+      instructions: [],
+      type: '',
+      authorId: '',
+      author: '',
+      nutrition_facts: '',
+      time: 0,
+      cuisine: '',
+      cooking_time: '',
+      ratings: []
+    };
   }
 
   async loadCurrentUser() {
@@ -60,7 +77,16 @@ export class AddRecipeComponent {
       alert('Please enter a recipe name');
       return false;
     }
-    if (this.newRecipe.ingredients.length === 0) {
+    if(!this.newRecipe.imagePath.trim()){
+      alert('Please enter an image path');
+      return false;
+    }
+    if(!this.newRecipe.nutrition_facts.trim()){
+      alert('Please enter nutrition facts');
+      return false;
+    }
+    
+      if (this.newRecipe.ingredients.length === 0) {
       alert('Please add at least one ingredient');
       return false;
     }
@@ -101,7 +127,7 @@ export class AddRecipeComponent {
   }
 
   resetForm() {
-    this.newRecipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '');
+    this.newRecipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', []);
     this.ingredientsInput = '';
   }
 
@@ -113,5 +139,9 @@ export class AddRecipeComponent {
     this.newRecipe.ingredients = input.split(',')
       .map(item => item.trim())
       .filter(item => item !== '');
+  }
+
+  navigateToRecipes() {
+    this.router.navigate(['/recipes']);
   }
 }
