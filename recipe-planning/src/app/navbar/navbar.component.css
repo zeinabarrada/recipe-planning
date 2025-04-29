@@ -1,5 +1,5 @@
 .navbar {
-  background-color: #f8f9fa;
+  background-color: #ffffff;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -15,6 +15,12 @@
 .navbar-brand a {
   color: #333;
   text-decoration: none;
+  transition: color 0.3s;
+  font-size: 1.8rem;
+}
+
+.navbar-brand a:hover {
+  color: #f97316; /* Primary blue on hover */
 }
 
 .navbar-menu {
@@ -40,11 +46,13 @@
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  transition: background-color 0.2s;
+  transition: color 0.3s;
+  font-size: 1.3rem;
 }
 
 .navbar-item:hover {
-  background-color: #e9ecef;
+  background-color: transparent; /* No background */
+  color: #f97316; /* Change only text color on hover */
 }
 
 .buttons {
@@ -57,24 +65,29 @@
   border-radius: 4px;
   text-decoration: none;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 1.1rem;
 }
 
+/* Primary Button */
 .button.is-primary {
-  background-color: #007bff;
+  background-color: #f97316;
   color: white;
 }
 
 .button.is-primary:hover {
-  background-color: #0056b3;
+  background-color: #f97316; /* Darker blue on hover */
 }
 
+/* Light Button */
 .button.is-light {
   background-color: #f8f9fa;
   color: #333;
   border: 1px solid #dee2e6;
+  font-size: 1.1rem;
 }
 
 .button.is-light:hover {
-  background-color: #e9ecef;
+  background-color: #f1f3f5; /* Very subtle lighter hover */
+  color: #f97316; /* Change text color slightly */
 }

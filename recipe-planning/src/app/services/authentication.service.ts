@@ -13,20 +13,27 @@ export class AuthenticationService {
   isAuth = new BehaviorSubject<boolean>(false);
 
   constructor(private firestore: Firestore, private userService: UserService) {
+    // get users from database
     this.initializeUsers();
-    const storedUser = localStorage.getItem('currentUser');
+
+    const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      this.currentUser.next(
-        this.userService.createUser(
+      try {
+        const userData = JSON.parse(storedUser);
+        const user = this.userService.createUser(
           userData.email,
           userData.username,
           userData.password,
           userData.id,
-          userData.following,
-          userData.followers
-        )
-      );
+          userData.following || [],
+          userData.followers || []
+        );
+        this.currentUser.next(user);
+        this.isAuth.next(true);
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('currentUser');
+      }
     }
   }
 
@@ -40,8 +47,8 @@ export class AuthenticationService {
         data['username'],
         data['password'],
         doc.id,
-        data['following'],
-        data['followers']
+        data['following'] || [],
+        data['followers'] || []
       );
     });
     console.log('Initialized users:', this.users);
@@ -56,27 +63,39 @@ export class AuthenticationService {
     this.currentUser.next(user);
     localStorage.setItem(
       'currentUser',
-      JSON.stringify({ email, username, password, id: user.id })
+      JSON.stringify({
+        email: user.email,
+        username: user.username,
+        password: user.getPassword(),
+        id: user.id,
+        following: user.getFollowing(),
+        followers: user.getFollowers()
+      })
     );
   }
 
-  async login(username: string, password: string) {
+  async login(username: string, password: string): Promise<User | null> {
     const user = this.users.find(
-      (user) => user.username === username && user.getPassword() === password
-    );
+      (u) => u.username === username && u.getPassword() === password);
 
     if (user) {
+      const freshUser = await this.userService.getUserByIdInstance(user.id);
+      this.currentUser.next(freshUser);
       this.isAuth.next(true);
-      this.currentUser.next(user);
       localStorage.setItem(
         'currentUser',
         JSON.stringify({
-          email: user.email,
-          username: user.username,
-          id: user.id,
+          email: freshUser.email,
+          username: freshUser.username,
+          id: freshUser.id,
+          following: freshUser.getFollowing(),
+          followers: freshUser.getFollowers(),
         })
       );
+      return freshUser;
     }
+    console.log("Log in user not found");
+    return null;
   }
 
   logout() {

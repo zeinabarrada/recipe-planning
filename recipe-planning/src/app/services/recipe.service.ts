@@ -7,7 +7,7 @@ import {
   getDocs,
   getDoc,
   doc,
-  setDoc
+  setDoc,
 } from '@angular/fire/firestore';
 import { Recipe } from '../models/recipe.model';
 import { BehaviorSubject, from, Observable } from 'rxjs';
@@ -39,19 +39,20 @@ export class RecipeService {
       imagePath: recipe.imagePath,
     });
   }
-  
-    async saveRecipe(recipe: Recipe) {
-      const recipeId = uuidv4(); // generate unique ID like you're doing for users
-      const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
-      await setDoc(recipeRef, {
-        recipe_name: recipe.recipe_name,
-        nutrition_facts: recipe.nutrition_facts,
-        ingredients: recipe.ingredients,
-        instructions: recipe.instructions,
-        type: recipe.type,
-        author: recipe.author,
-      });
-      console.log('Recipe saved with ID:', recipeId);}
+
+  async saveRecipe(recipe: Recipe) {
+    const recipeId = uuidv4(); // generate unique ID like you're doing for users
+    const recipeRef = doc(this.firestore, `recipes/${recipeId}`);
+    await setDoc(recipeRef, {
+      recipe_name: recipe.recipe_name,
+      nutrition_facts: recipe.nutrition_facts,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      type: recipe.type,
+      author: recipe.author,
+    });
+    console.log('Recipe saved with ID:', recipeId);
+  }
 
   getRecipeById(recipeId: string): Observable<Recipe> {
     const recipeRef = doc(this.firestore, 'recipes', recipeId);

@@ -1,13 +1,17 @@
 <nav class="navbar">
   <div class="navbar-brand">
-    <a routerLink="/" class="navbar-item">Recipe Planner</a>
+    <a routerLink="/" class="navbar-item">RecipeVerse</a>
   </div>
 
   <div class="navbar-menu">
     <div class="navbar-start">
       <a routerLink="/recipes" class="navbar-item">Recipes</a>
-      <a *ngIf="currentUser" routerLink="/meal" class="navbar-item">Meal Plan</a>
-      <a *ngIf="currentUser" routerLink="/profile" class="navbar-item">My Profile</a>
+      <a *ngIf="currentUser" routerLink="/meal" class="navbar-item"
+        >Meal Plan</a
+      >
+      <a *ngIf="currentUser" routerLink="/profile" class="navbar-item"
+        >My Profile</a
+      >
     </div>
 
     <div class="navbar-end">
@@ -19,9 +23,13 @@
           <a *ngIf="!currentUser" routerLink="/" class="button is-light">
             Log in
           </a>
-          <a *ngIf="currentUser" routerLink="/profile" class="button is-light">
-            {{ currentUser.username }}
-          </a>
+          <button
+            *ngIf="currentUser"
+            class="button is-light"
+            (click)="onLogout()"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </div>
