@@ -27,6 +27,8 @@ export class UserService {
             password: user.getPassword(),
             following: user.getFollowing(),
             followers: user.getFollowers(),
+            savedRecipes: user.savedRecipes,
+            mealPlanId: user.mealPlanId
         });
         user.id = docRef.id;
         return user;
@@ -184,7 +186,9 @@ export class UserService {
             data['password'],
             id,
             data['following'] || [],
-            data['followers'] || []
+            data['followers'] || [],
+            data['savedRecipes'] || [],
+            data['mealPlanId'] || ''
         );
     }
 
@@ -202,7 +206,9 @@ export class UserService {
                     data['password'],
                     data['id'],
                     data['following'] || [],
-                    data['followers'] || []
+                    data['followers'] || [],
+                    data['savedRecipes'] || [],
+                    data['mealPlanId'] || ''
                 );
             })
         );
@@ -236,7 +242,9 @@ export class UserService {
         password: string,
         id: string = '',
         following: string[] = [],
-        followers: string[] = []
+        followers: string[] = [],
+        savedRecipes: string[] = [],
+        mealPlanId: string = ''
     ): User {
         return new User(
             this.firestore,
@@ -245,7 +253,9 @@ export class UserService {
             password,
             id,
             following,
-            followers
+            followers,
+            savedRecipes,
+            mealPlanId
         );
     }
 
@@ -280,8 +290,8 @@ export class UserService {
         }
     }
 
-    getSavedRecipes(userId: string): Observable<string[]> {
-        if (!userId) {
+    getSavedRecipes(user: User): Observable<Recipe[]> {
+        if (!user.id) {
             console.error('Invalid user ID provided to getSavedRecipes');
             return from(Promise.resolve([]));
         }
@@ -289,14 +299,54 @@ export class UserService {
         const savedRecipesRef = collection(
             this.firestore,
             'users',
-            userId,
+            user.id,
             'savedRecipes'
         );
+        return from(getDocs(savedRecipesRef).then(async (snapshot) => {
+            const savedRecipeIds = snapshot.docs.map((doc) => doc.data()['recipeId']);
 
-        return from(
-            getDocs(savedRecipesRef).then((snapshot) =>
-                snapshot.docs.map((doc) => doc.data()['recipeId'])
-            )
-        );
+            // Get all recipe documents
+            const recipesRef = collection(this.firestore, 'recipes');
+            const recipesSnapshot = await getDocs(recipesRef);
+
+            // Filter recipes that are in savedRecipeIds
+            return recipesSnapshot.docs
+                .filter((doc) => savedRecipeIds.includes(doc.id))
+                .map((doc) => {
+                    const data = doc.data();
+                    return new Recipe(
+                        doc.id,
+                        data['recipe_name'],
+                        data['imagePath'],
+                        data['ingredients'],
+                        data['instructions'],
+                        data['type'],
+                        data['authorId'],
+                        data['author'],
+                        data['nutrition_facts'],
+                        data['time'],
+                        data['cuisine'],
+                        data['cooking_time']
+                    );
+                });
+        }));
+    }
+
+    async getMealPlanId(userId: string): Promise<string | null> {
+        if (!userId) {
+            console.error('Invalid user ID provided to getMealPlan');
+            return null;
+        }
+
+        const userRef = doc(this.firestore, 'users', userId);
+        const userDoc = await getDoc(userRef);
+        const userData = userDoc.data();
+
+        if (!userData || !userData['mealPlanId']) {
+            console.log('No meal plan found for user');
+            return null;
+        }
+
+        return userData['mealPlanId'];
     }
 }

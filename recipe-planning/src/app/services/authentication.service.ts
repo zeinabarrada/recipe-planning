@@ -48,7 +48,7 @@ export class AuthenticationService {
         data['password'],
         doc.id,
         data['following'] || [],
-        data['followers'] || []
+        data['followers'] || [],
       );
     });
     console.log('Initialized users:', this.users);
@@ -90,6 +90,8 @@ export class AuthenticationService {
           id: freshUser.id,
           following: freshUser.getFollowing(),
           followers: freshUser.getFollowers(),
+          savedRecipes: freshUser.savedRecipes,
+          mealPlanId: freshUser.mealPlanId,
         })
       );
       return freshUser;

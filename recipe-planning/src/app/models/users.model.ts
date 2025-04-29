@@ -11,7 +11,6 @@ export class User {
     public following: string[] = [],
     public followers: string[] = [],
     public savedRecipes: string[] = [],
-    public mealPlans: string[] = [],
     public mealPlanId: string = ''
   ) { }
 
@@ -25,13 +24,6 @@ export class User {
 
   getUser(): User {
     return this;
-  }
-
-  getUserByEmail(email: string): User | null {
-    if (this.email === email) {
-      return this;
-    }
-    return null;
   }
 
   getUserByUsername(username: string): User | null {
@@ -77,6 +69,8 @@ export class User {
       id: this.id,
       following: this.following,
       followers: this.followers,
+      savedRecipes: this.savedRecipes,
+      mealPlanId: this.mealPlanId
     };
   }
 
@@ -90,7 +84,6 @@ export class User {
       data.following || [],
       data.followers || [],
       data.savedRecipes || [],
-      data.mealPlans || [],
       data.mealPlanId || ''
     );
     return user;

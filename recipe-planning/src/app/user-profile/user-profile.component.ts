@@ -39,7 +39,7 @@ export class UserProfileComponent implements OnInit {
     this.authService.getUser().subscribe(async (user) => {
       this.currentUser = user;
       if (this.currentUser) {
-        await this.loadSavedRecipes(this.currentUser.id);
+        await this.loadSavedRecipes();
         await this.loadFollowersList();
         await this.loadFollowingList();
       }
@@ -122,13 +122,13 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  loadSavedRecipes(userId: string): void {
-    if (!userId) {
+  loadSavedRecipes(): void {
+    if (!this.currentUser) {
       console.error('Invalid user ID provided to loadSavedRecipes');
       return;
     }
 
-    this.userService.getSavedRecipes(userId).subscribe({
+    this.userService.getSavedRecipes(this.currentUser).subscribe({
       next: (savedRecipeIds) => {
         console.log('Saved recipe IDs:', savedRecipeIds);
         if (savedRecipeIds.length === 0) {
@@ -136,8 +136,8 @@ export class UserProfileComponent implements OnInit {
           return;
         }
 
-        const recipeObservables = savedRecipeIds.map((id) =>
-          this.recipeService.getRecipeById(id)
+        const recipeObservables = savedRecipeIds.map((recipe) =>
+          this.recipeService.getRecipeById(recipe.id)
         );
 
         forkJoin(recipeObservables).subscribe({

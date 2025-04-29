@@ -37,9 +37,10 @@ export class MealPlanComponent implements OnInit {
       this.currentUser = user;
       if (this.currentUser) {
         await this.loadRecipes();
-        await this.loadMealPlan();
+        console.log("current user", this.currentUser);
       }
     });
+    console.log("current user", this.currentUser);
   }
 
   async loadRecipes() {
@@ -50,19 +51,6 @@ export class MealPlanComponent implements OnInit {
       }
     } catch (error) {
       console.error('Error loading recipes:', error);
-    }
-  }
-
-  async loadMealPlan() {
-    if (!this.currentUser) return;
-
-    try {
-      const savedMealPlan = await this.mealPlanService.getMealPlan(this.currentUser.id);
-      if (savedMealPlan) {
-        this.mealPlan = savedMealPlan.mealPlan;
-      }
-    } catch (error) {
-      console.error('Error loading meal plan:', error);
     }
   }
 
