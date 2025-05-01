@@ -74,17 +74,18 @@
     </div>
 
     <div class="form-group">
-      <label for="instructions">Instructions *</label>
+      <label for="instructions">Instructions * (separate with periods or new lines)</label>
       <textarea
         id="instructions"
         name="instructions"
-        [(ngModel)]="newRecipe.instructions"
+        [(ngModel)]="instructionsInput"
+        (ngModelChange)="handleInstructionsInput($event)"
         #instructions="ngModel"
         required
-        placeholder="Enter step-by-step instructions"
+        placeholder="e.g., Mix ingredients. Bake for 20 minutes."
       ></textarea>
       <div class="error-message" *ngIf="instructions.invalid && (instructions.dirty || instructions.touched)">
-        Instructions are required
+        At least one instruction is required
       </div>
     </div>
 

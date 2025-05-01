@@ -12,6 +12,8 @@ export class Recipe {
     public time: number,
     public cuisine: string,
     public cooking_time: string = '',
-    public ratings: { userId: string; rating: number }[] = []
+    public ratings: { userId: string; rating: number }[] = [],
+    public likes: number = 0,
+    public likedBy: string[] = []
   ) {}
 }

@@ -26,11 +26,12 @@ export class RecipeService {
     return recipes as Observable<Recipe[]>; // This will return recipes with their 'id' field
   }
 
-  addRecipe(recipe: Recipe) {
+  async addRecipe(recipe: Recipe): Promise<string> {
     const recipeCollection = collection(this.firestore, 'recipes');
-    addDoc(recipeCollection, {
+    const docRef = await addDoc(recipeCollection, {
       recipe_name: recipe.recipe_name,
       author: recipe.author,
+      authorId: recipe.authorId,
       nutrition_facts: recipe.nutrition_facts,
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
@@ -38,7 +39,12 @@ export class RecipeService {
       time: recipe.time,
       cuisine: recipe.cuisine,
       imagePath: recipe.imagePath,
+      cooking_time: recipe.cooking_time,
+      ratings: recipe.ratings,
+      likes: recipe.likes,
+      likedBy: recipe.likedBy
     });
+    return docRef.id;
   }
 
   async saveRecipe(recipe: Recipe) {
@@ -65,17 +71,20 @@ export class RecipeService {
         }
         return new Recipe(
           recipeId,
-          data['recipe_name'],
-          data['imagePath'],
-          data['ingredients'],
-          data['instructions'],
-          data['type'],
-          data['authorId'],
-          data['author'],
-          data['nutrition_facts'],
-          data['time'],
-          data['cuisine'],
-          data['cooking_time']
+          data['recipe_name'] || '',
+          data['imagePath'] || '',
+          data['ingredients'] || [],
+          data['instructions'] || [],
+          data['type'] || '',
+          data['authorId'] || '',
+          data['author'] || '',
+          data['nutrition_facts'] || '',
+          data['time'] || 0,
+          data['cuisine'] || '',
+          data['cooking_time'] || '',
+          data['ratings'] || [],
+          data['likes'] || 0,
+          data['likedBy'] || []
         );
       })
     );
@@ -136,5 +145,15 @@ export class RecipeService {
     const userRating = ratings.find((r: { userId: string; rating: number }) => r.userId === userId);
     
     return userRating ? userRating.rating : 0;
+  }
+
+  async updateRecipe(recipe: Recipe) {
+    console.log('Calling updateRecipe with:', recipe);
+    const recipeRef = doc(this.firestore, 'recipes', recipe.id);
+    await updateDoc(recipeRef, {
+      likes: recipe.likes,
+      likedBy: recipe.likedBy
+    });
+    console.log('updateRecipe complete for:', recipe.id);
   }
 }

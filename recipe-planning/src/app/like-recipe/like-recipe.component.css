@@ -1,0 +1,37 @@
+.like-btn {
+  display: flex;
+  align-items: center;
+  background: #eee;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 16px 8px 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.heart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #bbb;
+  border-radius: 50%;
+  margin-right: 8px;
+  transition: background 0.2s;
+}
+
+.like-btn.liked .heart-icon {
+  background: #f8d7da;
+}
+
+.like-count {
+  font-size: 1.1em;
+  color: #333;
+  font-weight: 500;
+}
+
+.like-btn:active .heart-icon {
+  background: #e0e0e0;
+} 

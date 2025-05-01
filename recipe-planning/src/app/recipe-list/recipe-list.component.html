@@ -95,7 +95,13 @@
 
   <!-- RECIPES LIST -->
   <div class="recipe-list">
-    <div *ngFor="let recipe of recipesObservable | async" class="recipe-card">
+    <div *ngFor="let recipe of recipesObservable | async" class="recipe-card" style="position: relative;">
+      <app-like-recipe
+        [recipe]="recipe"
+        [currentUser]="currentUser"
+        (likeToggled)="onLikeToggled($event)"
+        style="position: absolute; top: 16px; right: 16px; z-index: 2;"
+      ></app-like-recipe>
       <h2>{{ recipe.recipe_name }}</h2>
 
       <div class="recipe-image-container">
@@ -164,7 +170,7 @@
               type="number"
               id="rating"
               name="rating"
-              [(ngModel)]="newRating"
+              [(ngModel)]="newRating[recipe.id]"
               min="1"
               max="5"
               required
@@ -174,7 +180,7 @@
             <textarea
               id="review"
               name="review"
-              [(ngModel)]="newReview"
+              [(ngModel)]="newReview[recipe.id]"
               required
             ></textarea>
 

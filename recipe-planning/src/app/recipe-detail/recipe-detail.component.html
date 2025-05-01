@@ -1,4 +1,13 @@
-<h1>{{ recipe?.recipe_name }}</h1>
+<div style="position: relative;">
+  <app-like-recipe
+    *ngIf="recipe && currentUser"
+    [recipe]="recipe!"
+    [currentUser]="currentUser"
+    (likeToggled)="onLikeToggled($event)"
+    style="position: absolute; top: 0; right: 0; z-index: 2;"
+  ></app-like-recipe>
+  <h1>{{ recipe?.recipe_name }}</h1>
+</div>
 <img [src]="recipe?.imagePath" alt="Recipe Image" />
 <p>{{ recipe?.author }}</p>
 <p>{{ recipe?.type }}</p>
