@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, doc, getDoc, updateDoc, query, where, getDocs } from '@angular/fire/firestore';
-import { ShoppingList, IngredientItem, INGREDIENT_CATEGORIES } from '../models/shopping-list.model';
+import { Firestore, collection, addDoc, doc, getDoc, updateDoc, query, where, getDocs, deleteDoc } from '@angular/fire/firestore';
+import { ShoppingList, ShoppingListItem, INGREDIENT_CATEGORIES } from '../models/shopping-list.model';
 import { Recipe } from '../models/recipe.model';
 import { Observable, from } from 'rxjs';
 
@@ -8,14 +8,79 @@ import { Observable, from } from 'rxjs';
   providedIn: 'root'
 })
 export class ShoppingListService {
+  private readonly ingredientCategories: { [key: string]: string[] } = {
+    'Produce': ['apple', 'banana', 'tomato', 'onion', 'garlic', 'lettuce', 'carrot', 'potato', 'herbs'],
+    'Meat & Seafood': ['chicken', 'beef', 'pork', 'fish', 'shrimp', 'lamb', 'turkey'],
+    'Dairy & Eggs': ['milk', 'cheese', 'yogurt', 'butter', 'cream', 'egg'],
+    'Pantry': ['flour', 'sugar', 'salt', 'pepper', 'oil', 'vinegar', 'pasta', 'rice'],
+    'Spices & Seasonings': ['cinnamon', 'cumin', 'paprika', 'oregano', 'basil'],
+    'Canned & Jarred': ['tomato sauce', 'beans', 'corn', 'broth'],
+    'Other': []
+  };
+
   constructor(private firestore: Firestore) {}
 
+  private categorizeIngredient(ingredient: string): string {
+    ingredient = ingredient.toLowerCase();
+    for (const [category, items] of Object.entries(this.ingredientCategories)) {
+      if (items.some(item => ingredient.includes(item))) {
+        return category;
+      }
+    }
+    return 'Other';
+  }
+
+  private parseIngredient(ingredientString: string): ShoppingListItem {
+    // Basic parsing of ingredient strings like "2 cups flour" or "1 lb chicken"
+    const regex = /^(\d*\.?\d*)\s*([a-zA-Z]*)\s*(.+)$/;
+    const match = ingredientString.match(regex);
+
+    if (match) {
+      const [, quantity, unit, ingredient] = match;
+      return {
+        ingredient: ingredient.trim(),
+        quantity: parseFloat(quantity) || 1,
+        unit: unit.trim() || 'unit',
+        category: this.categorizeIngredient(ingredient)
+      };
+    }
+
+    return {
+      ingredient: ingredientString,
+      quantity: 1,
+      unit: 'unit',
+      category: this.categorizeIngredient(ingredientString)
+    };
+  }
+
+  private aggregateIngredients(recipes: Recipe[]): ShoppingListItem[] {
+    const ingredientMap = new Map<string, ShoppingListItem>();
+
+    recipes.forEach(recipe => {
+      recipe.ingredients.forEach(ingredientString => {
+        const parsedIngredient = this.parseIngredient(ingredientString);
+        const key = `${parsedIngredient.ingredient}-${parsedIngredient.unit}`;
+
+        if (ingredientMap.has(key)) {
+          const existing = ingredientMap.get(key)!;
+          existing.quantity += parsedIngredient.quantity;
+        } else {
+          ingredientMap.set(key, parsedIngredient);
+        }
+      });
+    });
+
+    return Array.from(ingredientMap.values())
+      .sort((a, b) => a.category.localeCompare(b.category));
+  }
+
   async createShoppingList(userId: string, recipes: Recipe[]): Promise<string> {
-    const ingredients = this.organizeIngredients(recipes);
+    const items = this.aggregateIngredients(recipes);
+    
     const shoppingList: ShoppingList = {
       userId,
-      dateCreated: new Date(),
-      ingredients,
+      items,
+      createdAt: new Date(),
       recipeIds: recipes.map(recipe => recipe.id)
     };
 
@@ -23,63 +88,14 @@ export class ShoppingListService {
     return docRef.id;
   }
 
-  private organizeIngredients(recipes: Recipe[]): IngredientItem[] {
-    const ingredientMap = new Map<string, IngredientItem>();
-
-    recipes.forEach(recipe => {
-      recipe.ingredients.forEach(ingredient => {
-        const normalizedName = ingredient.toLowerCase().trim();
-        const existingItem = ingredientMap.get(normalizedName);
-
-        if (existingItem) {
-          existingItem.recipes.push(recipe.recipe_name);
-        } else {
-          ingredientMap.set(normalizedName, {
-            name: ingredient,
-            category: this.categorizeIngredient(ingredient),
-            recipes: [recipe.recipe_name]
-          });
-        }
-      });
-    });
-
-    // Sort ingredients by category and name
-    return Array.from(ingredientMap.values()).sort((a, b) => {
-      if (a.category === b.category) {
-        return a.name.localeCompare(b.name);
-      }
-      return INGREDIENT_CATEGORIES.indexOf(a.category) - INGREDIENT_CATEGORIES.indexOf(b.category);
-    });
-  }
-
-  private categorizeIngredient(ingredient: string): string {
-    const lowerIngredient = ingredient.toLowerCase();
-    
-    // Define category patterns
-    const categoryPatterns = {
-      'Produce': /(fresh|vegetable|fruit|lettuce|tomato|onion|potato|carrot|pepper|garlic|herb)/,
-      'Meat & Seafood': /(chicken|beef|pork|fish|shrimp|salmon|meat|turkey)/,
-      'Dairy & Eggs': /(milk|cheese|cream|yogurt|butter|egg)/,
-      'Pantry': /(flour|sugar|rice|pasta|oil|vinegar|sauce|can|bean|stock|broth)/,
-      'Spices & Seasonings': /(salt|pepper|spice|seasoning|powder|oregano|basil|thyme)/,
-      'Baking': /(baking|powder|soda|yeast|vanilla|chocolate)/,
-      'Frozen': /(frozen|ice)/
-    };
-
-    // Check each category pattern
-    for (const [category, pattern] of Object.entries(categoryPatterns)) {
-      if (pattern.test(lowerIngredient)) {
-        return category;
-      }
-    }
-
-    return 'Other';
-  }
-
   async getShoppingList(listId: string): Promise<ShoppingList | null> {
     const docRef = doc(this.firestore, 'shopping-lists', listId);
     const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? docSnap.data() as ShoppingList : null;
+    
+    if (docSnap.exists()) {
+      return docSnap.data() as ShoppingList;
+    }
+    return null;
   }
 
   async getUserShoppingLists(userId: string): Promise<ShoppingList[]> {
@@ -89,5 +105,10 @@ export class ShoppingListService {
     );
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }) as ShoppingList);
+  }
+
+  async deleteShoppingList(listId: string): Promise<void> {
+    const docRef = doc(this.firestore, 'shopping-lists', listId);
+    await deleteDoc(docRef);
   }
 } 

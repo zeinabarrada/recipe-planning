@@ -1,16 +1,16 @@
-export interface IngredientItem {
-  name: string;
-  quantity?: string;
+export interface ShoppingListItem {
+  ingredient: string;
+  quantity: number;
+  unit: string;
   category: string;
-  recipes: string[]; // names of recipes that need this ingredient
 }
 
 export interface ShoppingList {
   id?: string;
   userId: string;
-  dateCreated: Date;
-  ingredients: IngredientItem[];
-  recipeIds: string[]; // IDs of recipes included in this list
+  items: ShoppingListItem[];
+  createdAt: Date;
+  recipeIds: string[];
 }
 
 // Common ingredient categories for organization
