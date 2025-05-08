@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { RecipeService } from '../services/recipe.service';
 import { Recipe } from '../models/recipe.model';
+import { MealPlanService } from '../services/meal-plan.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -21,6 +22,7 @@ export class UserProfileComponent implements OnInit {
   targetUser: User | null = null;
   isFollowing: boolean = false;
   savedRecipes: Recipe[] = [];
+  mealPlanId: string = '';
 
   followersList: User[] = [];
   followingList: User[] = [];
@@ -32,14 +34,16 @@ export class UserProfileComponent implements OnInit {
     private authService: AuthenticationService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private mealPlanService: MealPlanService
   ) { }
 
   async ngOnInit() {
     this.authService.getUser().subscribe(async (user) => {
       this.currentUser = user;
       if (this.currentUser) {
-        await this.loadSavedRecipes();
+        this.mealPlanId = this.currentUser.mealPlanId;
+        this.loadSavedRecipes();
         await this.loadFollowersList();
         await this.loadFollowingList();
       }
@@ -166,8 +170,6 @@ export class UserProfileComponent implements OnInit {
     const freshUser = await this.userService.getUserByIdInstance(this.currentUser.id);
     this.followersIds = freshUser.getFollowers();
 
-    console.log('Followers IDs:', this.followersIds);
-
     for (const id of this.followersIds) {
       try {
         const user = await this.userService.getUserByIdInstance(id);
@@ -176,7 +178,6 @@ export class UserProfileComponent implements OnInit {
         console.error('Error loading follower:', error);
       }
     }
-    console.log('Followers list:', this.followersList);
   }
 
   async loadFollowingList() {
@@ -187,8 +188,6 @@ export class UserProfileComponent implements OnInit {
     const freshUser = await this.userService.getUserByIdInstance(this.currentUser.id);
     this.followingIds = freshUser.getFollowing();
 
-    console.log('Following IDs:', this.followingIds);
-
     for (const id of this.followingIds) {
       try {
         const user = await this.userService.getUserByIdInstance(id);
@@ -197,7 +196,6 @@ export class UserProfileComponent implements OnInit {
         console.error('Error loading following user:', error);
       }
     }
-    console.log('Following list:', this.followingList);
   }
 
   async removeFollower(followerId: string) {

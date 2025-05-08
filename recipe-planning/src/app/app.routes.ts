@@ -4,6 +4,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { AddRecipeComponent } from './post-recipe/post-recipe.component';
 import { MealPlanComponent } from './meal-plan/meal-plan.component';
+import { ShoppingListsComponent } from './shopping-list/shopping-lists.component';
+
 import { LandingComponent } from './landing/landing.component';
 import { RegisterComponent } from './authentication/register/register.component';
 import { LoginComponent } from './authentication/login/login.component';
@@ -54,6 +56,10 @@ export const routes: Routes = [
     path: 'meal',
     component: MealPlanComponent,
     title: 'Meal Plan - Recipe Planner',
+  },
+  {
+    path: 'shopping-lists',
+    component: ShoppingListsComponent,
   },
   {
     path: '**',

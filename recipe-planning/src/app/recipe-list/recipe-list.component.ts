@@ -8,14 +8,7 @@ import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { FormsModule, NgModel } from '@angular/forms';
-
-import {
-  Firestore,
-  collection,
-  addDoc,
-  collectionData,
-} from '@angular/fire/firestore';
-import { ShoppingListService } from '../services/shopping-list.service';
+import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-recipe-list',
@@ -35,19 +28,17 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   selectedRecipeId: string | null = null;
   newRating: number = 5;
   newReview: string = '';
-  reviewsMap: { [key: string]: Observable<any[]> } = {}; // recipeId -> reviews array
+  reviewsMap: { [key: string]: Observable<any[]> } = {};
   userRatings: { [key: string]: number } = {};
   hoverRating: number = 0;
   showReviews: { [key: string]: boolean } = {};
   showAddReview: { [key: string]: boolean } = {};
   showFilters: boolean = false;
-  selectedRecipes = new Set<string>();
-  showShoppingListButton = false;
+
   constructor(
     private recipeService: RecipeService,
     private userService: UserService,
     private authService: AuthenticationService,
-    private shoppingListService: ShoppingListService,
     private router: Router,
     private firestore: Firestore
   ) {
@@ -239,41 +230,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     if (!this.showAddReview[recipeId]) {
       this.newRating = 5;
       this.newReview = '';
-    }
-  }
-  toggleRecipeSelection(recipeId: string) {
-    if (this.selectedRecipes.has(recipeId)) {
-      this.selectedRecipes.delete(recipeId);
-    } else {
-      this.selectedRecipes.add(recipeId);
-    }
-    this.showShoppingListButton = this.selectedRecipes.size > 0;
-  }
-
-  async generateShoppingList() {
-    if (!this.currentUser) {
-      alert('Please log in to generate a shopping list');
-      return;
-    }
-
-    if (this.selectedRecipes.size === 0) {
-      alert('Please select at least one recipe');
-      return;
-    }
-
-    const selectedRecipesList = this.allRecipes.filter((recipe) =>
-      this.selectedRecipes.has(recipe.id)
-    );
-
-    try {
-      const listId = await this.shoppingListService.createShoppingList(
-        this.currentUser.id,
-        selectedRecipesList
-      );
-      this.router.navigate(['/shopping-list', listId]);
-    } catch (error) {
-      console.error('Error generating shopping list:', error);
-      alert('Failed to generate shopping list. Please try again.');
     }
   }
 }

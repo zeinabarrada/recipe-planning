@@ -1,0 +1,50 @@
+<div class="shopping-list-container">
+  <div *ngIf="!shoppingList" class="loading-state">
+    <mat-card>
+      <mat-card-content>
+        <p>Loading shopping list...</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="shoppingList">
+    <mat-card class="shopping-list-card">
+      <mat-card-header>
+        <mat-card-title>Shopping List</mat-card-title>
+        <mat-card-subtitle>Created on {{ shoppingList.createdAt | date:'medium' }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Category sections -->
+        <div *ngFor="let category of categories" class="category-section">
+          <h3 class="category-title">{{ category }}</h3>
+          <mat-list>
+            <mat-list-item *ngFor="let item of getItemsByCategory(category)" class="shopping-item">
+              <div class="item-content">
+                <mat-checkbox 
+                  [(ngModel)]="checkedItems[item.ingredient]"
+                  color="primary"
+                  class="item-checkbox">
+                  <span [class.checked]="checkedItems[item.ingredient]">
+                    {{ item.quantity }} {{ item.unit }} {{ item.ingredient }}
+                  </span>
+                </mat-checkbox>
+              </div>
+            </mat-list-item>
+          </mat-list>
+          <mat-divider *ngIf="!isLastCategory(category)"></mat-divider>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="categories.length === 0" class="empty-state">
+          <p>No items in the shopping list</p>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-button color="warn" (click)="clearCheckedItems()">Clear Checked Items</button>
+        <button mat-button color="primary" (click)="saveProgress()">Save Progress</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div> 

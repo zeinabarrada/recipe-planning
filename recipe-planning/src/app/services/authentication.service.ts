@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { User } from '../models/users.model';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { UserService } from '../services/user.service';
+import { Recipe } from '../models/recipe.model';
+import { RecipeService } from './recipe.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +14,7 @@ export class AuthenticationService {
   private users: User[] = [];
   isAuth = new BehaviorSubject<boolean>(false);
 
-  constructor(private firestore: Firestore, private userService: UserService) {
+  constructor(private firestore: Firestore, private userService: UserService, private recipeService: RecipeService) {
     // get users from database
     this.initializeUsers();
 
@@ -26,10 +28,13 @@ export class AuthenticationService {
           userData.password,
           userData.id,
           userData.following || [],
-          userData.followers || []
+          userData.followers || [],
+          userData.savedRecipes || [],
+          userData.mealPlanId || null,
         );
         this.currentUser.next(user);
         this.isAuth.next(true);
+        console.error('stored user:', this.currentUser);
       } catch (error) {
         console.error('Error parsing stored user:', error);
         localStorage.removeItem('currentUser');
@@ -40,7 +45,7 @@ export class AuthenticationService {
   async initializeUsers() {
     const usersCollection = collection(this.firestore, 'users');
     const usersSnapshot = await getDocs(usersCollection);
-    this.users = usersSnapshot.docs.map((doc) => {
+    this.users = await Promise.all(usersSnapshot.docs.map(async (doc) => {
       const data = doc.data();
       return this.userService.createUser(
         data['email'],
@@ -49,8 +54,10 @@ export class AuthenticationService {
         doc.id,
         data['following'] || [],
         data['followers'] || [],
+        data['savedRecipes'] || [],
+        data['mealPlanId'] || null
       );
-    });
+    }));
     console.log('Initialized users:', this.users);
   }
 
@@ -77,7 +84,6 @@ export class AuthenticationService {
   async login(username: string, password: string): Promise<User | null> {
     const user = this.users.find(
       (u) => u.username === username && u.getPassword() === password);
-
     if (user) {
       const freshUser = await this.userService.getUserByIdInstance(user.id);
       this.currentUser.next(freshUser);
@@ -124,6 +130,8 @@ export class AuthenticationService {
         id: user.id,
         following: user.getFollowing(),
         followers: user.getFollowers(),
+        savedRecipes: user.savedRecipes,
+        mealPlanId: user.mealPlanId,
       })
     );
   }
