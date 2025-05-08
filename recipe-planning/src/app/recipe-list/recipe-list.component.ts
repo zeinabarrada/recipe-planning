@@ -73,6 +73,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     });
     this.recipeService.getRecipes().subscribe((recipes) => {
       this.allRecipes = recipes;
+      this.filteredRecipes = [...recipes];
     });
   }
 
@@ -115,15 +116,42 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     this.searchTerm = '';
     this.filteredRecipes = [];
   }
+  displayedRecipes(): Recipe[] {
+    if (this.filteredRecipes.length > 0 || this.showFilters) {
+      return this.filteredRecipes;
+    }
+    return this.allRecipes;
+  }
   selectFilter(filterType: string, filterValue: string | number) {
     if (filterValue === '' || filterValue === 0) {
-      this.filteredRecipes = this.allRecipes;
-    } else {
-      this.filteredRecipes = this.allRecipes.filter(
-        (recipe) => recipe[filterType as keyof Recipe] === filterValue
-      );
+      this.filteredRecipes = [...this.allRecipes];
+      return;
     }
+
+    this.filteredRecipes = this.allRecipes.filter((recipe) => {
+      switch (filterType) {
+        case 'cookingTime':
+          return recipe.cooking_time <= filterValue;
+        case 'cuisine':
+          return recipe.cuisine === filterValue;
+        case 'type':
+          return recipe.type === filterValue.toString().toLowerCase();
+        case 'ingredient':
+          return recipe.ingredients.some((ing) =>
+            ing.toLowerCase().includes(filterValue.toString().toLowerCase())
+          );
+        default:
+          return recipe[filterType as keyof Recipe] === filterValue;
+      }
+    });
+
+    console.log('Filter applied:', {
+      filterType,
+      filterValue,
+      results: this.filteredRecipes.length,
+    });
   }
+
   clearFilters() {
     this.filteredRecipes = [...this.allRecipes];
   }

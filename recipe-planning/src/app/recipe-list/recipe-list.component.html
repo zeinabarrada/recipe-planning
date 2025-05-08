@@ -68,9 +68,9 @@
     <div class="filter-group">
       <h4>Cuisine:</h4>
       <button (click)="selectFilter('cuisine', '')">All</button>
-      <button (click)="selectFilter('cuisine', 'italian')">Italian</button>
-      <button (click)="selectFilter('cuisine', 'mexican')">Mexican</button>
-      <button (click)="selectFilter('cuisine', 'indian')">Indian</button>
+      <button (click)="selectFilter('cuisine', 'Italian')">Italian</button>
+      <button (click)="selectFilter('cuisine', 'American')">American</button>
+      <button (click)="selectFilter('cuisine', 'Indian')">Indian</button>
     </div>
 
     <div class="filter-group">
@@ -95,7 +95,7 @@
 
   <!-- RECIPES LIST -->
   <div class="recipe-list">
-    <div *ngFor="let recipe of recipesObservable | async" class="recipe-card">
+    <div *ngFor="let recipe of displayedRecipes()" class="recipe-card">
       <h2>{{ recipe.recipe_name }}</h2>
 
       <div class="recipe-image-container">

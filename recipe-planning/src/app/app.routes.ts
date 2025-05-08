@@ -4,12 +4,24 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { AddRecipeComponent } from './post-recipe/post-recipe.component';
 import { MealPlanComponent } from './meal-plan/meal-plan.component';
-
+import { LandingComponent } from './landing/landing.component';
+import { RegisterComponent } from './authentication/register/register.component';
+import { LoginComponent } from './authentication/login/login.component';
 export const routes: Routes = [
   {
     path: '',
-    component: AuthenticationComponent,
-    title: 'Login/Signup - Recipe Planner',
+    component: LandingComponent,
+    title: 'Recipe Planner',
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    title: 'Register - Recipe Planner',
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+    title: 'Login - Recipe Planner',
   },
   {
     path: 'profile',
@@ -46,5 +58,5 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: '',
-  }
+  },
 ];

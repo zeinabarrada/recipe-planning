@@ -1,0 +1,43 @@
+<div ngIf="!isAuthenticated">
+  <div class="auth-modal">
+    <h2>Create Account</h2>
+    <p>Sign up for your MealMaestro account</p>
+    <form [formGroup]="registerForm" (ngSubmit)="handleRegister()">
+      <div class="form-group">
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Enter your username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+      <button type="submit" [disabled]="registerForm.invalid">
+        <span style="font-size: 1.2em; vertical-align: middle">→</span> Register
+      </button>
+    </form>
+    <div class="switch-link">
+      Already have an account?
+      <a routerLink="/login">Sign in</a>
+    </div>
+  </div>
+</div>

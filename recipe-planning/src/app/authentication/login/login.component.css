@@ -1,0 +1,96 @@
+/* Modal/Card Container */
+.auth-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  max-width: 480px;
+  margin: 80px auto;
+  padding: 48px 40px 32px 40px;
+  position: relative;
+  text-align: center;
+}
+
+/* Heading */
+.auth-modal h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #22223b;
+  margin-bottom: 8px;
+}
+
+.auth-modal p {
+  color: #555;
+  font-size: 1.15rem;
+  margin-bottom: 32px;
+}
+
+/* Form fields */
+.auth-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-modal label {
+  text-align: left;
+  font-weight: 600;
+  color: #22223b;
+  margin-bottom: 6px;
+}
+
+.auth-modal input[type="text"],
+.auth-modal input[type="password"],
+.auth-modal input[type="email"] {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  background: #fafbfc;
+  transition: border 0.2s;
+}
+
+.auth-modal input:focus {
+  border: 1.5px solid #8fd400;
+  outline: none;
+}
+
+/* Submit Button */
+.auth-modal button[type="submit"] {
+  background: #8fd400;
+  color: #fff;
+  border: none;
+  padding: 14px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.auth-modal button[type="submit"]:hover {
+  background: #7ac000;
+}
+
+/* Register/Login link */
+.auth-modal .switch-link {
+  margin-top: 24px;
+  color: #555;
+  font-size: 1rem;
+}
+
+.auth-modal .switch-link a {
+  color: #ff9900;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.auth-modal .switch-link a:hover {
+  text-decoration: underline;
+}
