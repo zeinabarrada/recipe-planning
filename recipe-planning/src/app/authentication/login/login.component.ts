@@ -50,7 +50,9 @@ export class LoginComponent {
   loginForm: FormGroup;
   handleLogin() {
     if (this.loginForm.valid) {
-      this.auth.login(this.username, this.password);
+      const username = this.loginForm.value.username;
+      const password = this.loginForm.value.password;
+      this.auth.login(username, password);
       this.isAuthenticated = true;
       this.router.navigate(['/profile']);
     }
