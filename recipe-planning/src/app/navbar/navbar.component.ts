@@ -26,6 +26,8 @@ export class NavbarComponent implements OnInit {
   register: boolean = false;
   isAuthenticated: boolean = false;
 
+  dropdownOpen = false;
+
   ngOnInit() {
     this.authService.getUser().subscribe((user) => {
       this.currentUser = user;
@@ -38,5 +40,13 @@ export class NavbarComponent implements OnInit {
     this.username = '';
     this.password = '';
     this.isAuthenticated = false;
+  }
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  closeDropdown() {
+    setTimeout(() => (this.dropdownOpen = false), 150);
   }
 }

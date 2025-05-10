@@ -11,8 +11,9 @@ export class User {
     public following: string[] = [],
     public followers: string[] = [],
     public savedRecipes: string[] = [],
-    public mealPlanId: string = ''
-  ) { }
+    public mealPlanId: string = '',
+    public avatar: string = ''
+  ) {}
 
   getPassword(): string {
     return this.password;
@@ -70,7 +71,7 @@ export class User {
       following: this.following,
       followers: this.followers,
       savedRecipes: this.savedRecipes,
-      mealPlanId: this.mealPlanId
+      mealPlanId: this.mealPlanId,
     };
   }
 
@@ -84,7 +85,8 @@ export class User {
       data.following || [],
       data.followers || [],
       data.savedRecipes || [],
-      data.mealPlanId || ''
+      data.mealPlanId || '',
+      data.avatar || ''
     );
     return user;
   }

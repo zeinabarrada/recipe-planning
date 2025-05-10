@@ -14,11 +14,15 @@ export class AuthenticationService {
   private users: User[] = [];
   isAuth = new BehaviorSubject<boolean>(false);
 
-  constructor(private firestore: Firestore, private userService: UserService, private recipeService: RecipeService) {
+  constructor(
+    private firestore: Firestore,
+    private userService: UserService,
+    private recipeService: RecipeService
+  ) {
     // get users from database
     this.initializeUsers();
 
-    const storedUser = localStorage.getItem("currentUser");
+    const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       try {
         const userData = JSON.parse(storedUser);
@@ -30,7 +34,7 @@ export class AuthenticationService {
           userData.following || [],
           userData.followers || [],
           userData.savedRecipes || [],
-          userData.mealPlanId || null,
+          userData.mealPlanId || null
         );
         this.currentUser.next(user);
         this.isAuth.next(true);
@@ -45,19 +49,21 @@ export class AuthenticationService {
   async initializeUsers() {
     const usersCollection = collection(this.firestore, 'users');
     const usersSnapshot = await getDocs(usersCollection);
-    this.users = await Promise.all(usersSnapshot.docs.map(async (doc) => {
-      const data = doc.data();
-      return this.userService.createUser(
-        data['email'],
-        data['username'],
-        data['password'],
-        doc.id,
-        data['following'] || [],
-        data['followers'] || [],
-        data['savedRecipes'] || [],
-        data['mealPlanId'] || null
-      );
-    }));
+    this.users = await Promise.all(
+      usersSnapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        return this.userService.createUser(
+          data['email'],
+          data['username'],
+          data['password'],
+          doc.id,
+          data['following'] || [],
+          data['followers'] || [],
+          data['savedRecipes'] || [],
+          data['mealPlanId'] || null
+        );
+      })
+    );
     console.log('Initialized users:', this.users);
   }
 
@@ -76,14 +82,15 @@ export class AuthenticationService {
         password: user.getPassword(),
         id: user.id,
         following: user.getFollowing(),
-        followers: user.getFollowers()
+        followers: user.getFollowers(),
       })
     );
   }
 
   async login(username: string, password: string): Promise<User | null> {
     const user = this.users.find(
-      (u) => u.username === username && u.getPassword() === password);
+      (u) => u.username === username && u.getPassword() === password
+    );
     if (user) {
       const freshUser = await this.userService.getUserByIdInstance(user.id);
       this.currentUser.next(freshUser);
@@ -94,6 +101,7 @@ export class AuthenticationService {
           email: freshUser.email,
           username: freshUser.username,
           id: freshUser.id,
+          avatar: freshUser.avatar,
           following: freshUser.getFollowing(),
           followers: freshUser.getFollowers(),
           savedRecipes: freshUser.savedRecipes,
@@ -102,7 +110,7 @@ export class AuthenticationService {
       );
       return freshUser;
     }
-    console.log("Log in user not found");
+    console.log('Log in user not found');
     return null;
   }
 
@@ -128,6 +136,7 @@ export class AuthenticationService {
         email: user.email,
         username: user.username,
         id: user.id,
+        avatar: user.avatar,
         following: user.getFollowing(),
         followers: user.getFollowers(),
         savedRecipes: user.savedRecipes,
