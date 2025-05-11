@@ -17,7 +17,14 @@ export class NavbarComponent implements OnInit {
   constructor(
     private authService: AuthenticationService,
     private router: Router
-  ) { }
+  ) {}
+
+  email: string = '';
+  username: string = '';
+  password: string = '';
+
+  register: boolean = false;
+  isAuthenticated: boolean = false;
 
   ngOnInit() {
     this.authService.getUser().subscribe((user) => {
@@ -25,8 +32,11 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  onLogout() {
+  handleLogout() {
     this.authService.logout();
-    this.router.navigate(['/']);
+    this.email = '';
+    this.username = '';
+    this.password = '';
+    this.isAuthenticated = false;
   }
 }

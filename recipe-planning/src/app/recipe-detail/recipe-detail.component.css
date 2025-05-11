@@ -1,0 +1,211 @@
+/* Modern Recipe Detail Page CSS */
+.recipe-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.recipe-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.recipe-title h1 {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.recipe-type {
+  display: inline-block;
+  background: #e09f28;
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.recipe-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  color: #7f8c8d;
+  font-size: 0.95rem;
+}
+
+.cuisine-badge {
+  background: #4caf50;
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+}
+
+.cooking-time,
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.material-icons {
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+.recipe-hero {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.recipe-image:hover {
+  transform: scale(1.02);
+}
+
+.recipe-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.ingredients-section,
+.instructions-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.ingredients-section h2,
+.instructions-section h2 {
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ingredients-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ingredients-list li {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+}
+
+.ingredients-list li:before {
+  content: "•";
+  color: #e09f28;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-right: 0.7rem;
+}
+
+.instructions-text {
+  white-space: pre-line;
+  line-height: 1.8;
+}
+
+.additional-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.info-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.info-card h3 {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #2c3e50;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.print-button,
+.save-button {
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.print-button {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.save-button {
+  background: #4caf50;
+  color: white;
+}
+
+.print-button:hover {
+  background: #e0e0e0;
+}
+
+.save-button:hover {
+  background: #3d8b40;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .recipe-content {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-hero {
+    height: 300px;
+  }
+
+  .recipe-meta {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}

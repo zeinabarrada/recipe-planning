@@ -12,6 +12,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RecipeSelectionDialogComponent } from '../recipe-selection-dialog/recipe-selection-dialog.component';
 import { ShoppingListDialogComponent } from '../shopping-list/shopping-list-dialog.component';
 import { Router } from '@angular/router';
+import { MealPlan } from '../models/mealPlan.model';
 
 @Component({
   selector: 'app-meal-plan',
@@ -22,6 +23,7 @@ import { Router } from '@angular/router';
 })
 export class MealPlanComponent implements OnInit {
   currentUser: User | null = null;
+  mealPlanId: string = '';
   recipes: Recipe[] = [];
   mealPlan: (Recipe | null)[][] = Array(7).fill(null).map(() => Array(3).fill(null));
   daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -40,12 +42,48 @@ export class MealPlanComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.authService.getUser().subscribe(async (user) => {
-      this.currentUser = user;
-      if (this.currentUser) {
-        await this.loadRecipes();
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        const user = this.userService.createUser(
+          userData.email,
+          userData.username,
+          userData.password,
+          userData.id,
+          userData.following || [],
+          userData.followers || [],
+          userData.savedRecipes || [],
+          userData.mealPlanId || null,
+        );
+        this.currentUser = user;
+        this.mealPlanId = this.currentUser.mealPlanId;
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
       }
-    });
+    }
+    this.loadRecipes();
+
+    this.loadMealPlan();
+
+  }
+
+  private async loadMealPlan() {
+    if (!this.currentUser || !this.mealPlanId) return;
+
+    try {
+      // getMealPlan may return null if no document exists
+      const doc = await this.mealPlanService.getMealPlan(this.mealPlanId);
+      if (!doc) {
+        console.warn(`No meal plan document found for id ${this.mealPlanId}`);
+        return;
+      }
+      // doc is a MealPlan instance
+      this.mealPlan = doc.mealPlan;
+      console.log("mealplan", this.mealPlan);
+    } catch (error) {
+      console.error('Error loading meal plan:', error);
+    }
   }
 
   async loadRecipes() {
@@ -87,8 +125,9 @@ export class MealPlanComponent implements OnInit {
     if (!this.currentUser) return;
 
     try {
-      await this.mealPlanService.saveMealPlan(this.currentUser.id, this.mealPlan);
+      this.mealPlanId = await this.mealPlanService.saveMealPlan(this.currentUser.id, this.mealPlan);
       console.log('Meal plan saved successfully');
+      this.currentUser.mealPlanId = this.mealPlanId;
     } catch (error) {
       console.error('Error saving meal plan:', error);
     }

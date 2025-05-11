@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, getDocs, query, where, doc, setDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDoc, query, where, doc, setDoc, updateDoc } from '@angular/fire/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { Recipe } from '../models/recipe.model';
 import { UserService } from './user.service';
+
 
 type MealType = 'breakfast' | 'lunch' | 'dinner';
 type DayMeals = {
@@ -56,46 +57,72 @@ export class MealPlanService {
     }
 
     async saveMealPlan(userId: string, mealPlan: MealPlan) {
-        const mealPlanId = uuidv4();
-        const mealPlanRef = doc(this.firestore, `mealPlans/${mealPlanId}`);
-        const firestoreFormat = this.convertToFirestoreFormat(mealPlan);
+        try {
+            const userRef = doc(this.firestore, `users/${userId}`);
+            const userSnap = await getDoc(userRef);
 
-        await setDoc(mealPlanRef, {
-            userId,
-            mealPlan: firestoreFormat,
-        });
+            let mealPlanId: string;
+            const firestoreFormat = this.convertToFirestoreFormat(mealPlan);
 
-        // Update user's mealPlanId
-        const userRef = doc(this.firestore, `users/${userId}`);
-        await updateDoc(userRef, {
-            mealPlanId: mealPlanId
-        });
+            if (userSnap.exists() && userSnap.data()["mealPlanId"]) {
+                // User already has a meal plan, update it
+                mealPlanId = userSnap.data()["mealPlanId"];
+                const mealPlanRef = doc(this.firestore, `mealPlans/${mealPlanId}`);
+                await updateDoc(mealPlanRef, {
+                    userId,
+                    mealPlan: firestoreFormat
+                });
+                console.log("Meal plan updated for user:", userId);
+            } else {
+                // No meal plan yet, create a new one
+                mealPlanId = uuidv4();
+                const mealPlanRef = doc(this.firestore, `mealPlans/${mealPlanId}`);
+                await setDoc(mealPlanRef, {
+                    userId,
+                    mealPlan: firestoreFormat
+                });
 
-        return mealPlanId;
+                // Update user's mealPlanId
+                await updateDoc(userRef, {
+                    mealPlanId: mealPlanId
+                });
+                console.log("Meal plan created and linked to user:", userId);
+            }
+
+            return mealPlanId;
+
+        } catch (error) {
+            console.error("Error saving meal plan:", error);
+            throw error;
+        }
     }
 
-    async getMealPlan(userId: string): Promise<MealPlanDocument | null> {
-        const userRef = doc(this.firestore, `users/${userId}`);
-        const userDoc = await getDocs(query(collection(this.firestore, 'users'), where('id', '==', userId)));
 
-        if (!userDoc.empty) {
-            const userData = userDoc.docs[0].data();
-            const mealPlanId = userData['mealPlanId'];
+    async getMealPlan(mealPlanId: string): Promise<MealPlanDocument | null> {
+        if (!mealPlanId) return null;
 
-            if (mealPlanId) {
-                const mealPlanRef = doc(this.firestore, `mealPlans/${mealPlanId}`);
-                const mealPlanDoc = await getDocs(query(collection(this.firestore, 'mealPlans'), where('id', '==', mealPlanId)));
+        try {
+            console.log("Fetching meal plan with ID:", mealPlanId);
+            const docRef = doc(this.firestore, 'mealPlans', mealPlanId);
+            const docSnap = await getDoc(docRef);
 
-                if (!mealPlanDoc.empty) {
-                    const data = mealPlanDoc.docs[0].data();
-                    return {
-                        id: mealPlanDoc.docs[0].id,
-                        userId: data['userId'],
-                        mealPlan: this.convertFromFirestoreFormat(data['mealPlan'])
-                    };
-                }
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                console.log("Meal plan data:", data);
+
+                return {
+                    id: docSnap.id,
+                    userId: data['userId'],
+                    mealPlan: this.convertFromFirestoreFormat(data['mealPlan'])
+                };
+            } else {
+                console.warn("No meal plan found with ID:", mealPlanId);
             }
+        } catch (error) {
+            console.error("Error fetching meal plan:", error);
         }
+
         return null;
     }
+
 } 
