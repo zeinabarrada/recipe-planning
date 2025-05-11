@@ -40,6 +40,7 @@ export class NavbarComponent implements OnInit {
     this.username = '';
     this.password = '';
     this.isAuthenticated = false;
+    this.router.navigate(['/']);
   }
 
   toggleDropdown() {
