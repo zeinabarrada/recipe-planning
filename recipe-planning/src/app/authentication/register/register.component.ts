@@ -44,15 +44,17 @@ export class RegisterComponent {
     });
   }
 
-  email: string = '';
-  username: string = '';
-  password: string = '';
   isAuthenticated: boolean = false;
   registerForm: FormGroup;
+
   handleRegister() {
+    console.log('button clicked');
     if (this.registerForm.valid) {
-      this.auth.register(this.email, this.username, this.password);
-      console.log(this.email, this.username, this.password);
+      const email = this.registerForm.value.email;
+      const username = this.registerForm.value.username;
+      const password = this.registerForm.value.password;
+      this.auth.register(email, username, password);
+      console.log(email, username, password);
       this.isAuthenticated = true;
       this.router.navigate(['/profile']);
     }

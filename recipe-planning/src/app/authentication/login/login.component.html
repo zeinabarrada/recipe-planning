@@ -1,35 +1,31 @@
-<div ngIf="!isAuthenticated">
-  <div class="auth-modal">
-    <h2>Welcome Back</h2>
-    <p>Sign in to your MealMaestro account</p>
-    <form [formGroup]="loginForm" (ngSubmit)="handleLogin()">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          formControlName="username"
-          placeholder="Enter your username"
-          required
-        />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          placeholder="Enter your password"
-          required
-        />
-      </div>
-      <button type="submit" [disabled]="loginForm.invalid">
-        <span style="font-size: 1.2em; vertical-align: middle">→</span> Sign In
-      </button>
-    </form>
-    <div class="switch-link">
-      Don't have an account?
-      <a routerLink="/register">Register now</a>
+<div class="auth-modal">
+  <h2>Welcome Back</h2>
+  <p>Sign in to your MealMaestro account</p>
+  <form [formGroup]="loginForm" (ngSubmit)="handleLogin()">
+    <div class="form-group">
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        placeholder="Enter your username"
+        required
+      />
     </div>
+    <div class="form-group">
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        placeholder="Enter your password"
+        required
+      />
+    </div>
+    <button type="submit" [disabled]="loginForm.invalid">
+      <span style="font-size: 1.2em; vertical-align: middle">→</span> Sign In
+    </button>
+  </form>
+  <div class="switch-link">
+    Don't have an account?
+    <a routerLink="/register">Register now</a>
   </div>
 </div>
