@@ -26,10 +26,10 @@ import { AuthenticationService } from '../services/authentication.service';
     MatInputModule,
     MatCardModule,
     MatFormFieldModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './authentication.component.html',
-  styleUrls: ['./authentication.component.css']
+  styleUrls: ['./authentication.component.css'],
 })
 export class AuthenticationComponent {
   constructor(
@@ -75,13 +75,5 @@ export class AuthenticationComponent {
       this.isAuthenticated = true;
       this.router.navigate(['/profile']);
     }
-  }
-
-  handleLogout() {
-    this.auth.logout();
-    this.email = '';
-    this.username = '';
-    this.password = '';
-    this.isAuthenticated = false;
   }
 }

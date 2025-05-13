@@ -1,4 +1,14 @@
-<h1>{{ recipe?.recipe_name }}</h1>
+<<<<<<< HEAD
+<div style="position: relative;">
+  <app-like-recipe
+    *ngIf="recipe && currentUser"
+    [recipe]="recipe!"
+    [currentUser]="currentUser"
+    (likeToggled)="onLikeToggled($event)"
+    style="position: absolute; top: 0; right: 0; z-index: 2;"
+  ></app-like-recipe>
+  <h1>{{ recipe?.recipe_name }}</h1>
+</div>
 <img [src]="recipe?.imagePath" alt="Recipe Image" />
 <p>{{ recipe?.author }}</p>
 <p>{{ recipe?.type }}</p>
@@ -6,3 +16,71 @@
 <p>{{ recipe?.instructions }}</p>
 <p>{{ recipe?.cuisine }}</p>
 <p>{{ recipe?.cooking_time }}</p>
+=======
+<div class="recipe-container">
+  <!-- Recipe Header Section -->
+  <div class="recipe-header">
+    <div class="recipe-title">
+      <span class="recipe-type">{{ recipe?.type }}</span>
+      <h1>{{ recipe?.recipe_name }}</h1>
+      <div class="recipe-meta">
+        <span class="cuisine-badge">{{ recipe?.cuisine }}</span>
+        <span class="cooking-time">
+          <i class="material-icons">schedule</i> {{ recipe?.cooking_time }} mins
+        </span>
+        <span class="author">
+          <i class="material-icons">person</i> {{ recipe?.author }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe Hero Image -->
+  <div class="recipe-hero">
+    <img
+      [src]="recipe?.imagePath || 'assets/default-recipe.jpg'"
+      alt="{{ recipe?.recipe_name }}"
+      class="recipe-image"
+    />
+  </div>
+
+  <!-- Recipe Content -->
+  <div class="recipe-content">
+    <!-- Ingredients Section -->
+    <div class="ingredients-section">
+      <h2><i class="material-icons">list_alt</i> Ingredients</h2>
+      <ul class="ingredients-list">
+        <li *ngFor="let ingredient of recipe?.ingredients">{{ ingredient }}</li>
+      </ul>
+    </div>
+
+    <!-- Instructions Section -->
+    <div class="instructions-section">
+      <h2><i class="material-icons">menu_book</i> Instructions</h2>
+      <div class="instructions-text">{{ recipe?.instructions }}</div>
+    </div>
+
+    <!-- Additional Info -->
+    <div class="additional-info">
+      <div class="info-card">
+        <h3><i class="material-icons">restaurant</i> Serving Size</h3>
+        <p>4 people</p>
+      </div>
+      <div class="info-card">
+        <h3><i class="material-icons">local_fire_department</i> Calories</h3>
+        <p>Approx. 350 per serving</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button class="print-button">
+      <i class="material-icons">print</i> Print Recipe
+    </button>
+    <button class="save-button">
+      <i class="material-icons">bookmark</i> Save Recipe
+    </button>
+  </div>
+</div>
+>>>>>>> 56753bda9bcf5c8913a6eec658bc817a1ced64a7

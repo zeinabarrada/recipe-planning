@@ -1,0 +1,13 @@
+<button class="like-btn" [class.liked]="isLiked" (click)="toggleLike()">
+  <span class="heart-icon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        [attr.fill]="isLiked ? '#e74c3c' : '#fff'"
+        stroke="#888"
+        stroke-width="2"
+        d="M12 21s-6.2-5.2-8.4-8.1C1.2 10.1 2.1 7.1 4.7 5.7c2.1-1.1 4.5-.2 5.8 1.5C11.8 5.5 14.2 4.6 16.3 5.7c2.6 1.4 3.5 4.4 1.1 7.2C18.2 15.8 12 21 12 21z"
+      />
+    </svg>
+  </span>
+  <span class="like-count">{{ recipe.likes }}</span>
+</button> 

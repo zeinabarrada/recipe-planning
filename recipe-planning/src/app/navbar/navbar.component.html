@@ -1,27 +1,40 @@
 <nav class="navbar">
   <div class="navbar-brand">
-    <a routerLink="/" class="navbar-item">RecipeVerse</a>
+    <a *ngIf="currentUser" routerLink="/recipes" class="navbar-item"
+      >RecipeVerse</a
+    >
+    <a *ngIf="!currentUser" routerLink="/" class="navbar-item">RecipeVerse</a>
   </div>
 
   <div class="navbar-menu">
     <div class="navbar-start">
-      <a routerLink="/recipes" class="navbar-item">Recipes</a>
-      <a *ngIf="currentUser" routerLink="/meal" class="navbar-item">Meal Plan</a>
-      <a *ngIf="currentUser" routerLink="/profile" class="navbar-item">My Profile</a>
+      <a *ngIf="currentUser" routerLink="/recipes" class="navbar-item"
+        >Recipes</a
+      >
+      <a *ngIf="currentUser" routerLink="/meal" class="navbar-item"
+        >Meal Plan</a
+      >
     </div>
-
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <a *ngIf="!currentUser" routerLink="/" class="button is-primary">
-            <strong>Sign up</strong>
-          </a>
-          <a *ngIf="!currentUser" routerLink="/" class="button is-light">
-            Log in
-          </a>
-          <button *ngIf="currentUser" class="button is-light" (click)="onLogout()">
-            Logout
-          </button>
+    <div class="navbar-end" *ngIf="currentUser">
+      <div
+        class="user-dropdown"
+        (click)="toggleDropdown()"
+        tabindex="0"
+        (blur)="closeDropdown()"
+      >
+        <div class="user-avatar-navbar">
+          <span *ngIf="!currentUser.avatar" class="avatar-letter">
+            {{
+              currentUser.username
+                ? currentUser.username.charAt(0).toUpperCase()
+                : "?"
+            }}
+          </span>
+          <!-- If you have avatar images, use <img [src]="currentUser.avatar" ...> here -->
+        </div>
+        <div class="dropdown-menu" *ngIf="dropdownOpen">
+          <a class="dropdown-item" routerLink="/profile">My Profile</a>
+          <button class="logout-btn" (click)="handleLogout()">Logout</button>
         </div>
       </div>
     </div>

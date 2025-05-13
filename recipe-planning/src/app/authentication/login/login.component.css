@@ -1,0 +1,111 @@
+/* Modal/Card Container */
+.auth-modal {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  max-width: 520px;
+  margin: 100px auto;
+  padding: 56px 48px 36px 48px;
+  position: relative;
+  text-align: center;
+  transition: box-shadow 0.2s;
+}
+
+/* Heading */
+.auth-modal h2 {
+  font-size: 2.7rem;
+  font-weight: 800;
+  color: #22223b;
+  margin-bottom: 18px;
+}
+
+.auth-modal p {
+  color: #555;
+  font-size: 1.18rem;
+  margin-bottom: 36px;
+}
+
+/* Form fields */
+.auth-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.auth-modal .form-group {
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.auth-modal label {
+  font-weight: 600;
+  color: #22223b;
+  margin-bottom: 8px;
+  display: block;
+  font-size: 1.08rem;
+}
+
+.auth-modal input[type="text"],
+.auth-modal input[type="password"],
+.auth-modal input[type="email"] {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1.13rem;
+  background: #fafbfc;
+  transition: border 0.2s, box-shadow 0.2s;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  box-sizing: border-box;
+}
+
+.auth-modal input:focus {
+  border: 1.5px solid #8fd400;
+  outline: none;
+  box-shadow: 0 0 0 2px #e6f9c7;
+}
+
+/* Submit Button */
+.auth-modal button[type="submit"] {
+  background: linear-gradient(90deg, #8fd400 60%, #b6e94b 100%);
+  color: #fff;
+  border: none;
+  padding: 16px 0;
+  font-size: 1.22rem;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(143, 212, 0, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.auth-modal button[type="submit"]:hover {
+  background: linear-gradient(90deg, #7ac000 60%, #a3d42f 100%);
+  box-shadow: 0 4px 16px rgba(143, 212, 0, 0.16);
+}
+
+/* Register/Login link */
+.auth-modal .switch-link {
+  margin-top: 32px;
+  color: #555;
+  font-size: 1.07rem;
+}
+
+.auth-modal .switch-link a {
+  color: #ff9900;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.2s;
+}
+
+.auth-modal .switch-link a:hover {
+  text-decoration: underline;
+  color: #e67c00;
+}

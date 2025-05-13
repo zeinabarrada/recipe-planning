@@ -17,7 +17,7 @@ import { AuthenticationService } from '../services/authentication.service';
 })
 export class AddRecipeComponent {
   currentUser: User | null = null;
-  newRecipe: Recipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', []);
+  newRecipe: Recipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', [], 0, []);
   ingredientsInput: string = '';
   cuisineTypes = [
     'Italian',
@@ -32,6 +32,7 @@ export class AddRecipeComponent {
     'Greek',
     'Other'
   ];
+  instructionsInput: string = '';
 
   constructor(
     private recipeService: RecipeService,
@@ -53,7 +54,9 @@ export class AddRecipeComponent {
       time: 0,
       cuisine: '',
       cooking_time: '',
-      ratings: []
+      ratings: [],
+      likes: 0,
+      likedBy: []
     };
   }
 
@@ -101,6 +104,27 @@ export class AddRecipeComponent {
     return true;
   }
 
+  handleIngredientsInput(input: string): void {
+    if (!input) {
+      this.newRecipe.ingredients = [];
+      return;
+    }
+    this.newRecipe.ingredients = input.split(',')
+      .map(item => item.trim())
+      .filter(item => item !== '');
+  }
+
+  handleInstructionsInput(input: string): void {
+    if (!input) {
+      this.newRecipe.instructions = [];
+      return;
+    }
+    // Split by period or new line, trim, and filter empty
+    this.newRecipe.instructions = input.split(/\.|\n/)
+      .map(item => item.trim())
+      .filter(item => item !== '');
+  }
+
   async submitRecipe() {
     if (!this.currentUser) {
       console.error('User not logged in');
@@ -114,12 +138,20 @@ export class AddRecipeComponent {
 
     this.newRecipe.author = this.currentUser.username;
     this.newRecipe.authorId = this.currentUser.id;
+    this.newRecipe.cooking_time = String(this.newRecipe.cooking_time);
 
     try {
-      await this.recipeService.addRecipe(this.newRecipe);
+      const newId = await this.recipeService.addRecipe(this.newRecipe);
+      this.newRecipe.id = newId;
       alert('Recipe submitted successfully!');
-      this.resetForm();
-      this.router.navigate(['/recipes']);
+      // Wait for Firestore to emit the new recipe before navigating
+      const sub = this.recipeService.getRecipes().subscribe((recipes) => {
+        if (recipes.some(r => r.id === newId)) {
+          sub.unsubscribe();
+          this.resetForm();
+          this.router.navigate(['/recipes']);
+        }
+      });
     } catch (error) {
       console.error('Error submitting recipe:', error);
       alert('Failed to submit recipe.');
@@ -127,18 +159,9 @@ export class AddRecipeComponent {
   }
 
   resetForm() {
-    this.newRecipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', []);
+    this.newRecipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', [], 0, []);
     this.ingredientsInput = '';
-  }
-
-  handleIngredientsInput(input: string): void {
-    if (!input) {
-      this.newRecipe.ingredients = [];
-      return;
-    }
-    this.newRecipe.ingredients = input.split(',')
-      .map(item => item.trim())
-      .filter(item => item !== '');
+    this.instructionsInput = '';
   }
 
   navigateToRecipes() {
