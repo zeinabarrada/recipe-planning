@@ -64,7 +64,7 @@ export class UsersComponent implements OnInit {
     );
   }
   viewProfile(userId: string) {
-    this.router.navigate(['/user', userId]);
+    this.router.navigate(['/profile', userId]);
   }
   isFollowing(userId: string): boolean {
     return this.currentUserFollowing.includes(userId);

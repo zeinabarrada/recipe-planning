@@ -111,7 +111,7 @@
     <div class="recipe-card-content">
       <h3 class="recipe-title">{{ recipe.recipe_name }}</h3>
       <div class="recipe-meta">
-        <div class="recipe-author" [routerLink]="['/user', recipe.authorId]">
+        <div class="recipe-author" (click)="viewProfile(recipe.authorId)">
           By {{ recipe.author }}
         </div>
         <span *ngIf="recipe.cooking_time"

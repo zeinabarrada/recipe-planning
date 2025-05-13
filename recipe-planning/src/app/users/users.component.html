@@ -10,7 +10,11 @@
     />
   </div>
   <div class="chefs-list">
-    <div class="chef-card" *ngFor="let user of filteredUsers">
+    <div
+      class="chef-card"
+      *ngFor="let user of filteredUsers"
+      (click)="viewProfile(user.id)"
+    >
       <div class="chef-avatar" [ngStyle]="{ background: '#e0e800' }">
         {{
           user.username
