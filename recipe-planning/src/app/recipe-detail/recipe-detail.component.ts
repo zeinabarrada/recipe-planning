@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 import { Recipe } from '../models/recipe.model';
@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './recipe-detail.component.html',
   styleUrl: './recipe-detail.component.css',
 })
-export class RecipeDetailComponent {
+export class RecipeDetailComponent implements OnInit {
   recipeId: string = '';
   recipe!: Recipe;
   currentUser: User | null = null;
@@ -40,8 +40,7 @@ export class RecipeDetailComponent {
     private authService: AuthenticationService,
     private recipeService: RecipeService,
     private userService: UserService,
-    private firestore: Firestore,
-    private router: Router
+    private firestore: Firestore
   ) {
     this.route.params.subscribe((params) => {
       this.recipeId = params['id'];
@@ -56,6 +55,7 @@ export class RecipeDetailComponent {
   ngOnInit() {
     this.recipeService.getRecipeById(this.recipeId).subscribe((recipe) => {
       this.recipe = recipe;
+      console.log(this.recipe);
     });
   }
 

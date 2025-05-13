@@ -42,7 +42,7 @@ export class RecipeService {
       ratings: recipe.ratings || [],
       likes: recipe.likes || 0,
       likedBy: recipe.likedBy || [],
-      meal: recipe.meal || []
+      meal: recipe.meal || [],
     });
     return docRef.id;
   }
@@ -58,7 +58,6 @@ export class RecipeService {
       type: recipe.type,
       meal: recipe.meal,
       author: recipe.author,
-
     });
     console.log('Recipe saved with ID:', recipeId);
   }
