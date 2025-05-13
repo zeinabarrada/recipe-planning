@@ -48,6 +48,6 @@ export class NavbarComponent implements OnInit {
   }
 
   closeDropdown() {
-    setTimeout(() => (this.dropdownOpen = false), 150);
+    setTimeout(() => (this.dropdownOpen = false), 1000);
   }
 }

@@ -91,33 +91,46 @@ export class RecipeService {
       })
     );
   }
-  async addReview(recipeId: string, review: { userId: string; userName: string; rating: number; review: string }) {
-    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
+  async addReview(
+    recipeId: string,
+    review: { userId: string; userName: string; rating: number; review: string }
+  ) {
+    const reviewsCollection = collection(
+      this.firestore,
+      `recipes/${recipeId}/reviews`
+    );
     await addDoc(reviewsCollection, {
       ...review,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
   }
-  
+
   // Get all reviews for a specific recipe
   getReviews(recipeId: string): Observable<any[]> {
-    const reviewsCollection = collection(this.firestore, `recipes/${recipeId}/reviews`);
-    return collectionData(reviewsCollection, { idField: 'id' }) as Observable<any[]>;
+    const reviewsCollection = collection(
+      this.firestore,
+      `recipes/${recipeId}/reviews`
+    );
+    return collectionData(reviewsCollection, { idField: 'id' }) as Observable<
+      any[]
+    >;
   }
 
   async addRating(recipeId: string, userId: string, rating: number) {
     const recipeRef = doc(this.firestore, 'recipes', recipeId);
     const recipeDoc = await getDoc(recipeRef);
-    
+
     if (!recipeDoc.exists()) {
       throw new Error('Recipe not found');
     }
 
     const recipeData = recipeDoc.data();
     const ratings = recipeData['ratings'] || [];
-    
+
     // Remove existing rating if user has already rated
-    const existingRatingIndex = ratings.findIndex((r: { userId: string; rating: number }) => r.userId === userId);
+    const existingRatingIndex = ratings.findIndex(
+      (r: { userId: string; rating: number }) => r.userId === userId
+    );
     if (existingRatingIndex !== -1) {
       ratings[existingRatingIndex] = { userId, rating };
     } else {
@@ -125,27 +138,34 @@ export class RecipeService {
     }
 
     // Calculate new average rating
-    const averageRating = ratings.reduce((acc: number, curr: { userId: string; rating: number }) => acc + curr.rating, 0) / ratings.length;
+    const averageRating =
+      ratings.reduce(
+        (acc: number, curr: { userId: string; rating: number }) =>
+          acc + curr.rating,
+        0
+      ) / ratings.length;
 
     // Update the recipe with new ratings and average
     await updateDoc(recipeRef, {
       ratings,
-      rate: averageRating
+      rate: averageRating,
     });
   }
 
   async getUserRating(recipeId: string, userId: string): Promise<number> {
     const recipeRef = doc(this.firestore, 'recipes', recipeId);
     const recipeDoc = await getDoc(recipeRef);
-    
+
     if (!recipeDoc.exists()) {
       return 0;
     }
 
     const recipeData = recipeDoc.data();
     const ratings = recipeData['ratings'] || [];
-    const userRating = ratings.find((r: { userId: string; rating: number }) => r.userId === userId);
-    
+    const userRating = ratings.find(
+      (r: { userId: string; rating: number }) => r.userId === userId
+    );
+
     return userRating ? userRating.rating : 0;
   }
 
@@ -154,8 +174,35 @@ export class RecipeService {
     const recipeRef = doc(this.firestore, 'recipes', recipe.id);
     await updateDoc(recipeRef, {
       likes: recipe.likes,
-      likedBy: recipe.likedBy
+      likedBy: recipe.likedBy,
     });
     console.log('updateRecipe complete for:', recipe.id);
+  }
+
+  async getRecipesByUserId(userId: string): Promise<Recipe[]> {
+    const recipesCollection = collection(this.firestore, 'recipes');
+    const recipesSnapshot = await getDocs(recipesCollection);
+    return recipesSnapshot.docs
+      .map((doc) => {
+        const data = doc.data();
+        return new Recipe(
+          doc.id,
+          data['recipe_name'] || '',
+          data['imagePath'] || '',
+          data['ingredients'] || [],
+          data['instructions'] || [],
+          data['type'] || '',
+          data['authorId'] || '',
+          data['author'] || '',
+          data['nutrition_facts'] || '',
+          data['time'] || 0,
+          data['cuisine'] || '',
+          data['cooking_time'] || '',
+          data['ratings'] || [],
+          data['likes'] || 0,
+          data['likedBy'] || []
+        );
+      })
+      .filter((recipe) => recipe.authorId === userId);
   }
 }

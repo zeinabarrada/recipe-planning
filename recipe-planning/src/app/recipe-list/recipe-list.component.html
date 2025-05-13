@@ -92,32 +92,32 @@
       <button (click)="clearFilters()">Clear All Filters</button>
     </div>
   </div>
-
-  <!-- RECIPES LIST -->
-  <div class="recipe-list">
-    <div *ngFor="let recipe of displayedRecipes()" class="recipe-card" style="position: relative;">
-      <app-like-recipe
-        [recipe]="recipe"
-        [currentUser]="currentUser"
-        (likeToggled)="onLikeToggled($event)"
-        style="position: absolute; top: 16px; right: 16px; z-index: 2;"
-      ></app-like-recipe>
-      <h2>{{ recipe.recipe_name }}</h2>
-
-      <div class="recipe-image-container">
-        <img
-          *ngIf="recipe.imagePath && recipe.imagePath.trim() !== ''"
-          [src]="recipe.imagePath"
-          [alt]="recipe.recipe_name"
-          (error)="handleImageError($event)"
-          class="recipe-image"
-        />
-        <div
-          *ngIf="!recipe.imagePath || recipe.imagePath.trim() === ''"
-          class="no-image"
-        >
-          No image available
+</div>
+<h2 class="recipe-list-title">All Recipes</h2>
+<div class="recipe-list-container">
+  <div
+    class="recipe-card"
+    *ngFor="let recipe of filteredRecipes"
+    [routerLink]="['/recipe', recipe.id]"
+  >
+    <div class="recipe-image-container">
+      <img
+        [src]="recipe.imagePath"
+        [alt]="recipe.recipe_name"
+        class="recipe-image"
+      />
+      <span class="recipe-tag" *ngIf="recipe.type">{{ recipe.type }}</span>
+    </div>
+    <div class="recipe-card-content">
+      <h3 class="recipe-title">{{ recipe.recipe_name }}</h3>
+      <div class="recipe-meta">
+        <div class="recipe-author" [routerLink]="['/user', recipe.authorId]">
+          By {{ recipe.author }}
         </div>
+        <span *ngIf="recipe.cooking_time"
+          ><i class="material-icons">schedule</i>
+          {{ recipe.cooking_time }}</span
+        >
       </div>
 
       <div class="recipe-details">
@@ -194,8 +194,6 @@
           </form>
         </div>
       </div>
-
-      <hr />
     </div>
   </div>
 </div>

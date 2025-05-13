@@ -1,0 +1,127 @@
+.discover-chefs-container {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  padding: 2rem 2.5rem 2.5rem 2.5rem;
+}
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: "Georgia", serif;
+  color: #222;
+}
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.search-bar {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.8rem 1.2rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  transition: border 0.2s;
+}
+.search-bar:focus {
+  border-color: #e09f28;
+  outline: none;
+}
+.chefs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.chef-card {
+  display: flex;
+  align-items: flex-start;
+  background: #fafbfc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem 2rem;
+  gap: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+.chef-card:hover {
+  box-shadow: 0 6px 24px rgba(224, 159, 40, 0.1);
+}
+.chef-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #e0e800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+.chef-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.chef-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chef-username {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+}
+.follow-btn {
+  background: #8fd32a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.follow-btn:hover {
+  background: #6bbf1d;
+}
+.chef-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 0.2rem;
+}
+.chef-bio {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.2rem;
+}
+.recent-recipe {
+  font-size: 0.98rem;
+  color: #444;
+  margin-top: 0.2rem;
+}
+.recent-label {
+  color: #888;
+  margin-right: 0.3rem;
+}
+@media (max-width: 800px) {
+  .discover-chefs-container {
+    padding: 1rem;
+  }
+  .chef-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+}

@@ -355,4 +355,23 @@ export class UserService {
 
     return userData['mealPlanId'];
   }
+
+  async getAllUsers(): Promise<User[]> {
+    const usersRef = collection(this.firestore, 'users');
+    const usersSnapshot = await getDocs(usersRef);
+    return usersSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return this.createUser(
+        data['email'],
+        data['username'],
+        data['password'],
+        doc.id,
+        data['following'] || [],
+        data['followers'] || [],
+        data['savedRecipes'] || [],
+        data['mealPlanId'] || '',
+        data['avatar'] || ''
+      );
+    });
+  }
 }
