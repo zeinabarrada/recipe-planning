@@ -90,7 +90,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       console.error('No user is logged in.');
       return;
     }
-
     this.userService.saveRecipe(this.currentUser, recipe).then(() => {
       console.log(`Recipe "${recipe.recipe_name}" saved!`);
     });
@@ -192,7 +191,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       this.newReview[recipeId] = '';
     });
   }
-
   loadReviewsForRecipe(recipeId: string) {
     const reviewsCollection = collection(
       this.firestore,

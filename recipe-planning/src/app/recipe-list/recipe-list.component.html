@@ -105,11 +105,7 @@
         [src]="recipe.imagePath"
         [alt]="recipe.recipe_name"
         class="recipe-image"
-        (error)="handleImageError($event)"
       />
-      <div *ngIf="!recipe.imagePath" class="no-image">
-        No image available
-      </div>
       <span class="recipe-tag" *ngIf="recipe.type">{{ recipe.type }}</span>
     </div>
     <div class="recipe-card-content">
@@ -122,81 +118,6 @@
           ><i class="material-icons">schedule</i>
           {{ recipe.cooking_time }}</span
         >
-      </div>
-
-      <div class="recipe-details">
-        <p><strong>Author:</strong> {{ recipe.author }}</p>
-        <p><strong>Meal Type:</strong> {{ recipe.meal }}</p>
-        <p><strong>Ingredients:</strong> {{ recipe.ingredients.join(", ") }}</p>
-        <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
-        <p><strong>Nutrition:</strong> {{ recipe.nutrition_facts }}</p>
-        <p><strong>Cuisine:</strong> {{ recipe.cuisine }}</p>
-        <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} mins</p>
-
-        <button (click)="saveRecipe(recipe)" class="save-button">
-          Save Recipe
-        </button>
-      </div>
-
-      <!-- REVIEWS SECTION -->
-      <div class="reviews-section">
-        <button (click)="toggleReviews(recipe.id)">
-          {{ showReviews[recipe.id] ? "Hide Reviews" : "View Reviews" }}
-        </button>
-
-        <div
-          *ngIf="
-            showReviews[recipe.id] && (reviewsMap[recipe.id] | async) as reviews
-          "
-        >
-          <h3>Reviews:</h3>
-          <div *ngIf="reviews.length > 0; else noReviews">
-            <div *ngFor="let review of reviews" class="review-item">
-              <p>⭐ {{ review.rating }} / 5 by {{ review.userName }}</p>
-              <p>{{ review.review }}</p>
-            </div>
-          </div>
-          <ng-template #noReviews>
-            <p>No reviews yet. Be the first!</p>
-          </ng-template>
-        </div>
-      </div>
-
-      <!-- ADD A REVIEW FORM -->
-      <div class="add-review">
-        <button (click)="toggleAddReview(recipe.id)">
-          {{ showAddReview[recipe.id] ? "Cancel" : "Add Review" }}
-        </button>
-
-        <div *ngIf="showAddReview[recipe.id]">
-          <form (ngSubmit)="submitReview(recipe.id)">
-            <label for="rating">Rating (1-5):</label>
-            <input
-              type="number"
-              id="rating"
-              name="rating"
-              [(ngModel)]="newRating[recipe.id]"
-              min="1"
-              max="5"
-              required
-            />
-
-            <label for="review">Your Review:</label>
-            <textarea
-              id="review"
-              name="review"
-              [(ngModel)]="newReview[recipe.id]"
-              required
-            ></textarea>
-
-            <div class="review-buttons">
-              <button type="submit">Submit Review</button>
-              <button type="button" (click)="toggleAddReview(recipe.id)">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
       </div>
     </div>
   </div>

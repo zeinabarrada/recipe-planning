@@ -205,7 +205,7 @@
 }
 
 .filter-toggle button::before {
-  content: "⚙️";
+  content: "⚙";
   font-size: 0.9rem;
 }
 
