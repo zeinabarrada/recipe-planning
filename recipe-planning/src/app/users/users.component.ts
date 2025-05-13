@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../services/user.service';
-import { RecipeService } from '../services/recipe.service';
-import { User } from '../models/users.model';
-import { Recipe } from '../models/recipe.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+
+import { User } from '../models/users.model';
+import { Recipe } from '../models/recipe.model';
+import { UserService } from '../services/user.service';
+import { RecipeService } from '../services/recipe.service';
 import { AuthenticationService } from '../services/authentication.service';
+import { FollowButtonComponent } from '../follow-button/follow-button.component';
+
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, FollowButtonComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
@@ -27,27 +29,25 @@ export class UsersComponent implements OnInit {
   } = {};
   searchTerm: string = '';
   currentUser: User | null = null;
-  currentUserFollowing: string[] = [];
-  currentUserFollowers: string[] = [];
+  targetUser: User | null = null;
 
   constructor(
     private userService: UserService,
     private recipeService: RecipeService,
     private router: Router,
-    private authService: AuthenticationService
-  ) {}
+    private authService: AuthenticationService,
+  ) { }
 
   async ngOnInit() {
     this.authService.getUser().subscribe((user) => {
       this.currentUser = user;
-      this.currentUserFollowing = user?.following || [];
       this.loadUsers();
     });
   }
+
   async loadUsers() {
-    const usersCollection = await this.userService.getAllUsers();
-    this.users = usersCollection;
-    this.filteredUsers = usersCollection.filter(
+    this.users = await this.userService.getAllUsers();
+    this.filteredUsers = this.users.filter(
       (user) => user.id !== this.currentUser?.id
     );
     for (const user of this.users) {
@@ -58,42 +58,57 @@ export class UsersComponent implements OnInit {
       this.userStats[user.id] = { recipeCount, followersCount, recentRecipe };
     }
   }
+
   onSearch(term: string) {
     this.filteredUsers = this.users.filter((user) =>
       user.username.toLowerCase().includes(term.toLowerCase())
     );
   }
+
   viewProfile(userId: string) {
-    this.router.navigate(['/profile', userId]);
+    this.userService.getUserByIdInstance(userId).then((user) => {
+      this.targetUser = user;
+      this.router.navigate(['/profile', userId]);
+    });
   }
+
   isFollowing(userId: string): boolean {
-    return this.currentUserFollowing.includes(userId);
+    return this.currentUser?.following.includes(userId) || false;
   }
-  async toggleFollow(user: User) {
-    if (this.isFollowing(user.id)) {
-      this.userService.unfollowUser(
-        {
-          id: this.currentUser?.id,
-          getFollowing: () => this.currentUserFollowing,
-        } as User,
-        user
-      );
-      this.currentUserFollowing = this.currentUserFollowing.filter(
-        (id) => id !== user.id
-      );
-      this.currentUserFollowers = this.currentUserFollowers.filter(
-        (id) => id !== user.id
-      );
-    } else {
-      this.userService.followUser(
-        {
-          id: this.currentUser?.id,
-          getFollowing: () => this.currentUserFollowing,
-        } as User,
-        user
-      );
-      this.currentUserFollowing.push(user.id);
-      this.currentUserFollowers.push(user.id);
-    }
+
+  onFollow(targetUser: User) {
+    if (!this.currentUser || !this.targetUser) return;
+
+    this.userService.followUser(
+      this.currentUser,
+      targetUser
+    );
+
+    this.currentUser.following.push(targetUser.id);
+    this.targetUser.followers.push(this.currentUser.id);
+
+    this.authService.updateCurrentUser(this.currentUser);
+    this.authService.updateCurrentUser(this.targetUser);
+
+    this.userStats[this.targetUser.id].followersCount++;
+  }
+
+  onUnfollow(targetUser: User) {
+    if (!this.currentUser || !this.targetUser) return;
+
+    this.userService.unfollowUser(
+      this.currentUser,
+      targetUser
+    );
+
+    this.currentUser.following = this.currentUser.following.filter(
+      (id) => id !== targetUser.id
+    );
+    this.targetUser.followers = this.targetUser.followers.filter(
+      (id) => id !== this.currentUser?.id
+    );
+
+    this.authService.updateCurrentUser(this.currentUser);
+    this.authService.updateCurrentUser(this.targetUser);
   }
 }

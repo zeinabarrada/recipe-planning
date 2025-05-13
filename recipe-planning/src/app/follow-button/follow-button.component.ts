@@ -18,8 +18,9 @@ export class FollowButtonComponent implements OnInit {
 
   currentUser: User | null = null;
 
-
-  constructor(private authService: AuthenticationService, private userService: UserService) {
+  constructor(
+    private authService: AuthenticationService, 
+    private userService: UserService) {
     this.authService.getUser().subscribe((user) => {
       this.currentUser = user;
     });

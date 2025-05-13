@@ -7,7 +7,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { RecipeService } from '../services/recipe.service';
 import { Recipe } from '../models/recipe.model';
-import { MealPlanService } from '../services/meal-plan.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -36,7 +35,6 @@ export class UserProfileComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private recipeService: RecipeService,
-    private mealPlanService: MealPlanService,
     private router: Router
   ) {}
 
@@ -92,8 +90,7 @@ export class UserProfileComponent implements OnInit {
 
   async onFollow() {
     if (
-      this.currentUser &&
-      this.targetUser &&
+      this.currentUser && this.targetUser &&
       this.currentUser.id &&
       this.targetUser.id
     ) {
