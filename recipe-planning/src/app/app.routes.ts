@@ -5,10 +5,10 @@ import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { AddRecipeComponent } from './post-recipe/post-recipe.component';
 import { MealPlanComponent } from './meal-plan/meal-plan.component';
 import { ShoppingListsComponent } from './shopping-list/shopping-lists.component';
-
 import { LandingComponent } from './landing/landing.component';
 import { RegisterComponent } from './authentication/register/register.component';
 import { LoginComponent } from './authentication/login/login.component';
+import { UsersComponent } from './users/users.component';
 export const routes: Routes = [
   {
     path: '',
@@ -34,6 +34,11 @@ export const routes: Routes = [
     path: 'profile/:id',
     component: UserProfileComponent,
     title: 'User Profile - Recipe Planner',
+  },
+  {
+    path: 'users',
+    component: UsersComponent,
+    title: 'Chefs - Recipe Planner',
   },
   {
     path: 'recipes',

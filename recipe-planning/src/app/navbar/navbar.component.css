@@ -17,6 +17,7 @@
   text-decoration: none;
   transition: color 0.3s;
   font-size: 1.8rem;
+  font-family: "Georgia", serif;
 }
 
 .navbar-brand a:hover {

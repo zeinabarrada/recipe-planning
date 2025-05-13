@@ -8,7 +8,12 @@ import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { FormsModule, NgModel } from '@angular/forms';
-import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  collectionData,
+} from '@angular/fire/firestore';
 import { LikeRecipeComponent } from '../like-recipe';
 
 @Component({
@@ -68,6 +73,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       this.allRecipes = recipes;
       console.log('Loaded recipes:', recipes);
       this.filteredRecipes = [...recipes];
+      this.cdr.detectChanges();
     });
   }
 
@@ -96,7 +102,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   }
   onSearch(searchTerm: string) {
     if (!searchTerm || searchTerm.trim() === '') {
-      this.filteredRecipes = [];
+      this.filteredRecipes = this.allRecipes;
       return;
     }
     this.searchTerm = searchTerm.toLowerCase();
@@ -108,13 +114,12 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   }
   clearSearch() {
     this.searchTerm = '';
-    this.filteredRecipes = [];
+    this.filteredRecipes = [...this.allRecipes];
   }
   displayedRecipes(): Recipe[] {
-    if (this.filteredRecipes.length > 0 || this.showFilters) {
-      return this.filteredRecipes;
-    }
-    return this.allRecipes;
+    return this.filteredRecipes.length > 0 || this.searchTerm
+      ? this.filteredRecipes
+      : this.allRecipes;
   }
   selectFilter(filterType: string, filterValue: string | number) {
     if (filterValue === '' || filterValue === 0) {
@@ -236,10 +241,10 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onLikeToggled(event: { recipeId: string, liked: boolean }) {
+  async onLikeToggled(event: { recipeId: string; liked: boolean }) {
     if (!this.currentUser) return;
     // Find the index of the recipe
-    const idx = this.allRecipes.findIndex(r => r.id === event.recipeId);
+    const idx = this.allRecipes.findIndex((r) => r.id === event.recipeId);
     if (idx === -1) return;
     const recipe = { ...this.allRecipes[idx] }; // create a new object
 
@@ -250,7 +255,9 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       }
     } else {
       if (recipe.likedBy.includes(this.currentUser!.id)) {
-        recipe.likedBy = recipe.likedBy.filter(id => id !== this.currentUser!.id);
+        recipe.likedBy = recipe.likedBy.filter(
+          (id) => id !== this.currentUser!.id
+        );
         recipe.likes = Math.max(0, recipe.likes - 1);
       }
     }

@@ -2,11 +2,18 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
+import { UsersComponent } from './users/users.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterOutlet, NavbarComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    RouterOutlet,
+    NavbarComponent,
+    UsersComponent,
+  ],
   template: `
     <app-navbar></app-navbar>
     <main class="container">
