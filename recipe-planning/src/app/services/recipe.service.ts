@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class RecipeService {
   public recipes = new BehaviorSubject<Recipe[]>([]);
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore) { }
 
   getRecipes(): Observable<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
@@ -182,6 +182,8 @@ export class RecipeService {
   async getRecipesByUserId(userId: string): Promise<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
     const recipesSnapshot = await getDocs(recipesCollection);
+
+    
     return recipesSnapshot.docs
       .map((doc) => {
         const data = doc.data();
@@ -202,7 +204,6 @@ export class RecipeService {
           data['likes'] || 0,
           data['likedBy'] || []
         );
-      })
-      .filter((recipe) => recipe.authorId === userId);
+      }).filter((recipe) => recipe.authorId === userId);
   }
 }

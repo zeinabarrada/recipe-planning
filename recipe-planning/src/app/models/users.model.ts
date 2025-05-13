@@ -13,7 +13,7 @@ export class User {
     public savedRecipes: string[] = [],
     public mealPlanId: string = '',
     public avatar: string = ''
-  ) {}
+  ) { }
 
   getPassword(): string {
     return this.password;
