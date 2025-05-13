@@ -12,12 +12,18 @@
   <div class="chefs-list">
     <div class="chef-card" *ngFor="let user of filteredUsers">
       <div class="chef-avatar" [ngStyle]="{ background: '#e0e800' }">
-        {{ user.username ? (user.username[0] + (user.username.split(' ')[1]?.[0] || '')).toUpperCase() : '?' }}
+        {{
+          user.username
+            ? (user.username[0] + (user.username.split(' ')[1]?.[0] || '')).toUpperCase()
+            : '?'
+        }}
       </div>
       <div class="chef-info">
         <div class="chef-header">
           <span class="chef-username">{{ user.username }}</span>
-          <button class="follow-btn">Follow</button>
+          <button class="follow-btn" (click)="toggleFollow(user)">
+            {{ isFollowing(user.id) ? "Following" : "Follow" }}
+          </button>
         </div>
         <div class="chef-meta">
           <span>{{ userStats[user.id]?.recipeCount || 0 }} recipes</span>
