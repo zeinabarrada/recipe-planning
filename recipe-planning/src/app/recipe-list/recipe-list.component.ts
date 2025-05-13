@@ -267,4 +267,8 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     console.log('After updateRecipe:', recipe);
     this.cdr.detectChanges();
   }
+  viewProfile(userId: string) {
+    console.log('Viewing profile for user:', userId);
+    this.router.navigate(['/profile', userId]);
+  }
 }
