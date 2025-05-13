@@ -32,13 +32,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   searchTerm: string = '';
   isFocused: boolean = false;
   selectedRecipeId: string | null = null;
-  newRating: { [recipeId: string]: number } = {};
-  newReview: { [recipeId: string]: string } = {};
-  reviewsMap: { [key: string]: Observable<any[]> } = {};
-  userRatings: { [key: string]: number } = {};
-  hoverRating: number = 0;
-  showReviews: { [key: string]: boolean } = {};
-  showAddReview: { [key: string]: boolean } = {};
+  recipe!: Recipe;
   showFilters: boolean = false;
 
   constructor(
@@ -57,9 +51,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       next: (user) => {
         this.currentUser = user;
         console.log('Current user set to:', this.currentUser);
-        if (user) {
-          this.loadUserRatings();
-        }
       },
       error: (error) => {
         console.error('Error in user subscription:', error);
@@ -84,17 +75,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveRecipe(recipe: Recipe) {
-    console.log('Saving recipe with ID:', recipe.id);
-    if (!this.currentUser) {
-      console.error('No user is logged in.');
-      return;
-    }
-
-    this.userService.saveRecipe(this.currentUser, recipe).then(() => {
-      console.log(`Recipe "${recipe.recipe_name}" saved!`);
-    });
-  }
   onBlur() {
     setTimeout(() => {
       this.isFocused = false;
@@ -166,109 +146,24 @@ export class RecipeListComponent implements OnInit, OnDestroy {
       container.appendChild(noImageDiv);
     }
   }
-
-  submitReview(recipeId: string) {
-    if (!this.currentUser) {
-      console.error('You must be logged in to leave a review.');
-      return;
-    }
-
-    const reviewData = {
-      rating: this.newRating[recipeId] || 5,
-      review: this.newReview[recipeId] || '',
-      userId: this.currentUser.id,
-      userName: this.currentUser.username,
-      timestamp: new Date(),
-    };
-
-    const reviewsCollection = collection(
-      this.firestore,
-      `recipes/${recipeId}/reviews`
-    );
-    addDoc(reviewsCollection, reviewData).then(() => {
-      console.log('Review submitted!');
-      this.selectedRecipeId = null;
-      this.newRating[recipeId] = 5;
-      this.newReview[recipeId] = '';
-    });
-  }
-
-  loadReviewsForRecipe(recipeId: string) {
-    const reviewsCollection = collection(
-      this.firestore,
-      `recipes/${recipeId}/reviews`
-    );
-    this.reviewsMap[recipeId] = collectionData(reviewsCollection, {
-      idField: 'id',
-    });
-  }
-
-  async loadUserRatings() {
-    if (!this.currentUser) return;
-
-    this.allRecipes.forEach(async (recipe) => {
-      const rating = await this.recipeService.getUserRating(
-        recipe.id,
-        this.currentUser!.id
-      );
-      this.userRatings[recipe.id] = rating;
-    });
-  }
-
-  async onRatingChange(recipeId: string, rating: number) {
-    if (!this.currentUser) return;
-
-    try {
-      await this.recipeService.addRating(recipeId, this.currentUser.id, rating);
-      this.userRatings[recipeId] = rating;
-    } catch (error) {
-      console.error('Error adding rating:', error);
-    }
-  }
-
-  toggleReviews(recipeId: string) {
-    this.showReviews[recipeId] = !this.showReviews[recipeId];
-    if (this.showReviews[recipeId]) {
-      this.loadReviewsForRecipe(recipeId);
-    }
-  }
-
-  toggleAddReview(recipeId: string) {
-    this.showAddReview[recipeId] = !this.showAddReview[recipeId];
-    if (!this.showAddReview[recipeId]) {
-      this.newRating[recipeId] = 5;
-      this.newReview[recipeId] = '';
-    }
-  }
-
-  async onLikeToggled(event: { recipeId: string; liked: boolean }) {
-    if (!this.currentUser) return;
-    // Find the index of the recipe
-    const idx = this.allRecipes.findIndex((r) => r.id === event.recipeId);
-    if (idx === -1) return;
-    const recipe = { ...this.allRecipes[idx] }; // create a new object
-
-    if (event.liked) {
-      if (!recipe.likedBy.includes(this.currentUser!.id)) {
-        recipe.likedBy = [...recipe.likedBy, this.currentUser!.id];
-        recipe.likes++;
-      }
-    } else {
-      if (recipe.likedBy.includes(this.currentUser!.id)) {
-        recipe.likedBy = recipe.likedBy.filter(
-          (id) => id !== this.currentUser!.id
-        );
-        recipe.likes = Math.max(0, recipe.likes - 1);
-      }
-    }
-
-    console.log('Before updateRecipe:', recipe);
-    await this.recipeService.updateRecipe(recipe);
-    console.log('After updateRecipe:', recipe);
-    this.cdr.detectChanges();
-  }
   viewProfile(userId: string) {
     console.log('Viewing profile for user:', userId);
     this.router.navigate(['/profile', userId]);
+  }
+  async onLikeToggled(event: { recipeId: string; liked: boolean }) {
+    if (!this.recipe || !this.currentUser) return;
+    if (event.liked) {
+      if (!this.recipe.likedBy.includes(this.currentUser.id)) {
+        this.recipe.likedBy.push(this.currentUser.id);
+        this.recipe.likes++;
+      }
+    } else {
+      const idx = this.recipe.likedBy.indexOf(this.currentUser.id);
+      if (idx > -1) {
+        this.recipe.likedBy.splice(idx, 1);
+        this.recipe.likes = Math.max(0, this.recipe.likes - 1);
+      }
+    }
+    await this.recipeService.updateRecipe(this.recipe);
   }
 }

@@ -44,22 +44,75 @@
     <!-- Additional Info -->
     <div class="additional-info">
       <div class="info-card">
-        <h3><i class="material-icons">restaurant</i> Serving Size</h3>
-        <p>4 people</p>
-      </div>
-      <div class="info-card">
         <h3><i class="material-icons">local_fire_department</i> Calories</h3>
         <p>Approx. 350 per serving</p>
       </div>
     </div>
   </div>
+  <!-- REVIEWS SECTION -->
+  <div class="reviews-section">
+    <button (click)="toggleReviews(recipe.id)">
+      {{ showReviews[recipe.id] ? "Hide Reviews" : "View Reviews" }}
+    </button>
+
+    <div
+      *ngIf="
+        showReviews[recipe.id] && (reviewsMap[recipe.id] | async) as reviews
+      "
+    >
+      <h3>Reviews:</h3>
+      <div *ngIf="reviews.length > 0; else noReviews">
+        <div *ngFor="let review of reviews" class="review-item">
+          <p>⭐ {{ review.rating }} / 5 by {{ review.userName }}</p>
+          <p>{{ review.review }}</p>
+        </div>
+      </div>
+      <ng-template #noReviews>
+        <p>No reviews yet. Be the first!</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- ADD A REVIEW FORM -->
+  <div class="add-review">
+    <button (click)="toggleAddReview(recipe.id)">
+      {{ showAddReview[recipe.id] ? "Cancel" : "Add Review" }}
+    </button>
+
+    <div *ngIf="showAddReview[recipe.id]">
+      <form (ngSubmit)="submitReview(recipe.id)">
+        <label for="rating">Rating (1-5):</label>
+        <input
+          type="number"
+          id="rating"
+          name="rating"
+          [(ngModel)]="newRating[recipe.id]"
+          min="1"
+          max="5"
+          required
+        />
+
+        <label for="review">Your Review:</label>
+        <textarea
+          id="review"
+          name="review"
+          [(ngModel)]="newReview[recipe.id]"
+          required
+        ></textarea>
+
+        <div class="review-buttons">
+          <button type="submit">Submit Review</button>
+          <button type="button" (click)="toggleAddReview(recipe.id)">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Action Buttons -->
   <div class="action-buttons">
-    <button class="print-button">
-      <i class="material-icons">print</i> Print Recipe
-    </button>
-    <button class="save-button">
+    <button class="save-button" (click)="saveRecipe(recipe)">
       <i class="material-icons">bookmark</i> Save Recipe
     </button>
   </div>
