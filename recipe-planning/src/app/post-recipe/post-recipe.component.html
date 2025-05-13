@@ -74,6 +74,25 @@
     </div>
 
     <div class="form-group">
+      <label for="meal">Meal Type *</label>
+      <select
+        id="meal"
+        name="meal"
+        [(ngModel)]="newRecipe.meal"
+        #meal="ngModel"
+        required
+      >
+        <option value="">Select meal type</option>
+        <option *ngFor="let type of mealTypes" [value]="type">
+          {{type}}
+        </option>
+      </select>
+      <div class="error-message" *ngIf="meal.invalid && (meal.dirty || meal.touched)">
+        Please select a meal type
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="instructions">Instructions * (separate with periods or new lines)</label>
       <textarea
         id="instructions"

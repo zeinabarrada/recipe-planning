@@ -17,7 +17,7 @@ import { AuthenticationService } from '../services/authentication.service';
 })
 export class AddRecipeComponent {
   currentUser: User | null = null;
-  newRecipe: Recipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', [], 0, []);
+  newRecipe: Recipe = new Recipe('', '', '', [], [], '', [], '', '', '', 0, '', '', [], 0, []);
   ingredientsInput: string = '';
   cuisineTypes = [
     'Italian',
@@ -32,6 +32,7 @@ export class AddRecipeComponent {
     'Greek',
     'Other'
   ];
+  mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
   instructionsInput: string = '';
 
   constructor(
@@ -48,6 +49,7 @@ export class AddRecipeComponent {
       ingredients: [],
       instructions: [],
       type: '',
+      meal: [],
       authorId: '',
       author: '',
       nutrition_facts: '',
@@ -88,8 +90,7 @@ export class AddRecipeComponent {
       alert('Please enter nutrition facts');
       return false;
     }
-    
-      if (this.newRecipe.ingredients.length === 0) {
+    if (this.newRecipe.ingredients.length === 0) {
       alert('Please add at least one ingredient');
       return false;
     }
@@ -99,6 +100,10 @@ export class AddRecipeComponent {
     }
     if (!this.newRecipe.cuisine) {
       alert('Please select a cuisine type');
+      return false;
+    }
+    if (!this.newRecipe.meal || this.newRecipe.meal.length === 0) {
+      alert('Please select a meal type');
       return false;
     }
     return true;
@@ -159,7 +164,7 @@ export class AddRecipeComponent {
   }
 
   resetForm() {
-    this.newRecipe = new Recipe('', '', '', [], [], '', '', '', '', 0, '', '', [], 0, []);
+    this.newRecipe = new Recipe('', '', '', [], [], '', [], '', '', '', 0, '', '', [], 0, []);
     this.ingredientsInput = '';
     this.instructionsInput = '';
   }
