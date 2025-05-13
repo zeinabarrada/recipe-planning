@@ -105,7 +105,11 @@
         [src]="recipe.imagePath"
         [alt]="recipe.recipe_name"
         class="recipe-image"
+        (error)="handleImageError($event)"
       />
+      <div *ngIf="!recipe.imagePath" class="no-image">
+        No image available
+      </div>
       <span class="recipe-tag" *ngIf="recipe.type">{{ recipe.type }}</span>
     </div>
     <div class="recipe-card-content">
