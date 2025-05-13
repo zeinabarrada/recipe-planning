@@ -31,6 +31,7 @@ export class RecipeService {
     addDoc(recipeCollection, {
       recipe_name: recipe.recipe_name,
       author: recipe.author,
+      authorId: recipe.authorId,
       nutrition_facts: recipe.nutrition_facts,
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
@@ -38,6 +39,7 @@ export class RecipeService {
       time: recipe.time,
       cuisine: recipe.cuisine,
       imagePath: recipe.imagePath,
+      cooking_time: recipe.cooking_time
     });
   }
 
