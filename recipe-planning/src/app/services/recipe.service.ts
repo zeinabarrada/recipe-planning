@@ -31,7 +31,6 @@ export class RecipeService {
     const docRef = await addDoc(recipeCollection, {
       recipe_name: recipe.recipe_name,
       author: recipe.author,
-      authorId: recipe.authorId,
       nutrition_facts: recipe.nutrition_facts,
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
@@ -40,9 +39,10 @@ export class RecipeService {
       cuisine: recipe.cuisine,
       imagePath: recipe.imagePath,
       cooking_time: recipe.cooking_time,
-      ratings: recipe.ratings,
-      likes: recipe.likes,
-      likedBy: recipe.likedBy,
+      ratings: recipe.ratings || [],
+      likes: recipe.likes || 0,
+      likedBy: recipe.likedBy || [],
+      meal: recipe.meal || []
     });
     return docRef.id;
   }
@@ -56,7 +56,9 @@ export class RecipeService {
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
       type: recipe.type,
+      meal: recipe.meal,
       author: recipe.author,
+
     });
     console.log('Recipe saved with ID:', recipeId);
   }
