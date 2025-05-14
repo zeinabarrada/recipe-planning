@@ -145,14 +145,14 @@
       [class.active]="activeTab === 'followers'"
       (click)="activeTab = 'followers'"
     >
-      My Followers ({{ currentUser.getFollowers().length }})
+      My Followers
     </button>
     <button
       class="nav-button"
       [class.active]="activeTab === 'following'"
       (click)="activeTab = 'following'"
     >
-      My Following ({{ currentUser.getFollowing().length }})
+      My Following
     </button>
   </div>
 
