@@ -1,17 +1,15 @@
-<div class="recipe-container">
+<div class="recipe-container" *ngIf="!isLoading && recipe">
   <!-- Recipe Header Section -->
   <div class="recipe-header">
     <div class="recipe-title">
       <span class="recipe-type">{{ recipe.type }}</span>
       <h1>{{ recipe.recipe_name }}</h1>
       <div class="recipe-meta">
-        <span class="cuisine-badge" *ngIf="recipe.cuisine">{{
-          recipe.cuisine
-        }}</span>
-        <span class="cooking-time" *ngIf="recipe.time">
-          <i class="material-icons">schedule</i> {{ recipe.time }} mins
+        <span class="cuisine-badge">{{ recipe.cuisine }}</span>
+        <span class="cooking-time">
+          <i class="material-icons">schedule</i> {{ recipe.cooking_time }} mins
         </span>
-        <span class="author" *ngIf="recipe.author">
+        <span class="author">
           <i class="material-icons">person</i> {{ recipe.author }}
         </span>
       </div>
@@ -118,4 +116,10 @@
       <i class="material-icons">bookmark</i> Save Recipe
     </button>
   </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-spinner" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Loading recipe...</p>
 </div>

@@ -90,7 +90,8 @@ export class UserProfileComponent implements OnInit {
 
   async onFollow() {
     if (
-      this.currentUser && this.targetUser &&
+      this.currentUser &&
+      this.targetUser &&
       this.currentUser.id &&
       this.targetUser.id
     ) {

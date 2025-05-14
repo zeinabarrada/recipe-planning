@@ -77,6 +77,7 @@ export class RecipeService {
           data['ingredients'] || [],
           data['instructions'] || [],
           data['type'] || '',
+          data['meal'] || [],
           data['authorId'] || '',
           data['author'] || '',
           data['nutrition_facts'] || '',
@@ -181,6 +182,7 @@ export class RecipeService {
   async getRecipesByUserId(userId: string): Promise<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
     const recipesSnapshot = await getDocs(recipesCollection);
+    console.log(recipesSnapshot.docs);
     return recipesSnapshot.docs
       .map((doc) => {
         const data = doc.data();
@@ -191,6 +193,7 @@ export class RecipeService {
           data['ingredients'] || [],
           data['instructions'] || [],
           data['type'] || '',
+          data['meal'] || [],
           data['authorId'] || '',
           data['author'] || '',
           data['nutrition_facts'] || '',

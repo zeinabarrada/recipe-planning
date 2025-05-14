@@ -24,6 +24,7 @@ import { FormsModule } from '@angular/forms';
 export class RecipeDetailComponent implements OnInit {
   recipeId: string = '';
   recipe!: Recipe;
+  isLoading: boolean = true;
   currentUser: User | null = null;
   newRating: { [recipeId: string]: number } = {};
   newReview: { [recipeId: string]: string } = {};
@@ -44,6 +45,7 @@ export class RecipeDetailComponent implements OnInit {
   ) {
     this.route.params.subscribe((params) => {
       this.recipeId = params['id'];
+      this.isLoading = true;
     });
     this.authService.getUser().subscribe((user) => {
       this.currentUser = user;
@@ -52,9 +54,11 @@ export class RecipeDetailComponent implements OnInit {
       }
     });
   }
+
   ngOnInit() {
     this.recipeService.getRecipeById(this.recipeId).subscribe((recipe) => {
       this.recipe = recipe;
+      this.isLoading = false;
       console.log(this.recipe);
     });
   }
