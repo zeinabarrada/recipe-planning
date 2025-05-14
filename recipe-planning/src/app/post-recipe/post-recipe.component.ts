@@ -24,7 +24,6 @@ export class AddRecipeComponent {
     [],
     [],
     '',
-    [],
     '',
     '',
     '',
@@ -33,7 +32,6 @@ export class AddRecipeComponent {
     '',
     [],
     0,
-    []
   );
   ingredientsInput: string = '';
   cuisineTypes = [
@@ -66,7 +64,6 @@ export class AddRecipeComponent {
       ingredients: [],
       instructions: [],
       type: '',
-      meal: [],
       authorId: '',
       author: '',
       nutrition_facts: '',
@@ -119,7 +116,7 @@ export class AddRecipeComponent {
       alert('Please select a cuisine type');
       return false;
     }
-    if (!this.newRecipe.meal || this.newRecipe.meal.length === 0) {
+    if (!this.newRecipe.type || this.newRecipe.type.length === 0) {
       alert('Please select a meal type');
       return false;
     }
@@ -190,7 +187,6 @@ export class AddRecipeComponent {
       [],
       [],
       '',
-      [],
       '',
       '',
       '',

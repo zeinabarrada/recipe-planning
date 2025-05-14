@@ -43,7 +43,6 @@ export class RecipeService {
       ratings: recipe.ratings || [],
       likes: recipe.likes || 0,
       likedBy: recipe.likedBy || [],
-      meal: recipe.meal || [],
     });
     return docRef.id;
   }
@@ -57,8 +56,8 @@ export class RecipeService {
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
       type: recipe.type,
-      meal: recipe.meal,
       author: recipe.author,
+      authorId: recipe.authorId,
     });
     console.log('Recipe saved with ID:', recipeId);
   }
@@ -78,7 +77,6 @@ export class RecipeService {
           data['ingredients'] || [],
           data['instructions'] || [],
           data['type'] || '',
-          data['meal'] || [],
           data['authorId'] || '',
           data['author'] || '',
           data['nutrition_facts'] || '',
@@ -194,7 +192,6 @@ export class RecipeService {
           data['ingredients'] || [],
           data['instructions'] || [],
           data['type'] || '',
-          data['meal'] || [],
           data['authorId'] || '',
           data['author'] || '',
           data['nutrition_facts'] || '',
@@ -203,7 +200,7 @@ export class RecipeService {
           data['cooking_time'] || '',
           data['ratings'] || [],
           data['likes'] || 0,
-          data['likedBy'] || []
+          data['likedBy'] || [],
         );
       })
       .filter((recipe) => recipe.authorId === userId);
