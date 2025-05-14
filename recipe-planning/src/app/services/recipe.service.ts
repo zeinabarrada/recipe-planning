@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class RecipeService {
   public recipes = new BehaviorSubject<Recipe[]>([]);
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore) { }
 
   getRecipes(): Observable<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
@@ -31,6 +31,7 @@ export class RecipeService {
     const docRef = await addDoc(recipeCollection, {
       recipe_name: recipe.recipe_name,
       author: recipe.author,
+      authorId: recipe.authorId,
       nutrition_facts: recipe.nutrition_facts,
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
