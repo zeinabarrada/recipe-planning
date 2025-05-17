@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     FormsModule,
@@ -26,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatCardModule,
     MatFormFieldModule,
     CommonModule,
+    RouterModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
@@ -48,15 +50,26 @@ export class RegisterComponent {
   registerForm: FormGroup;
 
   handleRegister() {
-    console.log('button clicked');
+    console.log('Register button clicked');
+    console.log('Form valid:', this.registerForm.valid);
+    console.log('Form values:', this.registerForm.value);
+    console.log('Form errors:', this.registerForm.errors);
+
     if (this.registerForm.valid) {
       const email = this.registerForm.value.email;
       const username = this.registerForm.value.username;
       const password = this.registerForm.value.password;
+      console.log('Attempting to register with:', { email, username });
       this.auth.register(email, username, password);
-      console.log(email, username, password);
+      console.log('Registration request sent');
       this.isAuthenticated = true;
       this.router.navigate(['/profile']);
+    } else {
+      console.log('Form is invalid');
+      Object.keys(this.registerForm.controls).forEach((key) => {
+        const control = this.registerForm.get(key);
+        console.log(`${key} errors:`, control?.errors);
+      });
     }
   }
 }
