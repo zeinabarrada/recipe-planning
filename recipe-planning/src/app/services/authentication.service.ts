@@ -14,11 +14,7 @@ export class AuthenticationService {
   private users: User[] = [];
   isAuth = new BehaviorSubject<boolean>(false);
 
-  constructor(
-    private firestore: Firestore,
-    private userService: UserService,
-    private recipeService: RecipeService
-  ) {
+  constructor(private firestore: Firestore, private userService: UserService) {
     // get users from database
     this.initializeUsers();
 
@@ -65,6 +61,7 @@ export class AuthenticationService {
       })
     );
     console.log('Initialized users:', this.users);
+    return this.users;
   }
 
   async register(email: string, username: string, password: string) {

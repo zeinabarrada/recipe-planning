@@ -35,8 +35,8 @@ export class UsersComponent implements OnInit {
     private userService: UserService,
     private recipeService: RecipeService,
     private router: Router,
-    private authService: AuthenticationService,
-  ) { }
+    private authService: AuthenticationService
+  ) {}
 
   async ngOnInit() {
     this.authService.getUser().subscribe((user) => {
@@ -46,7 +46,7 @@ export class UsersComponent implements OnInit {
   }
 
   async loadUsers() {
-    this.users = await this.userService.getAllUsers();
+    this.users = await this.authService.initializeUsers();
     this.filteredUsers = this.users.filter(
       (user) => user.id !== this.currentUser?.id
     );
@@ -79,10 +79,7 @@ export class UsersComponent implements OnInit {
   onFollow(targetUser: User) {
     if (!this.currentUser || !this.targetUser) return;
 
-    this.userService.followUser(
-      this.currentUser,
-      targetUser
-    );
+    this.userService.followUser(this.currentUser, targetUser);
 
     this.currentUser.following.push(targetUser.id);
     this.targetUser.followers.push(this.currentUser.id);
@@ -96,10 +93,7 @@ export class UsersComponent implements OnInit {
   onUnfollow(targetUser: User) {
     if (!this.currentUser || !this.targetUser) return;
 
-    this.userService.unfollowUser(
-      this.currentUser,
-      targetUser
-    );
+    this.userService.unfollowUser(this.currentUser, targetUser);
 
     this.currentUser.following = this.currentUser.following.filter(
       (id) => id !== targetUser.id
