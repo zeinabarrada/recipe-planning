@@ -4,11 +4,12 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { AddRecipeComponent } from './post-recipe/post-recipe.component';
 import { MealPlanComponent } from './meal-plan/meal-plan.component';
-import { ShoppingListsComponent } from './shopping-list/shopping-lists.component';
+import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { LandingComponent } from './landing/landing.component';
 import { RegisterComponent } from './authentication/register/register.component';
 import { LoginComponent } from './authentication/login/login.component';
 import { UsersComponent } from './users/users.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -63,8 +64,19 @@ export const routes: Routes = [
     title: 'Meal Plan - Recipe Planner',
   },
   {
-    path: 'shopping-lists',
-    component: ShoppingListsComponent,
+    path: 'shopping-list',
+    component: ShoppingListComponent,
+    title: 'Shopping Lists - Recipe Planner',
+  },
+  {
+    path: 'shopping-list/new',
+    component: ShoppingListComponent,
+    title: 'Create Shopping List - Recipe Planner',
+  },
+  {
+    path: 'shopping-list/:id',
+    component: ShoppingListComponent,
+    title: 'Shopping List Details - Recipe Planner',
   },
   {
     path: '**',

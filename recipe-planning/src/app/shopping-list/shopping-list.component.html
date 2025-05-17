@@ -1,50 +1,36 @@
 <div class="shopping-list-container">
-  <div *ngIf="!shoppingList" class="loading-state">
-    <mat-card>
-      <mat-card-content>
-        <p>Loading shopping list...</p>
-      </mat-card-content>
-    </mat-card>
+  <div class="header">
+    <h1>Shopping Lists</h1>
   </div>
 
-  <div *ngIf="shoppingList">
-    <mat-card class="shopping-list-card">
-      <mat-card-header>
-        <mat-card-title>Shopping List</mat-card-title>
-        <mat-card-subtitle>Created on {{ shoppingList.createdAt | date:'medium' }}</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <!-- Category sections -->
-        <div *ngFor="let category of categories" class="category-section">
-          <h3 class="category-title">{{ category }}</h3>
-          <mat-list>
-            <mat-list-item *ngFor="let item of getItemsByCategory(category)" class="shopping-item">
-              <div class="item-content">
-                <mat-checkbox 
-                  [(ngModel)]="checkedItems[item.ingredient]"
-                  color="primary"
-                  class="item-checkbox">
-                  <span [class.checked]="checkedItems[item.ingredient]">
-                    {{ item.quantity }} {{ item.unit }} {{ item.ingredient }}
-                  </span>
-                </mat-checkbox>
-              </div>
-            </mat-list-item>
-          </mat-list>
-          <mat-divider *ngIf="!isLastCategory(category)"></mat-divider>
+  <div class="lists-container">
+    <div *ngFor="let list of shoppingLists$ | async; let i = index" class="list-card">
+      <div class="list-header" (click)="toggleList(list?.id)">
+        <h3>Shopping List #{{i + 1}}</h3>
+        <span class="date">{{ list?.createdAt | date:'mediumDate' }}</span>
+        <button class="toggle-button">
+          {{ isListExpanded(list?.id) ? 'Hide Details' : 'View Details' }}
+        </button>
+      </div>
+      
+      <div class="list-items" *ngIf="isListExpanded(list?.id)">
+        <div *ngFor="let item of list?.items" class="item">
+          <span class="ingredient">
+            {{ getIngredientDisplay(item?.ingredient) }}
+          </span>
+          <span class="quantity">
+            {{ item?.quantity }} {{ getUnitDisplay(item?.unit) }}
+          </span>
         </div>
+      </div>
 
-        <!-- Empty state -->
-        <div *ngIf="categories.length === 0" class="empty-state">
-          <p>No items in the shopping list</p>
-        </div>
-      </mat-card-content>
+      <div class="list-actions">
+        <button class="delete-button" (click)="deleteList(list?.id)" [disabled]="!list?.id">Delete</button>
+      </div>
+    </div>
 
-      <mat-card-actions align="end">
-        <button mat-button color="warn" (click)="clearCheckedItems()">Clear Checked Items</button>
-        <button mat-button color="primary" (click)="saveProgress()">Save Progress</button>
-      </mat-card-actions>
-    </mat-card>
+    <div *ngIf="(shoppingLists$ | async)?.length === 0" class="no-lists">
+      <p>No shopping lists found. Create your first shopping list!</p>
+    </div>
   </div>
 </div> 
