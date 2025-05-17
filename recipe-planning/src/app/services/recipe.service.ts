@@ -31,6 +31,7 @@ export class RecipeService {
     const docRef = await addDoc(recipeCollection, {
       recipe_name: recipe.recipe_name,
       author: recipe.author,
+      authorId: recipe.authorId,
       nutrition_facts: recipe.nutrition_facts,
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
