@@ -116,6 +116,10 @@ export class MealPlanComponent {
         this.currentUser.id,
         this.mealPlan
       );
+      this.savedMealPlan = true;
+      setTimeout(() => {
+        this.savedMealPlan = false;
+      }, 2000);
     } catch (error) {
       console.error('Error saving meal plan:', error);
     }

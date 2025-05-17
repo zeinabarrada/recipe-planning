@@ -5,6 +5,13 @@
     <div class="grid-header">
       <div class="header-cell">Day</div>
       <div class="header-cell" *ngFor="let mealType of mealTypes">
+        <i class="material-icons">{{
+          mealType === "Breakfast"
+            ? "free_breakfast"
+            : mealType === "Lunch"
+            ? "lunch_dining"
+            : "dinner_dining"
+        }}</i>
         {{ mealType }}
       </div>
     </div>
@@ -23,7 +30,6 @@
           >
             <h3>{{ recipe.recipe_name }}</h3>
             <p>{{ recipe.type }}</p>
-
             <button
               mat-button
               (click)="
@@ -46,17 +52,33 @@
   </div>
 
   <div class="actions">
-    <button mat-button (click)="saveMealPlan()">Save Meal Plan</button>
+    <button class="main-button" (click)="saveMealPlan()">
+      <i class="material-icons">save</i>
+      Save Meal Plan
+    </button>
     <button
-      mat-button
+      class="main-button"
       (click)="generateShoppingList()"
       *ngIf="showShoppingListButton"
     >
+      <i class="material-icons">shopping_cart</i>
       Generate Shopping List
     </button>
   </div>
   <div *ngIf="savedMealPlan" class="saved-meal-plan">Meal Plan Saved!</div>
 </div>
-<div *ngIf="!currentUser">
-  <p>Please log in to view and create meal plans.</p>
+
+<div
+  *ngIf="!currentUser"
+  class="meal-plan-container"
+  style="text-align: center; padding: 3rem"
+>
+  <i
+    class="material-icons"
+    style="font-size: 48px; color: #e09f28; margin-bottom: 1rem"
+    >lock</i
+  >
+  <p style="font-size: 1.2rem; color: #2d4155">
+    Please log in to view and create meal plans.
+  </p>
 </div>
