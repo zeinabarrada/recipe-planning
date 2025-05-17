@@ -391,3 +391,20 @@
   font-size: 1.1rem;
   margin: 0;
 }
+
+.save-status {
+  color: #4caf50;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

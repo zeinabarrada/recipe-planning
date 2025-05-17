@@ -34,6 +34,7 @@ export class RecipeDetailComponent implements OnInit {
   showAddReview: { [key: string]: boolean } = {};
   allRecipes: Recipe[] = [];
   selectedRecipeId: string | null = null;
+  saved: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -71,6 +72,7 @@ export class RecipeDetailComponent implements OnInit {
 
     this.userService.saveRecipe(this.currentUser, recipe).then(() => {
       console.log(`Recipe "${recipe.recipe_name}" saved!`);
+      this.saved = true;
     });
   }
 

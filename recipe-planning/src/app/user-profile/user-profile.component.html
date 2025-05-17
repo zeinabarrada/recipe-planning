@@ -66,266 +66,273 @@
         <div class="nutrition-facts">
           <strong>Nutrition:</strong> {{ recipe.nutrition_facts }}
         </div>
-        <button class="save-button">
-          <i class="material-icons">bookmark</i> Saved
+      </div>
+
+      <div *ngIf="savedRecipes.length === 0" class="empty-state">
+        <p>You haven't saved any recipes yet</p>
+        <button class="browse-button" routerLink="/recipes">
+          Browse Recipes
         </button>
       </div>
     </div>
+  </div>
 
-    <div *ngIf="savedRecipes.length === 0" class="empty-state">
-      <p>You haven't saved any recipes yet</p>
-      <button class="browse-button" routerLink="/recipes">
-        Browse Recipes
+  <div *ngIf="!targetUser && currentUser" class="user-profile">
+    <div class="profile-header">
+      <div class="avatar">
+        <span *ngIf="!currentUser.avatar" class="avatar-letter">
+          {{ getFirstLetter(currentUser.username) }}
+        </span>
+      </div>
+      <h2 class="username">{{ currentUser.username | uppercase }}</h2>
+      <div class="stats-container">
+        <div class="stat-item">
+          <div class="stat-number">
+            {{ currentUserPostedRecipes.length }}
+          </div>
+          <div class="stat-label">Posted Recipes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">
+            {{ savedRecipes.length }}
+          </div>
+          <div class="stat-label">Saved Recipes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">{{ currentUser.getFollowers().length }}</div>
+          <div class="stat-label">Followers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">{{ currentUser.getFollowing().length }}</div>
+          <div class="stat-label">Following</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-nav">
+      <button
+        class="nav-button"
+        [class.active]="activeTab === 'recipes'"
+        (click)="activeTab = 'recipes'"
+      >
+        My Saved Recipes
+      </button>
+      <button
+        class="nav-button"
+        [class.active]="activeTab === 'posted-recipes'"
+        (click)="activeTab = 'posted-recipes'"
+      >
+        My Posted Recipes
+      </button>
+      <button
+        class="nav-button"
+        [class.active]="activeTab === 'followers'"
+        (click)="activeTab = 'followers'"
+      >
+        My Followers
+      </button>
+      <button
+        class="nav-button"
+        [class.active]="activeTab === 'following'"
+        (click)="activeTab = 'following'"
+      >
+        My Following
       </button>
     </div>
-  </div>
-</div>
 
-<div *ngIf="!targetUser && currentUser" class="user-profile">
-  <div class="profile-header">    
-    <div
-      class="avatar">
-      <span *ngIf="!currentUser.avatar" class="avatar-letter">
-        {{ getFirstLetter(currentUser.username) }}
-      </span>      
-    </div>
-    <h2 class="username">{{ currentUser.username | uppercase }}</h2>
-    <div class="stats-container">
-      <div class="stat-item">
-        <div class="stat-number">
-          {{ currentUserPostedRecipes.length }}
+    <div class="tab-content" *ngIf="activeTab === 'recipes'">
+      <div class="recipes-section">
+        <div class="section-header">
+          <h3>My Saved Recipes</h3>
+          <div class="recipe-count">{{ savedRecipes.length || 0 }} recipes</div>
         </div>
-        <div class="stat-label">Posted Recipes</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">
-          {{ savedRecipes.length }}
-        </div>
-        <div class="stat-label">Saved Recipes</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ currentUser.getFollowers().length }}</div>
-        <div class="stat-label">Followers</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ currentUser.getFollowing().length }}</div>
-        <div class="stat-label">Following</div>
-      </div>
-    </div>
-  </div>
 
-  <div class="profile-nav">
-    <button
-      class="nav-button"
-      [class.active]="activeTab === 'recipes'"
-      (click)="activeTab = 'recipes'"
-    >
-      My Saved Recipes
-    </button>
-    <button
-      class="nav-button"
-      [class.active]="activeTab === 'posted-recipes'"
-      (click)="activeTab = 'posted-recipes'"
-    >
-      My Posted Recipes
-    </button>
-    <button
-      class="nav-button"
-      [class.active]="activeTab === 'followers'"
-      (click)="activeTab = 'followers'"
-    >
-      My Followers
-    </button>
-    <button
-      class="nav-button"
-      [class.active]="activeTab === 'following'"
-      (click)="activeTab = 'following'"
-    >
-      My Following
-    </button>
-  </div>
-
-  <div class="tab-content" *ngIf="activeTab === 'recipes'">
-    <div class="recipes-section">
-      <div class="section-header">
-        <h3>My Saved Recipes</h3>
-        <div class="recipe-count">{{ savedRecipes.length || 0 }} recipes</div>
-      </div>
-
-      <div class="recipe-list">
-        <div *ngFor="let recipe of savedRecipes" class="recipe-card">
-          <div class="recipe-header">
-            <h4 class="recipe-title">{{ recipe.recipe_name }}</h4>
-            <div class="recipe-meta">
-              <span class="recipe-author">By {{ recipe.author }}</span>
-            </div>
-            <span class="recipe-type-badge">{{ recipe.type }}</span>
-          </div>
-
-          <div class="recipe-content">
-            <div class="ingredients-section">
-              <h5>Ingredients</h5>
-              <ul class="ingredients-list">
-                <li *ngFor="let ingredient of recipe.ingredients">
-                  {{ ingredient }}
-                </li>
-              </ul>
+        <div class="recipe-list">
+          <div *ngFor="let recipe of savedRecipes" class="recipe-card">
+            <div class="recipe-header">
+              <h4 class="recipe-title">{{ recipe.recipe_name }}</h4>
+              <div class="recipe-meta">
+                <span class="recipe-author">By {{ recipe.author }}</span>
+              </div>
+              <span class="recipe-type-badge">{{ recipe.type }}</span>
             </div>
 
-            <div class="instructions-section">
-              <h5>Instructions</h5>
-              <ol class="instructions-list">
-                <li *ngFor="let instruction of recipe.instructions">
-                  {{ instruction }}
-                </li>
-              </ol>
+            <div class="recipe-content">
+              <div class="ingredients-section">
+                <h5>Ingredients</h5>
+                <ul class="ingredients-list">
+                  <li *ngFor="let ingredient of recipe.ingredients">
+                    {{ ingredient }}
+                  </li>
+                </ul>
+              </div>
+
+              <div class="instructions-section">
+                <h5>Instructions</h5>
+                <ol class="instructions-list">
+                  <li *ngFor="let instruction of recipe.instructions">
+                    {{ instruction }}
+                  </li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="recipe-footer">
+              <div class="nutrition-facts">
+                <strong>Nutrition:</strong> {{ recipe.nutrition_facts }}
+              </div>
             </div>
           </div>
 
-          <div class="recipe-footer">
-            <div class="nutrition-facts">
-              <strong>Nutrition:</strong> {{ recipe.nutrition_facts }}
-            </div>
-            <button class="save-button">
-              <i class="material-icons">bookmark</i> Saved
+          <div *ngIf="savedRecipes.length === 0" class="empty-state">
+            <p>You haven't saved any recipes yet</p>
+            <button class="browse-button" routerLink="/recipes">
+              Browse Recipes
             </button>
           </div>
         </div>
-
-        <div *ngIf="savedRecipes.length === 0" class="empty-state">
-          <p>You haven't saved any recipes yet</p>
-          <button class="browse-button" routerLink="/recipes">
-            Browse Recipes
-          </button>
-        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tab-content" *ngIf="activeTab === 'posted-recipes'">
-    <div class="recipes-section">
-      <div class="section-header">
-        <h3>My Posted Recipes</h3>
-        <div class="recipe-count">{{ currentUserPostedRecipes.length || 0 }} recipes</div>
-      </div>
-
-      <div class="recipe-list">
-        <div *ngFor="let recipe of currentUserPostedRecipes" class="recipe-card">
-          <div class="recipe-header">
-            <h4 class="recipe-title">{{ recipe.recipe_name }}</h4>
-            <div class="recipe-meta">
-              <span class="recipe-author">By {{ recipe.author }}</span>
-            </div>
-            <span class="recipe-type-badge">{{ recipe.type }}</span>
-          </div>
-
-          <div class="recipe-content">
-            <div class="ingredients-section">
-              <h5>Ingredients</h5>
-              <ul class="ingredients-list">
-                <li *ngFor="let ingredient of recipe.ingredients">
-                  {{ ingredient }}
-                </li>
-              </ul>
-            </div>
-
-            <div class="instructions-section">
-              <h5>Instructions</h5>
-              <ol class="instructions-list">
-                <li *ngFor="let instruction of recipe.instructions">
-                  {{ instruction }}
-                </li>
-              </ol>
-            </div>
-          </div>
-
-          <div class="recipe-footer">
-            <div class="nutrition-facts">
-              <strong>Nutrition:</strong> {{ recipe.nutrition_facts }}
-            </div>
-            <button class="save-button">
-              <i class="material-icons">bookmark</i> Saved
-            </button>
+    <div class="tab-content" *ngIf="activeTab === 'posted-recipes'">
+      <div class="recipes-section">
+        <div class="section-header">
+          <h3>My Posted Recipes</h3>
+          <div class="recipe-count">
+            {{ currentUserPostedRecipes.length || 0 }} recipes
           </div>
         </div>
 
-        <div *ngIf="currentUserPostedRecipes.length === 0" class="empty-state">
-          <p>You haven't posted any recipes yet</p>
-          <button class="browse-button" routerLink="/recipes">
-            Browse Recipes
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="tab-content" *ngIf="activeTab === 'followers'">
-    <div class="followers-section">
-      <div class="section-header">
-        <h3>My Followers</h3>
-        <div class="count">
-          {{ currentUser.getFollowers().length }} followers
-        </div>
-      </div>
-
-      <div class="users-list">
-        <div *ngFor="let follower of followersList" class="user-card" 
-        (click)="viewProfile(follower.id)">
-          <div class="user-info">
-            <div class="list-avatar">
-              <span *ngIf="!follower.avatar" class="avatar-letter">
-                {{ getFirstLetter(follower.username) }}
-              </span>
-            </div>
-          </div>
-          <div class="details">
-            <h4 class="follower-username">{{ follower.username }}</h4>
-          </div>
-          <button
-            class="remove-follower-btn"
-            (click)="removeFollower(follower.id)"
+        <div class="recipe-list">
+          <div
+            *ngFor="let recipe of currentUserPostedRecipes"
+            class="recipe-card"
           >
-            <i class="material-icons">person_remove</i>
-            Remove
-          </button>
-        </div>
-      </div>
+            <div class="recipe-header">
+              <h4 class="recipe-title">{{ recipe.recipe_name }}</h4>
+              <div class="recipe-meta">
+                <span class="recipe-author">By {{ recipe.author }}</span>
+              </div>
+              <span class="recipe-type-badge">{{ recipe.type }}</span>
+            </div>
 
-      <div *ngIf="followersList.length === 0" class="empty-state">
-        <p>You don't have any followers yet</p>
-      </div>
-    </div>
-  </div>
+            <div class="recipe-content">
+              <div class="ingredients-section">
+                <h5>Ingredients</h5>
+                <ul class="ingredients-list">
+                  <li *ngFor="let ingredient of recipe.ingredients">
+                    {{ ingredient }}
+                  </li>
+                </ul>
+              </div>
 
-  <!-- Following Tab -->
-  <div class="tab-content" *ngIf="activeTab === 'following'">
-    <div class="followers-section">
-      <div class="section-header">
-        <h3>My Following</h3>
-        <div class="count">{{ followingList.length }} following</div>
-      </div>
+              <div class="instructions-section">
+                <h5>Instructions</h5>
+                <ol class="instructions-list">
+                  <li *ngFor="let instruction of recipe.instructions">
+                    {{ instruction }}
+                  </li>
+                </ol>
+              </div>
+            </div>
 
-      <div class="users-list">
-        <div *ngFor="let user of followingList" class="user-card" 
-        (click)="viewProfile(user.id)">
-          <div class="user-info">
-            <div class="list-avatar">
-              <span *ngIf="!user.avatar" class="avatar-letter">
-                {{ getFirstLetter(user.username) }}
-              </span>
+            <div class="recipe-footer">
+              <div class="nutrition-facts">
+                <strong>Nutrition:</strong> {{ recipe.nutrition_facts }}
+              </div>
+              <button class="save-button">
+                <i class="material-icons">bookmark</i> Saved
+              </button>
             </div>
           </div>
-          <div class="details">
-            <h4 class="follower-username">{{ user.username }}</h4>
+
+          <div
+            *ngIf="currentUserPostedRecipes.length === 0"
+            class="empty-state"
+          >
+            <p>You haven't posted any recipes yet</p>
+            <button class="browse-button" routerLink="/recipes">
+              Browse Recipes
+            </button>
           </div>
-          <button class="remove-follower-btn" (click)="unfollowUser(user.id)">
-            <i class="material-icons">person_remove</i>
-            Unfollow
-          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" *ngIf="activeTab === 'followers'">
+      <div class="followers-section">
+        <div class="section-header">
+          <h3>My Followers</h3>
+          <div class="count">
+            {{ currentUser.getFollowers().length }} followers
+          </div>
         </div>
 
-        <div *ngIf="followingList.length === 0" class="empty-state">
-          <p>You're not following anyone yet</p>
+        <div class="users-list">
+          <div
+            *ngFor="let follower of followersList"
+            class="user-card"
+            (click)="viewProfile(follower.id)"
+          >
+            <div class="user-info">
+              <div class="list-avatar">
+                <span *ngIf="!follower.avatar" class="avatar-letter">
+                  {{ getFirstLetter(follower.username) }}
+                </span>
+              </div>
+            </div>
+            <div class="details">
+              <h4 class="follower-username">{{ follower.username }}</h4>
+            </div>
+            <button
+              class="remove-follower-btn"
+              (click)="removeFollower(follower.id)"
+            >
+              <i class="material-icons">person_remove</i>
+              Remove
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="followersList.length === 0" class="empty-state">
+          <p>You don't have any followers yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Following Tab -->
+    <div class="tab-content" *ngIf="activeTab === 'following'">
+      <div class="followers-section">
+        <div class="section-header">
+          <h3>My Following</h3>
+          <div class="count">{{ followingList.length }} following</div>
+        </div>
+
+        <div class="users-list">
+          <div
+            *ngFor="let user of followingList"
+            class="user-card"
+            (click)="viewProfile(user.id)"
+          >
+            <div class="user-info">
+              <div class="list-avatar">
+                <span *ngIf="!user.avatar" class="avatar-letter">
+                  {{ getFirstLetter(user.username) }}
+                </span>
+              </div>
+            </div>
+            <div class="details">
+              <h4 class="follower-username">{{ user.username }}</h4>
+            </div>
+            <button class="remove-follower-btn" (click)="unfollowUser(user.id)">
+              <i class="material-icons">person_remove</i>
+              Unfollow
+            </button>
+          </div>
+
+          <div *ngIf="followingList.length === 0" class="empty-state">
+            <p>You're not following anyone yet</p>
+          </div>
         </div>
       </div>
     </div>

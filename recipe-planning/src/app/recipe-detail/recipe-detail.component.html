@@ -115,6 +115,7 @@
     <button class="save-button" (click)="saveRecipe(recipe)">
       <i class="material-icons">bookmark</i> Save Recipe
     </button>
+    <div *ngIf="saved" class="save-status">Recipe saved successfully!</div>
   </div>
 </div>
 
