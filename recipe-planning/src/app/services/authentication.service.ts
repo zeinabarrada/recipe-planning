@@ -66,18 +66,19 @@ export class AuthenticationService {
 
   async register(email: string, username: string, password: string) {
     try {
-      // Check if username already exists
-      const existingUser = this.users.find((u) => u.username === username);
+      // bashof el username dah mawgood wala la
+      const existingUser = this.users.find(
+        (user) => user.username === username
+      );
       if (existingUser) {
         throw new Error('Username already exists');
       }
-
-      // Check if email already exists
-      const existingEmail = this.users.find((u) => u.email === email);
+      // bashof el email dah mawgood wala la
+      const existingEmail = this.users.find((user) => user.email === email);
       if (existingEmail) {
         throw new Error('Email already registered');
       }
-
+      // create user
       const user = this.userService.createUser(email, username, password);
       await this.userService.saveUser(user);
 
@@ -107,10 +108,12 @@ export class AuthenticationService {
   }
 
   async login(username: string, password: string): Promise<User | null> {
+    // bashof el username w password dah mawgood wala la
     const user = this.users.find(
       (u) => u.username === username && u.getPassword() === password
     );
     if (user) {
+      // get user from database
       const freshUser = await this.userService.getUserByIdInstance(user.id);
       this.currentUser.next(freshUser);
       this.isAuth.next(true);

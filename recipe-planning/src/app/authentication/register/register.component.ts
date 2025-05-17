@@ -50,26 +50,13 @@ export class RegisterComponent {
   registerForm: FormGroup;
 
   handleRegister() {
-    console.log('Register button clicked');
-    console.log('Form valid:', this.registerForm.valid);
-    console.log('Form values:', this.registerForm.value);
-    console.log('Form errors:', this.registerForm.errors);
-
     if (this.registerForm.valid) {
-      const email = this.registerForm.value.email;
-      const username = this.registerForm.value.username;
-      const password = this.registerForm.value.password;
-      console.log('Attempting to register with:', { email, username });
+      const { email, username, password } = this.registerForm.value;
       this.auth.register(email, username, password);
-      console.log('Registration request sent');
       this.isAuthenticated = true;
       this.router.navigate(['/profile']);
     } else {
-      console.log('Form is invalid');
-      Object.keys(this.registerForm.controls).forEach((key) => {
-        const control = this.registerForm.get(key);
-        console.log(`${key} errors:`, control?.errors);
-      });
+      console.log('Form is invalid. Please fill out all fields correctly.');
     }
   }
 }

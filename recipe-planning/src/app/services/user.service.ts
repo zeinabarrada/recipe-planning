@@ -21,7 +21,7 @@ export class UserService {
   constructor(
     private firestore: Firestore,
     private recipeService: RecipeService
-  ) { }
+  ) {}
 
   async saveUser(user: User) {
     const usersRef = collection(this.firestore, 'users');
@@ -39,8 +39,12 @@ export class UserService {
   }
 
   async followUser(currentUser: User, targetUser: User) {
-    if (!currentUser.id || !targetUser.id ||
-      currentUser.id.trim() === '' || targetUser.id.trim() === '') {
+    if (
+      !currentUser.id ||
+      !targetUser.id ||
+      currentUser.id.trim() === '' ||
+      targetUser.id.trim() === ''
+    ) {
       console.error(
         '(followUserFunction)Invalid user IDs for follow operation:',
         {
@@ -267,16 +271,17 @@ export class UserService {
       return;
     }
 
-    // Check if recipe is already saved
+    // by save inside users (savedrecipes)
     const savedRecipesRef = collection(
       this.firestore,
       'users',
       user.id,
       'savedRecipes'
     );
-    const snapshot = await getDocs(savedRecipesRef);
-    const isAlreadySaved = snapshot.docs.some(
-      (doc) => doc.data()['recipeId'] === recipe.id
+    //check if the recipe is already saved or not
+    const snapshot = await getDocs(savedRecipesRef); // haystana yegeeb el saved recipes
+    const isAlreadySaved = snapshot.docs.find(
+      (doc) => doc.data()['recipeId'] === recipe.id // byshoof fl docs ely reg3et el recipe id ely ana 3mltlo save mawgood already wala la
     );
 
     if (isAlreadySaved) {
