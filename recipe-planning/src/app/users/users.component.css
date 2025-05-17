@@ -48,7 +48,10 @@
   transition: box-shadow 0.2s;
 }
 .chef-card:hover {
-  box-shadow: 0 6px 24px rgba(224, 159, 40, 0.1);
+  box-shadow: 0 6px 24px rgba(224, 159, 40, 0.1);    
+  background: #ededed;
+  transition: background 0.3s;
+  cursor: pointer;  
 }
 .chef-avatar {
   width: 80px;
