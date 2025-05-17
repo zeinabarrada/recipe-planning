@@ -29,6 +29,15 @@
             >
               Remove
             </button>
+            <button
+              mat-button
+              (click)="
+                $event.stopPropagation();
+                removeRecipeFromMealPlan(dayIndex, mealIndex)
+              "
+            >
+              Remove
+            </button>
           </div>
           <div
             *ngIf="!getRecipeForMeal(dayIndex, mealIndex)"

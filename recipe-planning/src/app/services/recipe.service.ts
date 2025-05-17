@@ -23,8 +23,8 @@ export class RecipeService {
 
   getRecipes(): Observable<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
-    const recipes = collectionData(recipesCollection, { idField: 'id' }); // Include the document ID as 'id'
-    return recipes as Observable<Recipe[]>; // This will return recipes with their 'id' field
+    const recipes = collectionData(recipesCollection, { idField: 'id' });
+    return recipes as Observable<Recipe[]>;
   }
 
   async addRecipe(recipe: Recipe): Promise<string> {

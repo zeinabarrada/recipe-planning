@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="follow-btn-container">
+      <div class="follow-btn-container" (click)="$event.stopPropagation()">
         <app-follow-button
           [targetUser]="user"
           [isFollowing]="isFollowing(user.id)"
