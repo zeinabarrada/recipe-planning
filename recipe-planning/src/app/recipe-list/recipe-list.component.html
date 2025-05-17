@@ -112,10 +112,13 @@
         [recipe]="recipe"
         [currentUser]="currentUser"
         (likeToggled)="onLikeToggled($event)"
+        (click)="$event.stopPropagation()"
         style="position: absolute; top: 16px; right: 16px; z-index: 2"
       ></app-like-recipe>
+
       <span class="recipe-tag" *ngIf="recipe.type">{{ recipe.type }}</span>
     </div>
+
     <div class="recipe-card-content">
       <h3 class="recipe-title">{{ recipe.recipe_name }}</h3>
       <div class="recipe-meta">
