@@ -13,11 +13,28 @@ import { AuthenticationService } from '../services/authentication.service';
   templateUrl: './post-recipe.component.html',
   styleUrls: ['./post-recipe.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule]
+  imports: [FormsModule, CommonModule],
 })
 export class AddRecipeComponent {
   currentUser: User | null = null;
-  newRecipe: Recipe = new Recipe('', '', '', [], [], '', [], '', '', '', 0, '', '', [], 0, []);
+  newRecipe: Recipe = new Recipe(
+    '',
+    '',
+    '',
+    [],
+    [],
+    '',
+    [],
+    '',
+    '',
+    '',
+    0,
+    '',
+    '',
+    [],
+    0,
+    []
+  );
   ingredientsInput: string = '';
   cuisineTypes = [
     'Italian',
@@ -30,9 +47,9 @@ export class AddRecipeComponent {
     'American',
     'French',
     'Greek',
-    'Other'
+    'Other',
   ];
-  mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
+  mealTypes = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
   instructionsInput: string = '';
 
   constructor(
@@ -58,7 +75,7 @@ export class AddRecipeComponent {
       cooking_time: '',
       ratings: [],
       likes: 0,
-      likedBy: []
+      likedBy: [],
     };
   }
 
@@ -82,11 +99,11 @@ export class AddRecipeComponent {
       alert('Please enter a recipe name');
       return false;
     }
-    if(!this.newRecipe.imagePath.trim()){
+    if (!this.newRecipe.imagePath.trim()) {
       alert('Please enter an image path');
       return false;
     }
-    if(!this.newRecipe.nutrition_facts.trim()){
+    if (!this.newRecipe.nutrition_facts.trim()) {
       alert('Please enter nutrition facts');
       return false;
     }
@@ -114,9 +131,10 @@ export class AddRecipeComponent {
       this.newRecipe.ingredients = [];
       return;
     }
-    this.newRecipe.ingredients = input.split(',')
-      .map(item => item.trim())
-      .filter(item => item !== '');
+    this.newRecipe.ingredients = input
+      .split(',')
+      .map((item) => item.trim())
+      .filter((item) => item !== '');
   }
 
   handleInstructionsInput(input: string): void {
@@ -125,9 +143,10 @@ export class AddRecipeComponent {
       return;
     }
     // Split by period or new line, trim, and filter empty
-    this.newRecipe.instructions = input.split(/\.|\n/)
-      .map(item => item.trim())
-      .filter(item => item !== '');
+    this.newRecipe.instructions = input
+      .split(/\.|\n/)
+      .map((item) => item.trim())
+      .filter((item) => item !== '');
   }
 
   async submitRecipe() {
@@ -151,7 +170,7 @@ export class AddRecipeComponent {
       alert('Recipe submitted successfully!');
       // Wait for Firestore to emit the new recipe before navigating
       const sub = this.recipeService.getRecipes().subscribe((recipes) => {
-        if (recipes.some(r => r.id === newId)) {
+        if (recipes.some((r) => r.id === newId)) {
           sub.unsubscribe();
           this.resetForm();
           this.router.navigate(['/recipes']);
@@ -164,7 +183,24 @@ export class AddRecipeComponent {
   }
 
   resetForm() {
-    this.newRecipe = new Recipe('', '', '', [], [], '', [], '', '', '', 0, '', '', [], 0, []);
+    this.newRecipe = new Recipe(
+      '',
+      '',
+      '',
+      [],
+      [],
+      '',
+      [],
+      '',
+      '',
+      '',
+      0,
+      '',
+      '',
+      [],
+      0,
+      []
+    );
     this.ingredientsInput = '';
     this.instructionsInput = '';
   }

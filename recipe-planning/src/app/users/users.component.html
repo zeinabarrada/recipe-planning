@@ -14,7 +14,8 @@
       class="chef-card"
       *ngFor="let user of filteredUsers"
       (click)="viewProfile(user.id)"
-    >
+    >  
+
       <div class="chef-avatar" [ngStyle]="{ background: '#e0e800' }">
         {{
           user.username
@@ -22,22 +23,31 @@
             : '?'
         }}
       </div>
+    
       <div class="chef-info">
         <div class="chef-header">
-          <span class="chef-username">{{ user.username }}</span>
-          <button class="follow-btn" (click)="toggleFollow(user)">
-            {{ isFollowing(user.id) ? "Following" : "Follow" }}
-          </button>
+          <span class="chef-username">{{ user.username }}</span>          
         </div>
         <div class="chef-meta">
           <span>{{ userStats[user.id]?.recipeCount || 0 }} recipes</span>
           <span>{{ userStats[user.id]?.followersCount || 0 }} followers</span>
         </div>
+
         <div class="chef-bio">Professional chef with a passion for cuisine</div>
+        
         <div class="recent-recipe" *ngIf="userStats[user.id]?.recentRecipe">
           <span class="recent-label">Recent recipe:</span>
           <span>{{ userStats[user.id]?.recentRecipe?.recipe_name }}</span>
         </div>
+      </div>
+
+      <div class="follow-btn-container">
+        <app-follow-button
+          [targetUser]="user"
+          [isFollowing]="isFollowing(user.id)"
+          (follow)="onFollow(user)"
+          (unfollow)="onUnfollow(user)"
+        ></app-follow-button>
       </div>
     </div>
   </div>

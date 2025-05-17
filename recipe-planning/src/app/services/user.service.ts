@@ -12,12 +12,16 @@ import {
 import { User } from '../models/users.model';
 import { Recipe } from '../models/recipe.model';
 import { Observable, from } from 'rxjs';
+import { RecipeService } from './recipe.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private firestore: Firestore) {}
+  constructor(
+    private firestore: Firestore,
+    private recipeService: RecipeService
+  ) { }
 
   async saveUser(user: User) {
     const usersRef = collection(this.firestore, 'users');
@@ -35,12 +39,8 @@ export class UserService {
   }
 
   async followUser(currentUser: User, targetUser: User) {
-    if (
-      !currentUser.id ||
-      !targetUser.id ||
-      currentUser.id.trim() === '' ||
-      targetUser.id.trim() === ''
-    ) {
+    if (!currentUser.id || !targetUser.id ||
+      currentUser.id.trim() === '' || targetUser.id.trim() === '') {
       console.error(
         '(followUserFunction)Invalid user IDs for follow operation:',
         {

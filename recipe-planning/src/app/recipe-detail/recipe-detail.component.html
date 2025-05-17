@@ -1,16 +1,16 @@
-<div class="recipe-container">
+<div class="recipe-container" *ngIf="!isLoading && recipe">
   <!-- Recipe Header Section -->
   <div class="recipe-header">
     <div class="recipe-title">
-      <span class="recipe-type">{{ recipe?.type }}</span>
-      <h1>{{ recipe?.recipe_name }}</h1>
+      <span class="recipe-type">{{ recipe.type }}</span>
+      <h1>{{ recipe.recipe_name }}</h1>
       <div class="recipe-meta">
-        <span class="cuisine-badge">{{ recipe?.cuisine }}</span>
+        <span class="cuisine-badge">{{ recipe.cuisine }}</span>
         <span class="cooking-time">
-          <i class="material-icons">schedule</i> {{ recipe?.cooking_time }} mins
+          <i class="material-icons">schedule</i> {{ recipe.cooking_time }} mins
         </span>
         <span class="author">
-          <i class="material-icons">person</i> {{ recipe?.author }}
+          <i class="material-icons">person</i> {{ recipe.author }}
         </span>
       </div>
     </div>
@@ -19,8 +19,8 @@
   <!-- Recipe Hero Image -->
   <div class="recipe-hero">
     <img
-      [src]="recipe?.imagePath || 'assets/default-recipe.jpg'"
-      alt="{{ recipe?.recipe_name }}"
+      [src]="recipe.imagePath || 'assets/default-recipe.jpg'"
+      alt="{{ recipe.recipe_name }}"
       class="recipe-image"
     />
   </div>
@@ -31,36 +31,95 @@
     <div class="ingredients-section">
       <h2><i class="material-icons">list_alt</i> Ingredients</h2>
       <ul class="ingredients-list">
-        <li *ngFor="let ingredient of recipe?.ingredients">{{ ingredient }}</li>
+        <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li>
       </ul>
     </div>
 
     <!-- Instructions Section -->
     <div class="instructions-section">
       <h2><i class="material-icons">menu_book</i> Instructions</h2>
-      <div class="instructions-text">{{ recipe?.instructions }}</div>
+      <div class="instructions-text">{{ recipe.instructions }}</div>
     </div>
 
     <!-- Additional Info -->
     <div class="additional-info">
       <div class="info-card">
-        <h3><i class="material-icons">restaurant</i> Serving Size</h3>
-        <p>4 people</p>
-      </div>
-      <div class="info-card">
         <h3><i class="material-icons">local_fire_department</i> Calories</h3>
-        <p>Approx. 350 per serving</p>
+        <p>{{ recipe.nutrition_facts }}</p>
       </div>
+    </div>
+  </div>
+  <!-- REVIEWS SECTION -->
+  <div class="reviews-section">
+    <button (click)="toggleReviews(recipe.id)">
+      {{ showReviews[recipe.id] ? "Hide Reviews" : "View Reviews" }}
+    </button>
+
+    <div
+      *ngIf="
+        showReviews[recipe.id] && (reviewsMap[recipe.id] | async) as reviews
+      "
+    >
+      <h3>Reviews:</h3>
+      <div *ngIf="reviews.length > 0; else noReviews">
+        <div *ngFor="let review of reviews" class="review-item">
+          <p>⭐ {{ review.rating }} / 5 by {{ review.userName }}</p>
+          <p>{{ review.review }}</p>
+        </div>
+      </div>
+      <ng-template #noReviews>
+        <p>No reviews yet. Be the first!</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- ADD A REVIEW FORM -->
+  <div class="add-review">
+    <button (click)="toggleAddReview(recipe.id)">
+      {{ showAddReview[recipe.id] ? "Cancel" : "Add Review" }}
+    </button>
+
+    <div *ngIf="showAddReview[recipe.id]">
+      <form (ngSubmit)="submitReview(recipe.id)">
+        <label for="rating">Rating (1-5):</label>
+        <input
+          type="number"
+          id="rating"
+          name="rating"
+          [(ngModel)]="newRating[recipe.id]"
+          min="1"
+          max="5"
+          required
+        />
+
+        <label for="review">Your Review:</label>
+        <textarea
+          id="review"
+          name="review"
+          [(ngModel)]="newReview[recipe.id]"
+          required
+        ></textarea>
+
+        <div class="review-buttons">
+          <button type="submit">Submit Review</button>
+          <button type="button" (click)="toggleAddReview(recipe.id)">
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- Action Buttons -->
   <div class="action-buttons">
-    <button class="print-button">
-      <i class="material-icons">print</i> Print Recipe
-    </button>
-    <button class="save-button">
+    <button class="save-button" (click)="saveRecipe(recipe)">
       <i class="material-icons">bookmark</i> Save Recipe
     </button>
   </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-spinner" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Loading recipe...</p>
 </div>

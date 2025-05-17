@@ -282,7 +282,7 @@
 .recipe-tag {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   background-color: #ffa726;
   color: white;
   padding: 4px 10px;

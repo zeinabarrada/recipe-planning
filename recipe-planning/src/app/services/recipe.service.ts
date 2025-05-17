@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class RecipeService {
   public recipes = new BehaviorSubject<Recipe[]>([]);
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore) { }
 
   getRecipes(): Observable<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
@@ -43,7 +43,7 @@ export class RecipeService {
       ratings: recipe.ratings || [],
       likes: recipe.likes || 0,
       likedBy: recipe.likedBy || [],
-      meal: recipe.meal || []
+      meal: recipe.meal || [],
     });
     return docRef.id;
   }
@@ -59,7 +59,6 @@ export class RecipeService {
       type: recipe.type,
       meal: recipe.meal,
       author: recipe.author,
-
     });
     console.log('Recipe saved with ID:', recipeId);
   }
@@ -79,6 +78,7 @@ export class RecipeService {
           data['ingredients'] || [],
           data['instructions'] || [],
           data['type'] || '',
+          data['meal'] || [],
           data['authorId'] || '',
           data['author'] || '',
           data['nutrition_facts'] || '',
@@ -183,6 +183,7 @@ export class RecipeService {
   async getRecipesByUserId(userId: string): Promise<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
     const recipesSnapshot = await getDocs(recipesCollection);
+
     return recipesSnapshot.docs
       .map((doc) => {
         const data = doc.data();
@@ -193,6 +194,7 @@ export class RecipeService {
           data['ingredients'] || [],
           data['instructions'] || [],
           data['type'] || '',
+          data['meal'] || [],
           data['authorId'] || '',
           data['author'] || '',
           data['nutrition_facts'] || '',

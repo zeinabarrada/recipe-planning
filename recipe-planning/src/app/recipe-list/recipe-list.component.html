@@ -85,6 +85,8 @@
       <button (click)="selectFilter('ingredient', '')">Any</button>
       <button (click)="selectFilter('ingredient', 'egg')">Egg</button>
       <button (click)="selectFilter('ingredient', 'chicken')">Chicken</button>
+      <button (click)="selectFilter('ingredient', 'beef')">Beef</button>
+      <button (click)="selectFilter('ingredient', 'bread')">Bread</button>
       <button (click)="selectFilter('ingredient', 'rice')">Rice</button>
     </div>
 
@@ -106,6 +108,12 @@
         [alt]="recipe.recipe_name"
         class="recipe-image"
       />
+      <app-like-recipe
+        [recipe]="recipe"
+        [currentUser]="currentUser"
+        (likeToggled)="onLikeToggled($event)"
+        style="position: absolute; top: 16px; right: 16px; z-index: 2"
+      ></app-like-recipe>
       <span class="recipe-tag" *ngIf="recipe.type">{{ recipe.type }}</span>
     </div>
     <div class="recipe-card-content">
