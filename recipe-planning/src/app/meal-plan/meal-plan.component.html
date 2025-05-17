@@ -23,22 +23,12 @@
             class="selected-recipe"
           >
             <h3>{{ recipe.recipe_name }}</h3>
-            <p>{{ recipe.type }}</p>
+            <p>{{ recipe.type }}</p> 
             <button
               mat-button
-              (click)="removeRecipeFromMealPlan(dayIndex, mealIndex)"
-            >
-              Remove
-            </button>
-            <button
-              mat-button
-              (click)="
-                $event.stopPropagation();
-                removeRecipeFromMealPlan(dayIndex, mealIndex)
-              "
-            >
-              Remove
-            </button>
+              (click)="$event.stopPropagation();
+              removeRecipeFromMealPlan(dayIndex, mealIndex)"
+            >Remove</button>
           </div>
           <div
             *ngIf="!getRecipeForMeal(dayIndex, mealIndex)"
@@ -52,12 +42,12 @@
   </div>
 
   <div class="actions">
-    <button mat-button (click)="saveMealPlan()">
-      <i class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 8px;">save</i>
+    <button class="main-button" (click)="saveMealPlan()">
+      <i class="material-icons" >save</i>
       Save Meal Plan
     </button>
-    <button mat-button (click)="generateShoppingList()" *ngIf="showShoppingListButton">
-      <i class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 8px;">shopping_cart</i>
+    <button class="main-button" (click)="generateShoppingList()" *ngIf="showShoppingListButton">
+      <i class="material-icons">shopping_cart</i>
       Generate Shopping List
     </button>
   </div>
