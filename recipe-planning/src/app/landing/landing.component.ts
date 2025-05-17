@@ -6,8 +6,8 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-landing',
-  imports: [LoginComponent, RegisterComponent, CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
-export class LandingComponent {}
+export class LandingComponent { }

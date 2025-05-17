@@ -55,6 +55,11 @@ export class LoginComponent {
       this.auth.login(username, password);
       this.isAuthenticated = true;
       this.router.navigate(['/profile']);
+
+      // added to save the user to local storage
+      this.auth.getUser().subscribe((user) => {
+        localStorage.setItem("currentUser", JSON.stringify(user));
+      });
     }
   }
 }

@@ -36,7 +36,7 @@ export class UsersComponent implements OnInit {
     private recipeService: RecipeService,
     private router: Router,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.authService.getUser().subscribe((user) => {

@@ -1,12 +1,6 @@
 <div *ngIf="targetUser && currentUser" class="user-profile">
   <div class="profile-header">
-    <div
-      class="avatar"
-      [ngStyle]="{
-        'background-color': '#cafcb6',
-        color: '#737871'
-      }"
-    >
+    <div class="avatar">
       <span *ngIf="!targetUser.avatar" class="avatar-letter">
         {{ getFirstLetter(targetUser.username) }}
       </span>
@@ -20,11 +14,11 @@
         <div class="stat-label">Posted Recipes</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">{{ targetUser.getFollowers().length }}</div>
+        <div class="stat-number">{{ followersCount }}</div>
         <div class="stat-label">Followers</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">{{ targetUser.getFollowing().length }}</div>
+        <div class="stat-number">{{ followingCount }}</div>
         <div class="stat-label">Following</div>
       </div>
     </div>

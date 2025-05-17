@@ -12,7 +12,6 @@ import { UsersComponent } from './users/users.component';
     RouterModule,
     RouterOutlet,
     NavbarComponent,
-    UsersComponent,
   ],
   template: `
     <app-navbar></app-navbar>

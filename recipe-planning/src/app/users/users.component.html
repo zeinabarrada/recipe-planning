@@ -17,11 +17,7 @@
     >  
 
       <div class="chef-avatar">
-        {{
-          user.username
-            ? (user.username[0] + (user.username.split(' ')[1]?.[0] || '')).toUpperCase()
-            : '?'
-        }}
+        {{user.username ? (user.username[0]).toUpperCase() : 'XX'}}
       </div>
     
       <div class="chef-info">
