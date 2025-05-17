@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RecipeService } from '../services/recipe.service';
 import { Recipe } from '../models/recipe.model';
 import { Observable, Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ import { LikeRecipeComponent } from '../like-recipe';
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.css',
 })
-export class RecipeListComponent implements OnInit, OnDestroy {
+export class RecipeListComponent {
   currentUser: User | null = null;
   recipesObservable: Observable<Recipe[]>;
   private userSubscription: Subscription | null = null;
@@ -33,31 +33,21 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   constructor(
     private recipeService: RecipeService,
     private authService: AuthenticationService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
+    private router: Router
   ) {
     this.recipesObservable = this.recipeService.getRecipes();
   }
 
   ngOnInit() {
-    this.userSubscription = this.authService.getUser().subscribe({
-      next: (user) => {
-        this.currentUser = user;
-        console.log('Current user set to:', this.currentUser);
-      },
-      error: (error) => {
-        console.error('Error in user subscription:', error);
-        this.currentUser = null;
-      },
-      complete: () => {
-        console.log('User subscription completed');
-      },
+    this.userSubscription = this.authService.getUser().subscribe((user) => {
+      this.currentUser = user;
+      console.log('Current user set to:', this.currentUser);
     });
-    this.recipeService.getRecipes().subscribe((recipes) => {
+
+    this.recipesObservable.subscribe((recipes) => {
       this.allRecipes = recipes;
+      this.filteredRecipes = recipes;
       console.log('Loaded recipes:', recipes);
-      this.filteredRecipes = [...recipes];
-      this.cdr.detectChanges();
     });
   }
 
@@ -128,21 +118,10 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     this.filteredRecipes = [...this.allRecipes];
   }
 
-  handleImageError(event: Event) {
-    const img = event.target as HTMLImageElement;
-    img.style.display = 'none';
-    const container = img.parentElement;
-    if (container) {
-      const noImageDiv = document.createElement('div');
-      noImageDiv.className = 'no-image';
-      noImageDiv.textContent = 'Image not available';
-      container.appendChild(noImageDiv);
-    }
-  }
   viewProfile(userId: string) {
-    console.log('Viewing profile for user:', userId);
     this.router.navigate(['/profile', userId]);
   }
+
   async onLikeToggled(event: { recipeId: string; liked: boolean }) {
     if (!this.currentUser) return;
 
