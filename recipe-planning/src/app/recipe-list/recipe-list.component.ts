@@ -151,19 +151,23 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile', userId]);
   }
   async onLikeToggled(event: { recipeId: string; liked: boolean }) {
-    if (!this.recipe || !this.currentUser) return;
+    if (!this.currentUser) return;
+
+    const recipe = this.filteredRecipes.find((r) => r.id === event.recipeId);
+    if (!recipe) return;
+
     if (event.liked) {
-      if (!this.recipe.likedBy.includes(this.currentUser.id)) {
-        this.recipe.likedBy.push(this.currentUser.id);
-        this.recipe.likes++;
+      if (!recipe.likedBy.includes(this.currentUser.id)) {
+        recipe.likedBy.push(this.currentUser.id);
+        recipe.likes++;
       }
     } else {
-      const idx = this.recipe.likedBy.indexOf(this.currentUser.id);
+      const idx = recipe.likedBy.indexOf(this.currentUser.id);
       if (idx > -1) {
-        this.recipe.likedBy.splice(idx, 1);
-        this.recipe.likes = Math.max(0, this.recipe.likes - 1);
+        recipe.likedBy.splice(idx, 1);
+        recipe.likes = Math.max(0, recipe.likes - 1);
       }
     }
-    await this.recipeService.updateRecipe(this.recipe);
+    await this.recipeService.updateRecipe(recipe);
   }
 }
