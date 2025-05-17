@@ -1,6 +1,6 @@
 <div class="meal-plan-container" *ngIf="currentUser">
   <h2>Weekly Meal Plan</h2>
-  
+
   <div class="meal-plan-grid">
     <div class="grid-header">
       <div class="header-cell">Day</div>
@@ -12,23 +12,38 @@
 
     <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="grid-row">
       <div class="day-cell">{{ day }}</div>
-      
-      <div class="meal-cell" *ngFor="let mealType of mealTypes; let mealIndex = index">
+
+      <div
+        class="meal-cell"
+        *ngFor="let mealType of mealTypes; let mealIndex = index"
+      >
         <div class="meal-content" (click)="selectRecipe(dayIndex, mealIndex)">
-          <div *ngIf="getRecipeForMeal(dayIndex, mealIndex) as recipe" class="selected-recipe">
+          <div
+            *ngIf="getRecipeForMeal(dayIndex, mealIndex) as recipe"
+            class="selected-recipe"
+          >
             <h3>{{ recipe.recipe_name }}</h3>
-            <p>
-              <i class="material-icons" style="font-size: 16px; vertical-align: middle;">restaurant</i>
-              {{ recipe.type }}
-            </p>
-            <button mat-button class="warn" 
-              (click)="$event.stopPropagation(); removeRecipeFromMealPlan(dayIndex, mealIndex)">
-              <i class="material-icons" style="font-size: 18px; vertical-align: middle;">delete</i>
+            <p>{{ recipe.type }}</p>
+            <button
+              mat-button
+              (click)="removeRecipeFromMealPlan(dayIndex, mealIndex)"
+            >
+              Remove
+            </button>
+            <button
+              mat-button
+              (click)="
+                $event.stopPropagation();
+                removeRecipeFromMealPlan(dayIndex, mealIndex)
+              "
+            >
               Remove
             </button>
           </div>
-          <div *ngIf="!getRecipeForMeal(dayIndex, mealIndex)" class="empty-meal">
-            <i class="material-icons" style="font-size: 24px; margin-bottom: 8px;">add_circle_outline</i>
+          <div
+            *ngIf="!getRecipeForMeal(dayIndex, mealIndex)"
+            class="empty-meal"
+          >
             <p>Click to add recipe</p>
           </div>
         </div>
@@ -46,10 +61,10 @@
       Generate Shopping List
     </button>
   </div>
+  <div *ngIf="savedMealPlan" class="saved-meal-plan">Meal Plan Saved!</div>
 </div>
 
 <div *ngIf="!currentUser" class="meal-plan-container" style="text-align: center; padding: 3rem;">
   <i class="material-icons" style="font-size: 48px; color: #e09f28; margin-bottom: 1rem;">lock</i>
   <p style="font-size: 1.2rem; color: #2d4155;">Please log in to view and create meal plans.</p>
 </div>
-

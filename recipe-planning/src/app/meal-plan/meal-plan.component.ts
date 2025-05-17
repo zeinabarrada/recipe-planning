@@ -17,17 +17,27 @@ import { MealPlan } from '../models/mealPlan.model';
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule],
   templateUrl: './meal-plan.component.html',
-  styleUrls: ['./meal-plan.component.css']
+  styleUrls: ['./meal-plan.component.css'],
 })
 export class MealPlanComponent {
   currentUser: User | null = null;
   mealPlanId: string = '';
   recipes: Recipe[] = [];
-  mealPlan: (Recipe | null)[][] = Array(7).fill(null).map(() => Array(3).fill(null));
-  daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  mealPlan: (Recipe | null)[][] = Array(7)
+    .fill(null)
+    .map(() => Array(3).fill(null));
+  daysOfWeek = [
+    'Saturday',
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+  ];
   mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
   showShoppingListButton = false;
-
+  savedMealPlan: boolean = false;
   constructor(
     private authService: AuthenticationService,
     private recipeService: RecipeService,
@@ -72,14 +82,14 @@ export class MealPlanComponent {
       },
       error: (error) => {
         console.error('Error loading recipes:', error);
-      }
+      },
     });
   }
 
   selectRecipe(dayIndex: number, mealIndex: number) {
     const dialogRef = this.dialog.open(RecipeSelectionDialogComponent, {
       width: '80%',
-      data: { recipes: this.recipes }
+      data: { recipes: this.recipes },
     });
 
     dialogRef.afterClosed().subscribe((selectedRecipe: Recipe) => {
@@ -102,7 +112,10 @@ export class MealPlanComponent {
     if (!this.currentUser) return;
 
     try {
-      this.mealPlanId = await this.mealPlanService.saveMealPlan(this.currentUser.id, this.mealPlan);
+      this.mealPlanId = await this.mealPlanService.saveMealPlan(
+        this.currentUser.id,
+        this.mealPlan
+      );
     } catch (error) {
       console.error('Error saving meal plan:', error);
     }
@@ -116,10 +129,14 @@ export class MealPlanComponent {
     const plannedRecipes: Recipe[] = [];
 
     for (let dayIndex = 0; dayIndex < this.mealPlan.length; dayIndex++) {
-      for (let mealIndex = 0; mealIndex < this.mealPlan[dayIndex].length; mealIndex++) {
+      for (
+        let mealIndex = 0;
+        mealIndex < this.mealPlan[dayIndex].length;
+        mealIndex++
+      ) {
         const recipe = this.mealPlan[dayIndex][mealIndex];
         if (recipe) {
-          if (!plannedRecipes.some(r => r.id === recipe.id)) {
+          if (!plannedRecipes.some((r) => r.id === recipe.id)) {
             plannedRecipes.push(recipe);
           }
         }
@@ -149,7 +166,9 @@ export class MealPlanComponent {
       );
 
       // Navigate to the shopping list view in the same tab
-      this.router.navigate(['/shopping-list', listId], { skipLocationChange: false });
+      this.router.navigate(['/shopping-list', listId], {
+        skipLocationChange: false,
+      });
     } catch (error) {
       console.error('Error generating shopping list:', error);
       alert('Failed to generate shopping list. Please try again.');
