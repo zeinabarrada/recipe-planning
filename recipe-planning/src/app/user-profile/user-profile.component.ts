@@ -67,7 +67,7 @@ export class UserProfileComponent {
         if (this.targetUser) {
           this.followersCount = this.targetUser.getFollowers().length;
           this.followingCount = this.targetUser.getFollowing().length;
-
+          this.isFollowing = this.currentUser?.following.includes(this.targetUser?.id) || false;
           this.loadTargetUserPostedRecipes();
         }
       } catch (error) {
