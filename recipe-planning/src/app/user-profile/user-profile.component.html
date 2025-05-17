@@ -88,19 +88,14 @@
 </div>
 
 <div *ngIf="!targetUser && currentUser" class="user-profile">
-  <div class="profile-header">
-    <h2 class="username">{{ currentUser.username | uppercase }}</h2>
+  <div class="profile-header">    
     <div
-      class="avatar"
-      [ngStyle]="{
-        'background-color': '#cafcb6',
-        color: '#737871'
-      }"
-    >
+      class="avatar">
       <span *ngIf="!currentUser.avatar" class="avatar-letter">
         {{ getFirstLetter(currentUser.username) }}
-      </span>
+      </span>      
     </div>
+    <h2 class="username">{{ currentUser.username | uppercase }}</h2>
     <div class="stats-container">
       <div class="stat-item">
         <div class="stat-number">
@@ -280,16 +275,10 @@
       </div>
 
       <div class="users-list">
-        <div *ngFor="let follower of followersList" class="user-card">
+        <div *ngFor="let follower of followersList" class="user-card" 
+        (click)="viewProfile(follower.id)">
           <div class="user-info">
-            <div
-              class="list-avatar"
-              [ngStyle]="{
-                'background-color': '#cafcb6',
-                color: '#737871'
-              }"
-              (click)="viewProfile(follower.id)"
-            >
+            <div class="list-avatar">
               <span *ngIf="!follower.avatar" class="avatar-letter">
                 {{ getFirstLetter(follower.username) }}
               </span>
@@ -323,16 +312,10 @@
       </div>
 
       <div class="users-list">
-        <div *ngFor="let user of followingList" class="user-card">
+        <div *ngFor="let user of followingList" class="user-card" 
+        (click)="viewProfile(user.id)">
           <div class="user-info">
-            <div
-              class="list-avatar"
-              [ngStyle]="{
-                'background-color': '#cafcb6',
-                color: '#737871'
-              }"
-              (click)="viewProfile(user.id)"
-            >
+            <div class="list-avatar">
               <span *ngIf="!user.avatar" class="avatar-letter">
                 {{ getFirstLetter(user.username) }}
               </span>
@@ -341,7 +324,7 @@
           <div class="details">
             <h4 class="follower-username">{{ user.username }}</h4>
           </div>
-          <button class="unfollow-btn" (click)="unfollowUser(user.id)">
+          <button class="remove-follower-btn" (click)="unfollowUser(user.id)">
             <i class="material-icons">person_remove</i>
             Unfollow
           </button>

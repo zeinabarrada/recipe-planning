@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AuthenticationComponent } from './authentication/authentication.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { AddRecipeComponent } from './post-recipe/post-recipe.component';

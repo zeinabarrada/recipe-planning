@@ -51,10 +51,10 @@
   box-shadow: 0 6px 24px rgba(224, 159, 40, 0.1);
 }
 .chef-avatar {
-  width: 56px;
-  height: 56px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: #e0e800;
+  background: #e09f28;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +76,7 @@
   justify-content: space-between;
 }
 .chef-username {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #222;
 }
@@ -97,7 +97,7 @@
 .chef-meta {
   display: flex;
   gap: 1.5rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #888;
   margin-bottom: 0.2rem;
 }
