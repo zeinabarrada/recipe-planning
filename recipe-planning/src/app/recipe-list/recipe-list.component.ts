@@ -8,12 +8,7 @@ import { User } from '../models/users.model';
 import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { FormsModule, NgModel } from '@angular/forms';
-import {
-  Firestore,
-  collection,
-  addDoc,
-  collectionData,
-} from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { LikeRecipeComponent } from '../like-recipe';
 
 @Component({
@@ -37,10 +32,8 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
   constructor(
     private recipeService: RecipeService,
-    private userService: UserService,
     private authService: AuthenticationService,
     private router: Router,
-    private firestore: Firestore,
     private cdr: ChangeDetectorRef
   ) {
     this.recipesObservable = this.recipeService.getRecipes();
