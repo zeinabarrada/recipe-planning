@@ -68,23 +68,45 @@ export class AuthenticationService {
   }
 
   async register(email: string, username: string, password: string) {
-    const user = this.userService.createUser(email, username, password);
-    await this.userService.saveUser(user);
+    try {
+      // Check if username already exists
+      const existingUser = this.users.find((u) => u.username === username);
+      if (existingUser) {
+        throw new Error('Username already exists');
+      }
 
-    this.users.push(user);
-    this.isAuth.next(true);
-    this.currentUser.next(user);
-    localStorage.setItem(
-      'currentUser',
-      JSON.stringify({
-        email: user.email,
-        username: user.username,
-        password: user.getPassword(),
-        id: user.id,
-        following: user.getFollowing(),
-        followers: user.getFollowers(),
-      })
-    );
+      // Check if email already exists
+      const existingEmail = this.users.find((u) => u.email === email);
+      if (existingEmail) {
+        throw new Error('Email already registered');
+      }
+
+      const user = this.userService.createUser(email, username, password);
+      await this.userService.saveUser(user);
+
+      this.users.push(user);
+      this.isAuth.next(true);
+      this.currentUser.next(user);
+
+      localStorage.setItem(
+        'currentUser',
+        JSON.stringify({
+          email: user.email,
+          username: user.username,
+          password: user.getPassword(),
+          id: user.id,
+          following: user.getFollowing(),
+          followers: user.getFollowers(),
+          savedRecipes: user.savedRecipes || [],
+          mealPlanId: user.mealPlanId || null,
+        })
+      );
+
+      return user;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
   }
 
   async login(username: string, password: string): Promise<User | null> {
