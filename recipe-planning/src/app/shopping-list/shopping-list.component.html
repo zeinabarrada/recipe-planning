@@ -16,10 +16,7 @@
       <div class="list-items" *ngIf="isListExpanded(list?.id)">
         <div *ngFor="let item of list?.items" class="item">
           <span class="ingredient">
-            {{ getIngredientDisplay(item?.ingredient) }}
-          </span>
-          <span class="quantity">
-            {{ item?.quantity }} {{ getUnitDisplay(item?.unit) }}
+            {{ item?.quantity }}{{ getUnitDisplay(item?.unit) }}{{ getIngredientDisplay(item?.ingredient) }}
           </span>
         </div>
       </div>
