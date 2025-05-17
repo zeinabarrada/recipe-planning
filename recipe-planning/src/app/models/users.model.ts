@@ -15,6 +15,19 @@ export class User {
     public avatar: string = ''
   ) { }
 
+  setCurrentUser(user: User) {
+    user.id = this.id;
+    user.email = this.email;
+    user.username = this.username;
+    user.password = this.password;
+    user.following = this.following;
+    user.followers = this.followers;
+    user.savedRecipes = this.savedRecipes;
+    user.mealPlanId = this.mealPlanId;
+    user.avatar = this.avatar;
+    return user;
+  }
+
   getPassword(): string {
     return this.password;
   }
@@ -71,7 +84,7 @@ export class User {
       following: this.following,
       followers: this.followers,
       savedRecipes: this.savedRecipes,
-      mealPlanId: this.mealPlanId,
+      mealPlanId: this.mealPlanId,      
     };
   }
 

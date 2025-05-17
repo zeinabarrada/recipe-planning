@@ -3,6 +3,7 @@ import { User } from '../models/users.model';
 import { AuthenticationService } from '../services/authentication.service';
 import { NgIf, CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
+
 @Component({
   selector: 'app-follow-button',
   standalone: true,
@@ -10,53 +11,50 @@ import { UserService } from '../services/user.service';
   templateUrl: './follow-button.component.html',
   styleUrls: ['./follow-button.component.css']
 })
-export class FollowButtonComponent implements OnInit {
+export class FollowButtonComponent {
   @Input() targetUser!: User;
   @Input() isFollowing: boolean = false;
   @Output() follow = new EventEmitter<void>();
   @Output() unfollow = new EventEmitter<void>();
 
   currentUser: User | null = null;
+  waitingForFollow: boolean = false;
 
   constructor(
-    private authService: AuthenticationService, 
-    private userService: UserService) {
-    this.authService.getUser().subscribe((user) => {
+    private authService: AuthenticationService,
+    private userService: UserService) { }
+
+  ngOnInit() {
+    this.authService.getUser()?.subscribe((user) => {
       this.currentUser = user;
     });
   }
 
-  ngOnInit() {
-    console.log('current user', this.currentUser);
-
-    if (this.currentUser) {
-      this.checkFollow(this.targetUser);
-    }
-  }
-
-  onFollow() {
+  async onFollow() {
     if (this.currentUser && this.targetUser) {
-      this.currentUser.follow(this.targetUser.id);
-      this.userService.followUser(this.currentUser, this.targetUser);
-      this.isFollowing = true;
-      this.follow.emit();
-      console.log('following', this.currentUser.getFollowing());
-      this.authService.updateCurrentUser(this.currentUser);
+      this.waitingForFollow = true;
+      try {
+        await this.userService.followUser(this.currentUser, this.targetUser);
+        this.isFollowing = true;
+        this.follow.emit();
+        this.authService.updateCurrentUser(this.currentUser);
+      } finally {
+        this.waitingForFollow = false;
+      }
     }
   }
 
-  onUnfollow() {
+  async onUnfollow() {
     if (this.currentUser && this.targetUser) {
-      this.currentUser.unfollow(this.targetUser.id);
-      this.userService.unfollowUser(this.currentUser, this.targetUser);
-      this.isFollowing = false;
-      this.unfollow.emit();
-      console.log('following', this.currentUser.getFollowing());
-      this.authService.updateCurrentUser(this.currentUser);
+      this.waitingForFollow = true;
+      try {
+        await this.userService.unfollowUser(this.currentUser, this.targetUser);
+        this.isFollowing = false;
+        this.unfollow.emit();
+        this.authService.updateCurrentUser(this.currentUser);
+      } finally {
+        this.waitingForFollow = false;
+      }
     }
-  }
-
-  checkFollow(targetUser: User) {
-    this.isFollowing = this.currentUser?.getFollowing().includes(targetUser.id) || false;
   }
 }
