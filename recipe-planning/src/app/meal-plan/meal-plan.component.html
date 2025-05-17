@@ -1,23 +1,39 @@
 <div class="meal-plan-container" *ngIf="currentUser">
   <h2>Weekly Meal Plan</h2>
-  
+
   <div class="meal-plan-grid">
     <div class="grid-header">
       <div class="header-cell">Day</div>
-      <div class="header-cell" *ngFor="let mealType of mealTypes">{{ mealType }}</div>
+      <div class="header-cell" *ngFor="let mealType of mealTypes">
+        {{ mealType }}
+      </div>
     </div>
 
     <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="grid-row">
       <div class="day-cell">{{ day }}</div>
-      
-      <div class="meal-cell" *ngFor="let mealType of mealTypes; let mealIndex = index">
+
+      <div
+        class="meal-cell"
+        *ngFor="let mealType of mealTypes; let mealIndex = index"
+      >
         <div class="meal-content" (click)="selectRecipe(dayIndex, mealIndex)">
-          <div *ngIf="getRecipeForMeal(dayIndex, mealIndex) as recipe" class="selected-recipe">
+          <div
+            *ngIf="getRecipeForMeal(dayIndex, mealIndex) as recipe"
+            class="selected-recipe"
+          >
             <h3>{{ recipe.recipe_name }}</h3>
             <p>{{ recipe.type }}</p>
-            <button mat-button (click)="removeRecipeFromMealPlan(dayIndex, mealIndex)">Remove</button>
+            <button
+              mat-button
+              (click)="removeRecipeFromMealPlan(dayIndex, mealIndex)"
+            >
+              Remove
+            </button>
           </div>
-          <div *ngIf="!getRecipeForMeal(dayIndex, mealIndex)" class="empty-meal">
+          <div
+            *ngIf="!getRecipeForMeal(dayIndex, mealIndex)"
+            class="empty-meal"
+          >
             <p>Click to add recipe</p>
           </div>
         </div>
@@ -27,10 +43,16 @@
 
   <div class="actions">
     <button mat-button (click)="saveMealPlan()">Save Meal Plan</button>
-    <button mat-button (click)="generateShoppingList()" *ngIf="showShoppingListButton">Generate Shopping List</button>
+    <button
+      mat-button
+      (click)="generateShoppingList()"
+      *ngIf="showShoppingListButton"
+    >
+      Generate Shopping List
+    </button>
   </div>
+  <div *ngIf="savedMealPlan" class="saved-meal-plan">Meal Plan Saved!</div>
 </div>
 <div *ngIf="!currentUser">
   <p>Please log in to view and create meal plans.</p>
 </div>
-

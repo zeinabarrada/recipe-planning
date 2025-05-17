@@ -58,23 +58,21 @@ export class RecipeListComponent {
     }
   }
 
-  onBlur() {
-    setTimeout(() => {
-      this.isFocused = false;
-    }, 200); // Delay to allow clicks to register
-  }
   onSearch(searchTerm: string) {
+    // madakhalsh input yb2a ely haytl3 el recipes kolaha
     if (!searchTerm || searchTerm.trim() === '') {
       this.filteredRecipes = this.allRecipes;
       return;
     }
     this.searchTerm = searchTerm.toLowerCase();
+
     this.filteredRecipes = this.allRecipes.filter(
       (recipe) =>
         recipe.recipe_name.toLowerCase() === this.searchTerm ||
         recipe.author.toLowerCase() === this.searchTerm
     );
   }
+
   clearSearch() {
     this.searchTerm = '';
     this.filteredRecipes = [...this.allRecipes];
@@ -99,11 +97,13 @@ export class RecipeListComponent {
         case 'type':
           return recipe.type === filterValue.toString().toLowerCase();
         case 'ingredient':
-          return recipe.ingredients.some((ing) =>
-            ing.toLowerCase().includes(filterValue.toString().toLowerCase())
+          return recipe.ingredients.find((ingredient) =>
+            ingredient
+              .toLowerCase()
+              .includes(filterValue.toString().toLowerCase())
           );
         default:
-          return recipe[filterType as keyof Recipe] === filterValue;
+          return false;
       }
     });
 
