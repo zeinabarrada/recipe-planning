@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { RecipeService } from '../services/recipe.service';
 import { Recipe } from '../models/recipe.model';
-import { forkJoin } from 'rxjs';
+import { async, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
@@ -269,7 +269,7 @@ export class UserProfileComponent implements OnInit {
 
     this.recipeService.getRecipes().subscribe((recipes) => {
       this.targetUserPostedRecipes = recipes.filter((recipe) => recipe.authorId === this.targetUser?.id);
-      console.log('Posted recipes:', this.targetUserPostedRecipes);
+      console.log('Target User Posted recipes:', this.targetUserPostedRecipes);
     });
   }
 
@@ -277,7 +277,7 @@ export class UserProfileComponent implements OnInit {
     if (!this.currentUser) return;
     this.recipeService.getRecipes().subscribe((recipes) => {
       this.currentUserPostedRecipes = recipes.filter((recipe) => recipe.authorId === this.currentUser?.id);
-      console.log('Posted recipes:', this.currentUserPostedRecipes);
+      console.log('Current User Posted recipes:', this.currentUserPostedRecipes);
     });
   }
 }

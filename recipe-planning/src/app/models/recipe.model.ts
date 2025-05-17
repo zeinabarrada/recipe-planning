@@ -6,7 +6,6 @@ export class Recipe {
     public ingredients: string[] = [],
     public instructions: string[] = [],
     public type: string = '',
-    public meal: string[] = [],
     public authorId: string = '',
     public author: string = '',
     public nutrition_facts: string = '',
