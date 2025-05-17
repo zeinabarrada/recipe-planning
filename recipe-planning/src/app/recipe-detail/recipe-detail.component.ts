@@ -4,9 +4,8 @@ import { AuthenticationService } from '../services/authentication.service';
 import { Recipe } from '../models/recipe.model';
 import { RecipeService } from '../services/recipe.service';
 import { User } from '../models/users.model';
-import { LikeRecipeComponent } from '../like-recipe';
 import { UserService } from '../services/user.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   Firestore,
   collection,
@@ -17,7 +16,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-recipe-detail',
-  imports: [LikeRecipeComponent, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './recipe-detail.component.html',
   styleUrl: './recipe-detail.component.css',
 })

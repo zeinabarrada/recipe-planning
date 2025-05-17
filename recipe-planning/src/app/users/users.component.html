@@ -25,15 +25,15 @@
           <span class="chef-username">{{ user.username }}</span>          
         </div>
         <div class="chef-meta">
-          <span>{{ userStats[user.id].recipeCount || 0 }} recipes</span>
-          <span>{{ userStats[user.id].followersCount || 0 }} followers</span>
+          <span>{{ userStats[user.id]?.recipeCount || 0 }} recipes</span>
+          <span>{{ userStats[user.id]?.followersCount || 0 }} followers</span>
         </div>
 
         <div class="chef-bio">Professional chef with a passion for cuisine</div>
         
         <div class="recent-recipe" *ngIf="userStats[user.id]?.recentRecipe">
           <span class="recent-label">Recent recipe:</span>
-          <span>{{ userStats[user.id].recentRecipe?.recipe_name }}</span>
+          <span>{{ userStats[user.id]?.recentRecipe?.recipe_name }}</span>
         </div>
       </div>
 
