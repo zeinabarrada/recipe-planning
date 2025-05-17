@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { User } from '../models/users.model';
 import { Recipe } from '../models/recipe.model';
 import { AuthenticationService } from '../services/authentication.service';
-import { UserService } from '../services/user.service';
 import { RecipeService } from '../services/recipe.service';
 import { MealPlanService } from '../services/meal-plan.service';
 import { ShoppingListService } from '../services/shopping-list.service';
@@ -20,76 +19,61 @@ import { MealPlan } from '../models/mealPlan.model';
   templateUrl: './meal-plan.component.html',
   styleUrls: ['./meal-plan.component.css']
 })
-export class MealPlanComponent implements OnInit {
+export class MealPlanComponent {
   currentUser: User | null = null;
   mealPlanId: string = '';
   recipes: Recipe[] = [];
   mealPlan: (Recipe | null)[][] = Array(7).fill(null).map(() => Array(3).fill(null));
   daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   mealTypes = ['Breakfast', 'Lunch', 'Dinner'];
-  selectedRecipes = new Set<string>();
   showShoppingListButton = false;
 
   constructor(
     private authService: AuthenticationService,
-    private userService: UserService,
     private recipeService: RecipeService,
     private mealPlanService: MealPlanService,
     private shoppingListService: ShoppingListService,
     private dialog: MatDialog,
     private router: Router
-  ) { }
-
-  async ngOnInit() {
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      try {
-        const userData = JSON.parse(storedUser);
-        const user = this.userService.createUser(
-          userData.email,
-          userData.username,
-          userData.password,
-          userData.id,
-          userData.following || [],
-          userData.followers || [],
-          userData.savedRecipes || [],
-          userData.mealPlanId || null,
-        );
+  ) {
+    this.authService.getUser()?.subscribe((user) => {
+      if (user) {
         this.currentUser = user;
         this.mealPlanId = this.currentUser.mealPlanId;
-      } catch (error) {
-        console.error('Error parsing stored user:', error);
       }
-    }
+    });
+  }
+
+  async ngOnInit() {
     this.loadRecipes();
     this.loadMealPlan();
   }
 
-  private async loadMealPlan() {
+  async loadMealPlan() {
     if (!this.currentUser || !this.mealPlanId) return;
 
     try {
-      const doc = await this.mealPlanService.getMealPlan(this.mealPlanId);
-      if (!doc) {
+      const meal = await this.mealPlanService.getMealPlan(this.mealPlanId);
+      if (!meal) {
         console.warn(`No meal plan document found for id ${this.mealPlanId}`);
         return;
       }
-      this.mealPlan = doc.mealPlan;
-      console.log("mealplan", this.mealPlan);
+      this.mealPlan = meal.mealPlan;
+      this.showShoppingListButton = true;
     } catch (error) {
       console.error('Error loading meal plan:', error);
     }
   }
 
-  async loadRecipes() {
-    try {
-      const allRecipes = await this.recipeService.getRecipes().toPromise();
-      if (allRecipes) {
+  loadRecipes() {
+    this.recipeService.getRecipes().subscribe({
+      next: (allRecipes) => {
         this.recipes = allRecipes;
+      },
+      error: (error) => {
+        console.error('Error loading recipes:', error);
       }
-    } catch (error) {
-      console.error('Error loading recipes:', error);
-    }
+    });
   }
 
   selectRecipe(dayIndex: number, mealIndex: number) {
@@ -101,19 +85,17 @@ export class MealPlanComponent implements OnInit {
     dialogRef.afterClosed().subscribe((selectedRecipe: Recipe) => {
       if (selectedRecipe) {
         this.mealPlan[dayIndex][mealIndex] = selectedRecipe;
-        this.selectedRecipes.add(selectedRecipe.id);
-        this.showShoppingListButton = this.selectedRecipes.size > 0;
+        this.showShoppingListButton = true;
       }
     });
   }
 
   removeRecipeFromMealPlan(dayIndex: number, mealIndex: number) {
     const recipe = this.mealPlan[dayIndex][mealIndex];
+
     if (recipe) {
-      this.selectedRecipes.delete(recipe.id);
-      this.showShoppingListButton = this.selectedRecipes.size > 0;
+      this.mealPlan[dayIndex][mealIndex] = null;
     }
-    this.mealPlan[dayIndex][mealIndex] = null;
   }
 
   async saveMealPlan() {
@@ -121,8 +103,6 @@ export class MealPlanComponent implements OnInit {
 
     try {
       this.mealPlanId = await this.mealPlanService.saveMealPlan(this.currentUser.id, this.mealPlan);
-      console.log('Meal plan saved successfully');
-      this.currentUser.mealPlanId = this.mealPlanId;
     } catch (error) {
       console.error('Error saving meal plan:', error);
     }
@@ -134,7 +114,7 @@ export class MealPlanComponent implements OnInit {
 
   private getAllPlannedRecipes(): Recipe[] {
     const plannedRecipes: Recipe[] = [];
-    
+
     for (let dayIndex = 0; dayIndex < this.mealPlan.length; dayIndex++) {
       for (let mealIndex = 0; mealIndex < this.mealPlan[dayIndex].length; mealIndex++) {
         const recipe = this.mealPlan[dayIndex][mealIndex];
@@ -145,7 +125,7 @@ export class MealPlanComponent implements OnInit {
         }
       }
     }
-    
+
     return plannedRecipes;
   }
 

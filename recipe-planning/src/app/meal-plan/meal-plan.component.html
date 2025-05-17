@@ -15,7 +15,8 @@
           <div *ngIf="getRecipeForMeal(dayIndex, mealIndex) as recipe" class="selected-recipe">
             <h3>{{ recipe.recipe_name }}</h3>
             <p>{{ recipe.type }}</p>
-            <button mat-button (click)="removeRecipeFromMealPlan(dayIndex, mealIndex)">Remove</button>
+            <button mat-button 
+            (click)="$event.stopPropagation(); removeRecipeFromMealPlan(dayIndex, mealIndex)">Remove</button>
           </div>
           <div *ngIf="!getRecipeForMeal(dayIndex, mealIndex)" class="empty-meal">
             <p>Click to add recipe</p>
