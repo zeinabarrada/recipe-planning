@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RecipeSelectionDialogComponent } from '../recipe-selection-dialog/recipe-selection-dialog.component';
-import { ShoppingListDialogComponent } from '../shopping-list/shopping-list-dialog.component';
 import { Router } from '@angular/router';
 import { MealPlan } from '../models/mealPlan.model';
 
@@ -63,22 +62,18 @@ export class MealPlanComponent implements OnInit {
       }
     }
     this.loadRecipes();
-
     this.loadMealPlan();
-
   }
 
   private async loadMealPlan() {
     if (!this.currentUser || !this.mealPlanId) return;
 
     try {
-      // getMealPlan may return null if no document exists
       const doc = await this.mealPlanService.getMealPlan(this.mealPlanId);
       if (!doc) {
         console.warn(`No meal plan document found for id ${this.mealPlanId}`);
         return;
       }
-      // doc is a MealPlan instance
       this.mealPlan = doc.mealPlan;
       console.log("mealplan", this.mealPlan);
     } catch (error) {
@@ -140,12 +135,10 @@ export class MealPlanComponent implements OnInit {
   private getAllPlannedRecipes(): Recipe[] {
     const plannedRecipes: Recipe[] = [];
     
-    // Iterate through the meal plan grid
     for (let dayIndex = 0; dayIndex < this.mealPlan.length; dayIndex++) {
       for (let mealIndex = 0; mealIndex < this.mealPlan[dayIndex].length; mealIndex++) {
         const recipe = this.mealPlan[dayIndex][mealIndex];
         if (recipe) {
-          // Check if recipe is already in the list to avoid duplicates
           if (!plannedRecipes.some(r => r.id === recipe.id)) {
             plannedRecipes.push(recipe);
           }
@@ -175,23 +168,8 @@ export class MealPlanComponent implements OnInit {
         plannedRecipes
       );
 
-      // Get the created shopping list
-      const shoppingList = await this.shoppingListService.getShoppingList(listId);
-      
-      if (shoppingList) {
-        // Open the shopping list dialog
-        const dialogRef = this.dialog.open(ShoppingListDialogComponent, {
-          width: '600px',
-          data: { shoppingList }
-        });
-
-        // Handle dialog close
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            console.log('Shopping list saved with checked items:', result);
-          }
-        });
-      }
+      // Navigate to the shopping list view in the same tab
+      this.router.navigate(['/shopping-list', listId], { skipLocationChange: false });
     } catch (error) {
       console.error('Error generating shopping list:', error);
       alert('Failed to generate shopping list. Please try again.');

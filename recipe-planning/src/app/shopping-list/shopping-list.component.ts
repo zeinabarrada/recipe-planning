@@ -1,87 +1,94 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
+import { RouterModule, Router } from '@angular/router';
 import { ShoppingListService } from '../services/shopping-list.service';
-import { ShoppingList, ShoppingListItem } from '../models/shopping-list.model';
+import { AuthenticationService } from '../services/authentication.service';
+import { ShoppingList } from '../models/shopping-list.model';
+import { User } from '../models/users.model';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shopping-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatListModule,
-    MatDividerModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, RouterModule],
   templateUrl: './shopping-list.component.html',
-  styleUrls: ['./shopping-list.component.scss']
+  styleUrls: ['./shopping-list.component.css']
 })
 export class ShoppingListComponent implements OnInit {
-  shoppingList: ShoppingList | null = null;
-  categories: string[] = [];
-  checkedItems: { [key: string]: boolean } = {};
+  shoppingLists$: Observable<ShoppingList[]>;
+  expandedLists: Set<string> = new Set();
 
   constructor(
-    private route: ActivatedRoute,
-    private shoppingListService: ShoppingListService
-  ) {}
-
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      const listId = params['id'];
-      if (listId) {
-        this.loadShoppingList(listId);
-      }
-    });
+    private shoppingListService: ShoppingListService,
+    private authService: AuthenticationService,
+    private router: Router
+  ) {
+    this.shoppingLists$ = this.authService.getUser().pipe(
+      switchMap((user: User | null) => {
+        if (user) {
+          return this.shoppingListService.getUserShoppingLists(user.id);
+        }
+        return of([]);
+      })
+    );
   }
 
-  private async loadShoppingList(listId: string) {
-    this.shoppingList = await this.shoppingListService.getShoppingList(listId);
-    if (this.shoppingList) {
-      this.categories = Array.from(new Set(this.shoppingList.items.map(item => item.category)))
-        .sort((a, b) => a.localeCompare(b));
-      
-      // Initialize all items as unchecked
-      this.shoppingList.items.forEach(item => {
-        this.checkedItems[item.ingredient] = false;
-      });
+  ngOnInit(): void {}
+
+  toggleList(id: string | undefined): void {
+    if (!id) return;
+    if (this.expandedLists.has(id)) {
+      this.expandedLists.delete(id);
+    } else {
+      this.expandedLists.add(id);
     }
   }
 
-  getItemsByCategory(category: string): ShoppingListItem[] {
-    return this.shoppingList?.items.filter(item => item.category === category)
-      .sort((a, b) => a.ingredient.localeCompare(b.ingredient)) || [];
+  isListExpanded(id: string | undefined): boolean {
+    return id ? this.expandedLists.has(id) : false;
   }
 
-  isLastCategory(category: string): boolean {
-    return this.categories.indexOf(category) === this.categories.length - 1;
+  viewList(id: string | undefined): void {
+    if (!id) return;
+    // Navigate to the list details in the same tab
+    this.router.navigate(['/shopping-list', id]);
   }
 
-  clearCheckedItems() {
-    Object.keys(this.checkedItems).forEach(key => {
-      if (this.checkedItems[key]) {
-        delete this.checkedItems[key];
-      }
-    });
-  }
-
-  async saveProgress() {
-    if (!this.shoppingList) return;
-
-    try {
-      // Here you would typically save the checked items state to your backend
-      console.log('Shopping list progress saved:', this.checkedItems);
-    } catch (error) {
-      console.error('Error saving shopping list progress:', error);
+  async deleteList(id: string | undefined): Promise<void> {
+    if (!id) return;
+    if (confirm('Are you sure you want to delete this shopping list?')) {
+      await this.shoppingListService.deleteShoppingList(id);
+      this.expandedLists.delete(id);
+      // Refresh the lists
+      this.shoppingLists$ = this.authService.getUser().pipe(
+        switchMap((user: User | null) => {
+          if (user) {
+            return this.shoppingListService.getUserShoppingLists(user.id);
+          }
+          return of([]);
+        })
+      );
     }
+  }
+
+  getIngredientDisplay(ingredient: any): string {
+    if (Array.isArray(ingredient)) {
+      return ingredient.join('');
+    }
+    if (typeof ingredient === 'object' && ingredient !== null) {
+      return JSON.stringify(ingredient);
+    }
+    return ingredient ? String(ingredient) : '';
+  }
+
+  getUnitDisplay(unit: any): string {
+    if (Array.isArray(unit)) {
+      return unit.join('');
+    }
+    if (typeof unit === 'object' && unit !== null) {
+      return JSON.stringify(unit);
+    }
+    return unit ? String(unit) : '';
   }
 } 

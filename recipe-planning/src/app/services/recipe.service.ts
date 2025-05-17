@@ -90,6 +90,7 @@ export class RecipeService {
       })
     );
   }
+
   async addReview(
     recipeId: string,
     review: { userId: string; userName: string; rating: number; review: string }
@@ -181,7 +182,6 @@ export class RecipeService {
   async getRecipesByUserId(userId: string): Promise<Recipe[]> {
     const recipesCollection = collection(this.firestore, 'recipes');
     const recipesSnapshot = await getDocs(recipesCollection);
-
     return recipesSnapshot.docs
       .map((doc) => {
         const data = doc.data();
