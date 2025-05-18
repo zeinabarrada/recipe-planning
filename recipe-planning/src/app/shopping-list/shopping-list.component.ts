@@ -13,7 +13,7 @@ import { switchMap } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './shopping-list.component.html',
-  styleUrls: ['./shopping-list.component.css']
+  styleUrls: ['./shopping-list.component.css'],
 })
 export class ShoppingListComponent implements OnInit {
   shoppingLists$: Observable<ShoppingList[]>;
@@ -91,4 +91,4 @@ export class ShoppingListComponent implements OnInit {
     }
     return unit ? String(unit) : '';
   }
-} 
+}
