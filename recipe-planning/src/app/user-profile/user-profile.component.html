@@ -28,8 +28,6 @@
     <app-follow-button
       [targetUser]="targetUser"
       [isFollowing]="isFollowing"
-      (follow)="onFollow()"
-      (unfollow)="onUnfollow()"
     ></app-follow-button>
   </div>
   <div class="recipe-list">
@@ -247,10 +245,7 @@
           </div>
         </div>
 
-        <div
-          *ngIf="currentUserPostedRecipes.length === 0"
-          class="empty-state"
-        >
+        <div *ngIf="currentUserPostedRecipes.length === 0" class="empty-state">
           <p>You haven't posted any recipes yet</p>
           <button class="browse-button" routerLink="/recipes">
             Browse Recipes

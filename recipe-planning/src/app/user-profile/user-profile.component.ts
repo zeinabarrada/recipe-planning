@@ -43,7 +43,7 @@ export class UserProfileComponent {
     private route: ActivatedRoute,
     private recipeService: RecipeService,
     private router: Router
-  ) { }
+  ) {}
 
   async ngOnInit() {
     this.authService.getUser().subscribe(async (user) => {
@@ -67,7 +67,8 @@ export class UserProfileComponent {
         if (this.targetUser) {
           this.followersCount = this.targetUser.getFollowers().length;
           this.followingCount = this.targetUser.getFollowing().length;
-          this.isFollowing = this.currentUser?.following.includes(this.targetUser?.id) || false;
+          this.isFollowing =
+            this.currentUser?.following.includes(this.targetUser?.id) || false;
           this.loadTargetUserPostedRecipes();
         }
       } catch (error) {
@@ -101,30 +102,14 @@ export class UserProfileComponent {
     }
 
     this.userService.getSavedRecipes(this.currentUser).subscribe({
-      next: (savedRecipeIds) => {
-        console.log('Saved recipe IDs:', savedRecipeIds);
-        if (savedRecipeIds.length === 0) {
+      next: (savedRecipe) => {
+        if (savedRecipe.length === 0) {
           this.savedRecipes = [];
           return;
         }
-
-        const recipeObservables = savedRecipeIds.map((recipe) =>
-          this.recipeService.getRecipeById(recipe.id)
-        );
-
-        forkJoin(recipeObservables).subscribe({
-          next: (recipes) => {
-            console.log('Loaded recipes:', recipes);
-            this.savedRecipes = recipes;
-          },
-          error: (error) => {
-            console.error('Error loading saved recipes:', error);
-            this.savedRecipes = [];
-          },
-        });
+        this.savedRecipes = savedRecipe;
       },
       error: (error) => {
-        console.error('Error fetching saved recipe IDs:', error);
         this.savedRecipes = [];
       },
     });
@@ -191,16 +176,19 @@ export class UserProfileComponent {
     if (!this.targetUser) return;
 
     this.recipeService.getRecipes().subscribe((recipes) => {
-      this.targetUserPostedRecipes = recipes.filter((recipe) => recipe.authorId === this.targetUser?.id);
-      console.log('Target User Posted recipes:', this.targetUserPostedRecipes);
+      this.targetUserPostedRecipes = recipes.filter(
+        (recipe) => recipe.authorId === this.targetUser?.id
+      );
     });
   }
 
   loadCurrentUserPostedRecipes() {
     if (!this.currentUser) return;
+
     this.recipeService.getRecipes().subscribe((recipes) => {
-      this.currentUserPostedRecipes = recipes.filter((recipe) => recipe.authorId === this.currentUser?.id);
-      console.log('Current User Posted recipes:', this.currentUserPostedRecipes);
+      this.currentUserPostedRecipes = recipes.filter(
+        (recipe) => recipe.authorId === this.currentUser?.id
+      );
     });
   }
 }
