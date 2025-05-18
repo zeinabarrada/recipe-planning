@@ -1,8 +1,37 @@
 <div class="follow-button-container">
-    <div *ngIf="isFollowing">
-        <button mat-raised-button color="warn" class="warn" (click)="onUnfollow()" [disabled]="waitingForFollow">Unfollow</button>
-    </div>
-    <div *ngIf="!isFollowing">
-        <button mat-raised-button color="primary" class="primary" (click)="onFollow()" [disabled]="waitingForFollow">Follow</button>
-    </div>
+  <div *ngIf="isFollowing">
+    <button
+      mat-raised-button
+      [ngStyle]="
+      {
+        'background-color': '#f7f7f7',
+        'border': '3px solid #e09f28',
+        'color': '#433e36',
+        'font-weight': '600',
+        'font-size': '1.2rem',
+        'padding': '12px 20px',
+      }"
+      (click)="onUnfollow()"
+      [disabled]="waitingForFollow"
+    >
+      Unfollow
+    </button>
+  </div>
+  <div *ngIf="!isFollowing">
+    <button
+      mat-raised-button
+      [ngStyle]="{
+        'background-color': '#e09f28',
+        border: '3px solid #433e36',
+        color: 'white',
+        'font-weight': '600',
+        'font-size': '1.2rem',
+        padding: '12px 35px'
+      }"
+      (click)="onFollow()"
+      [disabled]="waitingForFollow"
+    >
+      Follow
+    </button>
+  </div>
 </div>
