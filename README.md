@@ -76,4 +76,4 @@ src/
 │   └── shared/        # Shared modules and utilities
 ```
 
-Project Link: [https://github.com/zeinabarrada/recipe-planning](https://github.com/yourusername/recipe-planning)
+Project Link: [https://github.com/zeinabarrada/recipe-planning](https://github.com/zeinabarrada/recipe-planning)
