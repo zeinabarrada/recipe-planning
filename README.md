@@ -47,7 +47,7 @@ A modern web application built with Angular that helps users manage recipes, pla
 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/recipe-planning.git
+git clone https://github.com/zeinabarrada/recipe-planning
 cd recipe-planning
 ```
 
